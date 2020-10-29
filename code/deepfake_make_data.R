@@ -16,6 +16,8 @@
 # Output:
 # - deepfake.RData:
 #       saved `DAT` output
+# - id.csv:
+#       personalized ID info of respondents (destroy immediately)
 ############################################################
 
 #####------------------------------------------------------#
