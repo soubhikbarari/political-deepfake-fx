@@ -18,6 +18,16 @@
 #       saved `DAT` output
 ############################################################
 
+#####------------------------------------------------------#
+##### settings ####
+#####------------------------------------------------------#
+
+SAVE <- FALSE
+
+#####------------------------------------------------------#
+##### pre-amble ####
+#####------------------------------------------------------#
+
 library(tidyverse)
 library(qualtRics)
 
@@ -34,6 +44,10 @@ dfsurvdat <- fetch_survey(surveyID = dfsurv_id,
                      verbose = TRUE)
 if (!("datlist" %in% ls())) {
     datlist <- list()
+}
+
+if (!("idlist" %in% ls())) {
+    idlist <- list()
 }
 
 
@@ -74,6 +88,12 @@ dat <- dfsurvdat[,c(
     "ethnicity", "hispanic", "education", "region",
     "political_party", "rid", "gender", "StartDate", 
     "EndDate"
+)]
+
+id <- dfsurvdat[,c(
+  "IPAddress","ResponseId","RecipientLastName",
+  "RecipientFirstName","RecipientEmail",
+  "LocationLatitude","LocationLongitude"
 )]
 
 ## META >>>>>>>>>>>
@@ -426,6 +446,7 @@ hist(dat$crt)
 
 }
 datlist[[dfsurv_id]] <- dat
+idlist[[dfsurv_id]] <- id
 
 #####------------------------------------------------------#
 ##### finalize and save ####
@@ -438,4 +459,12 @@ DAT <- do.call(rbind, datlist)
 DAT <- DAT[!duplicated(DAT$rid),]
 colnames(DAT) <- make.unique(names(DAT))
 
-save(DAT, file = "deepfake.RData")
+if (SAVE) {
+  save(DAT, file = "deepfake.RData")
+}
+
+ID <- do.call(rbind, datlist)
+
+if (SAVE) {
+  save(ID, file = "id.csv")
+}
