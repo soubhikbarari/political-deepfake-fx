@@ -1,301 +1,247 @@
+############################################################
+# Run through pre-registered analyses on deepfake studies.
+# 
+# Author: Soubhik Barari
+# 
+# Environment:
+# - must use R 3.6
+# 
+# Runtime: <1 min
+# 
+# Input:
+# - deepfake.RData:
+#       `DAT` object made from `deepfake_make_data`       
+#
+############################################################
+
+library(tidyverse)
 library(ggplot2)
 
-source("deepfake_make_data.R")
+load("deepfake.RData")
 
 #####------------------------------------------------------#
-##### H1: deepfakes more deceptive than text/audio/skit ####
+##### H1: Deepfakes more deceptive than text/audio/skit ####
 #####------------------------------------------------------#
 
-{ ## text: diff-in-mean + one-sided t-test
-tt <- t.test(dfsurvdat$believed1_true[dfsurvdat$treat=="video"], 
-       dfsurvdat$believed1_true[dfsurvdat$treat=="text"], "greater")
-cat("binary ** E(Believe|video) - E(Believe|text): ",
-    mean(dfsurvdat$believed1_true[dfsurvdat$treat=="video"],na.rm=T) - 
-        mean(dfsurvdat$believed1_true[dfsurvdat$treat=="text"],na.rm=T),
-    "( p=",tt$p.value,")\n")
+## @SB: of the people who responded to the question (~60% of sample),
+##      audio was the most deceptive medium
+summary(lm(believed_true ~ treat, DAT %>% filter(!is.na(treat))))
+summary(lm(believed_true ~ treat, DAT %>% filter(!is.na(treat),treat %in% c("video","text"))))
+summary(lm(believed_true ~ treat, DAT %>% filter(!is.na(treat),treat %in% c("video","audio"))))
+summary(lm(believed_true ~ treat, DAT %>% filter(!is.na(treat),treat %in% c("video","skit"))))
 
-tt <- t.test(dfsurvdat$believed_true[dfsurvdat$treat=="video"], 
-       dfsurvdat$believed_true[dfsurvdat$treat=="text"], "greater")
-cat("ordin ** E(Believe|video) - E(Believe|text): ",
-    mean(dfsurvdat$believed_true[dfsurvdat$treat=="video"],na.rm=T) - 
-        mean(dfsurvdat$believed_true[dfsurvdat$treat=="text"],na.rm=T),
-    "( p=",tt$p.value,")\n")
-}
+## @SB: mobile OS contributes to deception
+summary(lm(believed_true ~ treat + meta_OS + agegroup + educ + PID + gender + polknow + internet_usage, DAT %>% filter(!is.na(treat))))
+summary(lm(believed_true ~ treat + meta_OS + agegroup + educ + PID + gender + polknow + internet_usage, DAT %>% filter(!is.na(treat),treat %in% c("video","text"))))
+summary(lm(believed_true ~ treat + meta_OS + agegroup + educ + PID + gender + polknow + internet_usage, DAT %>% filter(!is.na(treat),treat %in% c("video","audio"))))
+summary(lm(believed_true ~ treat + meta_OS + agegroup + educ + PID + gender + polknow + internet_usage, DAT %>% filter(!is.na(treat),treat %in% c("video","skit"))))
 
-{ ## audio: diff-in-mean + one-sided t-test
-tt <- t.test(dfsurvdat$believed1_true[dfsurvdat$treat=="video"], 
-       dfsurvdat$believed1_true[dfsurvdat$treat=="audio"], "greater")
-cat("binary ** E(Believe|video) - E(Believe|audio): ",
-    mean(dfsurvdat$believed1_true[dfsurvdat$treat=="video"],na.rm=T) - 
-        mean(dfsurvdat$believed1_true[dfsurvdat$treat=="audio"],na.rm=T),
-    "( p=",tt$p.value,")\n")
-
-tt <- t.test(dfsurvdat$believed_true[dfsurvdat$treat=="video"], 
-       dfsurvdat$believed_true[dfsurvdat$treat=="audio"], "greater")
-cat("ordin ** E(Believe|video) - E(Believe|audio): ",
-    mean(dfsurvdat$believed_true[dfsurvdat$treat=="video"],na.rm=T) - 
-        mean(dfsurvdat$believed_true[dfsurvdat$treat=="audio"],na.rm=T),
-    "( p=",tt$p.value,")\n")
-}
-
-{ ## skit: diff-in-mean + one-sided t-test
-tt <- t.test(dfsurvdat$believed1_true[dfsurvdat$treat=="video"], 
-       dfsurvdat$believed1_true[dfsurvdat$treat=="skit"], "greater")
-cat("binary ** E(Believe|video) - E(Believe|skit): ",
-    mean(dfsurvdat$believed1_true[dfsurvdat$treat=="video"],na.rm=T) - 
-        mean(dfsurvdat$believed1_true[dfsurvdat$treat=="skit"],na.rm=T),
-    "( p=",tt$p.value,")\n")
-
-tt <- t.test(dfsurvdat$believed_true[dfsurvdat$treat=="video"], 
-       dfsurvdat$believed_true[dfsurvdat$treat=="skit"], "greater")
-cat("ordin ** E(Believe|video) - E(Believe|skit): ",
-    mean(dfsurvdat$believed_true[dfsurvdat$treat=="video"],na.rm=T) - 
-        mean(dfsurvdat$believed_true[dfsurvdat$treat=="skit"],na.rm=T),
-    "( p=",tt$p.value,")\n")
-}
-
-{ ## original ordinal belief response
-barplot(
-    c(
-        mean(dfsurvdat$believed_true[dfsurvdat$treat=="video"],na.rm=T),
-        mean(dfsurvdat$believed_true[dfsurvdat$treat=="text"],na.rm=T),
-        mean(dfsurvdat$believed_true[dfsurvdat$treat=="audio"],na.rm=T),
-        mean(dfsurvdat$believed_true[dfsurvdat$treat=="skit"],na.rm=T)
-    ), names.arg=c("video","text","audio","skit"), ylab="belief in scandal (ordinal)",ylim=c(0,5)
-)
-segments(
-    x0=p, 
-    y0=c(
-mean(dfsurvdat$believed_true[dfsurvdat$treat_fake_video],na.rm=T) - 
-    1.96*sd(dfsurvdat$believed_true[dfsurvdat$treat_fake_video],na.rm=T)/sqrt(sum(dfsurvdat$treat_fake_video)),
-mean(dfsurvdat$believed_true[dfsurvdat$treat_fake_text],na.rm=T) -
-    1.96*sd(dfsurvdat$believed_true[dfsurvdat$treat_fake_text],na.rm=T)/sqrt(sum(dfsurvdat$treat_fake_text)),
-mean(dfsurvdat$believed_true[dfsurvdat$treat_fake_audio],na.rm=T) - 
-    1.96*sd(dfsurvdat$believed_true[dfsurvdat$treat_fake_audio],na.rm=T)/sqrt(sum(dfsurvdat$treat_fake_audio)),
-mean(dfsurvdat$believed_true[dfsurvdat$treat_skit],na.rm=T) - 
-    1.96*sd(dfsurvdat$believed_true[dfsurvdat$treat_skit],na.rm=T)/sqrt(sum(dfsurvdat$treat_skit))
-    ), 
-    y1=c(
-mean(dfsurvdat$believed_true[dfsurvdat$treat_fake_video],na.rm=T) + 
-    1.96*sd(dfsurvdat$believed_true[dfsurvdat$treat_fake_video],na.rm=T)/sqrt(sum(dfsurvdat$treat_fake_video)),
-mean(dfsurvdat$believed_true[dfsurvdat$treat_fake_text],na.rm=T) + 
-    1.96*sd(dfsurvdat$believed_true[dfsurvdat$treat_fake_text],na.rm=T)/sqrt(sum(dfsurvdat$treat_fake_text)),
-mean(dfsurvdat$believed_true[dfsurvdat$treat_fake_audio],na.rm=T) + 
-    1.96*sd(dfsurvdat$believed_true[dfsurvdat$treat_fake_audio],na.rm=T)/sqrt(sum(dfsurvdat$treat_fake_audio)),
-mean(dfsurvdat$believed_true[dfsurvdat$treat_skit],na.rm=T) + 
-    1.96*sd(dfsurvdat$believed_true[dfsurvdat$treat_skit],na.rm=T)/sqrt(sum(dfsurvdat$treat_skit))
-    )
-)
-}
-
-# { ## collapsed binary belief response
-# barplot(
-#     c(
-#         mean(dfsurvdat$believed1_true[dfsurvdat$treat_fake_video],na.rm=T),
-#         mean(dfsurvdat$believed1_true[dfsurvdat$treat_fake_text],na.rm=T),
-#         mean(dfsurvdat$believed1_true[dfsurvdat$treat_fake_audio],na.rm=T),
-#         mean(dfsurvdat$believed1_true[dfsurvdat$treat_skit],na.rm=T)
-#     ), names.arg=c("video","text","audio","skit"), ylab="belief in scandal (collapsed binary)"
-# )
-# }
+DAT %>% 
+    filter(!(treat%in%c("ad","control")), !is.na(treat)) %>%
+    group_by(treat) %>% 
+    summarise(y=mean(believed_true,na.rm=T), 
+              ymax=mean(believed_true,na.rm=T)+1.96*sd(believed_true,na.rm=T)/sqrt(n()),
+              ymin=mean(believed_true,na.rm=T)-1.96*sd(believed_true,na.rm=T)/sqrt(n())) %>%
+    ggplot(aes(x=treat, y=y, ymin=ymin, ymax=ymax)) + 
+    geom_bar(stat="identity") +
+    geom_errorbar(position=position_dodge(.9), width=.2) +
+    xlab("treatment condition") + ylab("level of belief in scandal") +
+    theme_minimal()
 
 #####------------------------------------------------------#
-##### H2: deepfakes make target more unfavorable than text/audio/skit  ####
-#####------------------------------------------------------#
-{
-p <- barplot(
-    c(
-        mean(dfsurvdat$post_favor_Warren[dfsurvdat$treat=="video"],na.rm=T),
-        mean(dfsurvdat$post_favor_Warren[dfsurvdat$treat=="text"],na.rm=T),
-        mean(dfsurvdat$post_favor_Warren[dfsurvdat$treat=="audio"],na.rm=T),
-        mean(dfsurvdat$post_favor_Warren[dfsurvdat$treat=="skit"],na.rm=T),
-        mean(dfsurvdat$post_favor_Warren[dfsurvdat$treat=="ad"],na.rm=T)
-    ), names.arg=c("video","text","audio","skit","ad"), ylab="Warren favorability",ylim=c(0,80)
-)
-segments(
-    x0=p, 
-    y0=c(
-mean(dfsurvdat$post_favor_Warren[dfsurvdat$treat_fake_video],na.rm=T) - 
-    1.96*sd(dfsurvdat$post_favor_Warren[dfsurvdat$treat_fake_video],na.rm=T)/sqrt(sum(dfsurvdat$treat_fake_video)),
-mean(dfsurvdat$post_favor_Warren[dfsurvdat$treat_fake_text],na.rm=T) -
-    1.96*sd(dfsurvdat$post_favor_Warren[dfsurvdat$treat_fake_text],na.rm=T)/sqrt(sum(dfsurvdat$treat_fake_text)),
-mean(dfsurvdat$post_favor_Warren[dfsurvdat$treat_fake_audio],na.rm=T) - 
-    1.96*sd(dfsurvdat$post_favor_Warren[dfsurvdat$treat_fake_audio],na.rm=T)/sqrt(sum(dfsurvdat$treat_fake_audio)),
-mean(dfsurvdat$post_favor_Warren[dfsurvdat$treat_skit],na.rm=T) - 
-    1.96*sd(dfsurvdat$post_favor_Warren[dfsurvdat$treat_skit],na.rm=T)/sqrt(sum(dfsurvdat$treat_skit))
-    ), 
-    y1=c(
-mean(dfsurvdat$post_favor_Warren[dfsurvdat$treat_fake_video],na.rm=T) + 
-    1.96*sd(dfsurvdat$post_favor_Warren[dfsurvdat$treat_fake_video],na.rm=T)/sqrt(sum(dfsurvdat$treat_fake_video)),
-mean(dfsurvdat$post_favor_Warren[dfsurvdat$treat_fake_text],na.rm=T) + 
-    1.96*sd(dfsurvdat$post_favor_Warren[dfsurvdat$treat_fake_text],na.rm=T)/sqrt(sum(dfsurvdat$treat_fake_text)),
-mean(dfsurvdat$post_favor_Warren[dfsurvdat$treat_fake_audio],na.rm=T) + 
-    1.96*sd(dfsurvdat$post_favor_Warren[dfsurvdat$treat_fake_audio],na.rm=T)/sqrt(sum(dfsurvdat$treat_fake_audio)),
-mean(dfsurvdat$post_favor_Warren[dfsurvdat$treat_skit],na.rm=T) + 
-    1.96*sd(dfsurvdat$post_favor_Warren[dfsurvdat$treat_skit],na.rm=T)/sqrt(sum(dfsurvdat$treat_skit))
-    )
-)
-}
-
-#####------------------------------------------------------#
-##### H3: H1 effect lower for high-diglit ####
+##### H2: Deepfakes make target more unfavorable than text/audio/skit  ####
 #####------------------------------------------------------#
 
-##TODO: need to revise this in the PAP and here
-h3a <- lm(believed_true ~ exp_1_prompt*treat, dfsurvdat)
-summary(h3a)
-h3a <- lm(believed_true ~ exp_1_prompt*treat + age + educ + PID + polknow + internet_usage, dfsurvdat)
-summary(h3a)
-h3a <- glm(believed_true ~ exp_1_prompt*treat, dfsurvdat, family=binomial(link="logit"))
-summary(h3a)
+## @SB: video seems to produce less favorability without controls,
+##      but with all controls audio produces less favorability
 
-h3b <- lm(believed_true ~ post_dig_lit*treat, dfsurvdat)
-summary(h3b)
-h3b <- lm(believed_true ~ post_dig_lit*treat + age + educ + PID + polknow + internet_usage, dfsurvdat)
-summary(h3b)
-h3b <- glm(believed_true ~ post_dig_lit*treat, dfsurvdat, family=binomial(link="logit"))
-summary(h3b)
+## "Hearing is Believing, but Seeing is Feeling (Sometimes)"
 
-#####------------------------------------------------------#
-##### H4: H1 effect lower for high-cognition ####
-#####------------------------------------------------------#
+## real outcome
+DAT$post_favor_ <- DAT$post_favor_Warren
+## manipulation/placebo checks
+DAT$post_favor_ <- DAT$post_favor_Biden
+DAT$post_favor_ <- DAT$post_favor_Klobuchar
+DAT$post_favor_ <- DAT$post_favor_Sanders
+DAT$post_favor_ <- DAT$post_favor_Bloomberg
 
-##TODO: need to revise this in the PAP and here
+DAT %>%
+    filter(!is.na(treat)) %>%
+    group_by(treat) %>% 
+    summarise(y=mean(post_favor_,na.rm=T), 
+              ymax=mean(post_favor_,na.rm=T)+1.96*sd(post_favor_,na.rm=T)/sqrt(n()),
+              ymin=mean(post_favor_,na.rm=T)-1.96*sd(post_favor_,na.rm=T)/sqrt(n())) %>%
+    ggplot(aes(x=treat, y=y, ymin=ymin, ymax=ymax)) + 
+    geom_bar(stat="identity") +
+    geom_errorbar(position=position_dodge(.9), width=.2) +
+    xlab("treatment condition") + ylab("favorability") +
+    theme_minimal()  
 
-##high-cognition via CRT score
-h4a <- lm(believed_true ~ exp_2_prompt*treat, dfsurvdat)
-summary(h4a)
-h4a <- lm(believed_true ~ exp_2_prompt*treat + age + educ + PID + polknow + internet_usage, dfsurvdat)
-summary(h4a)
-h4a <- glm(believed1_true ~ exp_2_prompt*treat, dfsurvdat, family=binomial(link="logit"))
-summary(h4a)
+summary(lm(post_favor_ ~ treat, DAT %>% filter(!is.na(treat))))
+summary(lm(post_favor_ ~ treat, DAT %>% filter(!is.na(treat),treat %in% c("video","text"))))
+summary(lm(post_favor_ ~ treat, DAT %>% filter(!is.na(treat),treat %in% c("video","audio"))))
+summary(lm(post_favor_ ~ treat, DAT %>% filter(!is.na(treat),treat %in% c("video","skit"))))
 
-h4b <- lm(believed_true ~ post_crt*treat, dfsurvdat)
-summary(h4b)
-h4b <- lm(believed_true ~ post_crt*treat + age + educ + PID + polknow + internet_usage, dfsurvdat)
-summary(h4b)
-h4b <- glm(believed1_true ~ post_crt*treat, dfsurvdat, family=binomial(link="logit"))
-summary(h4b)
+summary(lm(post_favor_ ~ treat + response_wave_ID + meta_OS + agegroup + educ + PID + gender + polknow + internet_usage, DAT %>% filter(!is.na(treat))))
+summary(lm(post_favor_ ~ treat + response_wave_ID + meta_OS + agegroup + educ + PID + gender + polknow + internet_usage, DAT %>% filter(!is.na(treat),treat %in% c("video","text"))))
+summary(lm(post_favor_ ~ treat + response_wave_ID + meta_OS + agegroup + educ + PID + gender + polknow + internet_usage, DAT %>% filter(!is.na(treat),treat %in% c("video","audio"))))
+summary(lm(post_favor_ ~ treat + response_wave_ID + meta_OS + agegroup + educ + PID + gender + polknow + internet_usage, DAT %>% filter(!is.na(treat),treat %in% c("video","skit"))))
 
-#####------------------------------------------------------#
-##### H5a: H1 effect higher for republicans ####
-#####------------------------------------------------------#
+## other affective responses
+## @SB: skit was found to be most funny, least informative, and most offensive (ad also found offensive)
+summary(lm(believed_funny ~ treat, DAT %>% filter(!is.na(treat))))
+summary(lm(believed_informative ~ treat, DAT %>% filter(!is.na(treat))))
+summary(lm(believed_offensive ~ treat, DAT %>% filter(!is.na(treat))))
 
-h5a <- lm(believed_true ~ PID*treat, dfsurvdat)
-summary(h5a) ##baseline
-h5a <- lm(believed_true ~ PID*treat + age + educ + PID + polknow + internet_usage, dfsurvdat)
-summary(h5a) ##with controls
- 
-#####------------------------------------------------------#
-##### H5b: H2 effect higher for republicans ####
-#####------------------------------------------------------#
-
-h5b <- lm(post_favor_Warren ~ PID*treat, dfsurvdat)
-summary(h5b) ##baseline
-h5b <- lm(post_favor_Warren ~ PID*treat + age + educ + PID + polknow + internet_usage, dfsurvdat)
-summary(h5b) ##with controls
+summary(lm(believed_funny ~ treat + response_wave_ID + meta_OS + agegroup + educ + PID + gender + polknow + internet_usage, DAT %>% filter(!is.na(treat))))
+summary(lm(believed_informative ~ treat + response_wave_ID + meta_OS + agegroup + educ + PID + gender + polknow + internet_usage, DAT %>% filter(!is.na(treat))))
+summary(lm(believed_offensive ~ treat + response_wave_ID + meta_OS + agegroup + educ + PID + gender + polknow + internet_usage, DAT %>% filter(!is.na(treat))))
 
 #####------------------------------------------------------#
-##### H6: H2 effect higher for ambivalent sexists ####
+##### H3: Deepfake salience effect on media trust/FPR ####
 #####------------------------------------------------------#
 
-##ambivalent sexism concept check
-### - each female candidate systematically scored less than men (baseline)
-summary(glm(I(post_favor_Warren > post_favor_Sanders) ~ ambivalent_sexism*PID, dfsurvdat, family=binomial(link="logit")))
-summary(glm(I(post_favor_Warren > post_favor_Biden) ~ ambivalent_sexism*PID, dfsurvdat, family=binomial(link="logit")))
-summary(glm(I(post_favor_Warren > post_favor_Bloomberg) ~ ambivalent_sexism*PID, dfsurvdat, family=binomial(link="logit")))
-summary(glm(I(post_favor_Klobuchar > post_favor_Sanders) ~ ambivalent_sexism*PID, dfsurvdat, family=binomial(link="logit")))
-summary(glm(I(post_favor_Klobuchar > post_favor_Biden) ~ ambivalent_sexism*PID, dfsurvdat, family=binomial(link="logit")))
-summary(glm(I(post_favor_Klobuchar > post_favor_Bloomberg) ~ ambivalent_sexism*PID, dfsurvdat, family=binomial(link="logit")))
-### - all female candidates systematically scored less than all men (baseline)
-summary(lm(I(0.5*post_favor_Klobuchar + 0.5*post_favor_Warren - 0.33*post_favor_Biden - 0.33*post_favor_Bloomberg - 0.33*post_favor_Sanders) ~ ambivalent_sexism*PID, dfsurvdat))
+## 3a/I: information prompt decreases media trust
+## (overall, offline, online-only, social media)
 
-### - each female candidate systematically scored less than men (with controls)
-summary(glm(I(post_favor_Warren > post_favor_Sanders) ~ ambivalent_sexism*PID + age + educ + PID + polknow + internet_usage, dfsurvdat, family=binomial(link="logit")))
-summary(glm(I(post_favor_Warren > post_favor_Biden) ~ ambivalent_sexism*PID + age + educ + PID + polknow + internet_usage, dfsurvdat, family=binomial(link="logit")))
-summary(glm(I(post_favor_Warren > post_favor_Bloomberg) ~ ambivalent_sexism*PID + age + educ + PID + polknow + internet_usage, dfsurvdat, family=binomial(link="logit")))
-summary(glm(I(post_favor_Klobuchar > post_favor_Sanders) ~ ambivalent_sexism*PID + age + educ + PID + polknow + internet_usage, dfsurvdat, family=binomial(link="logit")))
-summary(glm(I(post_favor_Klobuchar > post_favor_Biden) ~ ambivalent_sexism*PID + age + educ + PID + polknow + internet_usage, dfsurvdat, family=binomial(link="logit")))
-summary(glm(I(post_favor_Klobuchar > post_favor_Bloomberg) ~ ambivalent_sexism*PID + age + educ + PID + polknow + internet_usage, dfsurvdat, family=binomial(link="logit")))
-### - all female candidates systematically scored less than all men (with controls)
-summary(lm(I(0.5*post_favor_Klobuchar + 0.5*post_favor_Warren - 0.33*post_favor_Biden - 0.33*post_favor_Bloomberg - 0.33*post_favor_Sanders) ~ ambivalent_sexism*PID + age + educ + PID + polknow + internet_usage, dfsurvdat))
+## @SB: negative but statistically insignificant effect
+summary(lm(post_media_trust ~ exp_1_prompt, DAT))
+summary(lm(post_media_trust ~ exp_1_prompt + agegroup + educ + PID + gender + polknow + internet_usage, DAT))
 
+summary(lm(post_media_trust1 ~ exp_1_prompt, DAT))
+summary(lm(post_media_trust1 ~ exp_1_prompt + agegroup + educ + PID + gender + polknow + internet_usage, DAT))
 
+summary(lm(post_media_trust2 ~ exp_1_prompt, DAT))
+summary(lm(post_media_trust2 ~ exp_1_prompt + agegroup + educ + PID + gender + polknow + internet_usage, DAT))
 
-h6 <- lm(post_favor_Warren ~ ambivalent_sexism*treat, dfsurvdat)
-summary(h6) ##baseline
-h6 <- lm(post_favor_Warren ~ ambivalent_sexism*treat + age + educ + PID + polknow + internet_usage, dfsurvdat)
-summary(h6) ##with controls
+summary(lm(post_media_trust3 ~ exp_1_prompt, DAT))
+summary(lm(post_media_trust3 ~ exp_1_prompt + agegroup + educ + PID + gender + polknow + internet_usage, DAT))
 
-#####------------------------------------------------------#
-##### H7a: increased salience -> less trust in media ####
-#####------------------------------------------------------#
+## 3a/II: seeing and recognizing a deepfake decreases media trust
+## @SB: believing something is true decreases trust in media ... but mostly
+##      offline media, NOT online media
+summary(lm(post_media_trust1 ~ treat*believed_true, DAT %>% filter(!is.na(treat))))
+summary(lm(post_media_trust1 ~ treat*believed1_true, DAT %>% filter(!is.na(treat))))
+summary(lm(post_media_trust1 ~ treat*believed_true + agegroup + educ + PID + gender + polknow + internet_usage, DAT %>% filter(!is.na(treat))))
+summary(lm(post_media_trust1 ~ treat*believed1_true + agegroup + educ + PID + gender + polknow + internet_usage, DAT %>% filter(!is.na(treat))))
 
-##salience via stage 1 info prompt, baseline:
-h7a_i <- lm(post_media_trust ~ exp_1_prompt, dfsurvdat)
-summary(h7a_i) ##general trust in media
-h7a_i <- lm(post_media_trust1 ~ exp_1_prompt, dfsurvdat)
-summary(h7a_i) ##trust in offline media
-h7a_i <- lm(post_media_trust2 ~ exp_1_prompt, dfsurvdat)
-summary(h7a_i) ##trust in online media
-h7a_i <- lm(post_media_trust3 ~ exp_1_prompt, dfsurvdat)
-summary(h7a_i) ##trust in social media
+## 3b/III: debrief increases false detection rate of deepfakes
+## @SB: additional debrief slightly increases FDR, but its the environment/mode itself massively
+##      increases FPR (i.e. low/no deepfakes)
+summary(lm(exp_2_pct_false_fake ~ exp_2_after_debrief, DAT))
+summary(lm(exp_2_pct_false_fake ~ exp_2_after_debrief + exp_2, DAT))
+summary(lm(exp_2_pct_false_fake ~ exp_2_after_debrief + exp_2 + exp_2_prompt + agegroup + educ + PID + gender + polknow + internet_usage, DAT))
 
-##salience via stage 1 info prompt, with controls:
-h7a_i <- lm(post_media_trust ~ exp_1_prompt + age + educ + PID + polknow + internet_usage, dfsurvdat)
-summary(h7a_i) ##general trust in media
-h7a_i <- lm(post_media_trust1 ~ exp_1_prompt + age + educ + PID + polknow + internet_usage, dfsurvdat)
-summary(h7a_i) ##trust in offline media
-h7a_i <- lm(post_media_trust2 ~ exp_1_prompt + age + educ + PID + polknow + internet_usage, dfsurvdat)
-summary(h7a_i) ##trust in online media
-h7a_i <- lm(post_media_trust2 ~ exp_1_prompt + age + educ + PID + polknow + internet_usage, dfsurvdat)
-summary(h7a_i) ##trust in social media
-
-##salience via exposure-and-detection, baseline:
-h7a_ii <- lm(post_media_trust ~ I(treat == "video")*believed_true, dfsurvdat)
-summary(h7a_ii) ##general trust in media
-h7a_ii <- lm(post_media_trust1 ~ I(treat == "video")*believed_true, dfsurvdat)
-summary(h7a_ii) ##trust in offline media
-h7a_ii <- lm(post_media_trust2 ~ I(treat == "video")*believed_true, dfsurvdat)
-summary(h7a_ii) ##trust in online media
-h7a_ii <- lm(post_media_trust3 ~ I(treat == "video")*believed_true, dfsurvdat)
-summary(h7a_ii) ##trust in social media
-
-##salience via exposure-and-detection, with controls:
-h7a_ii <- lm(post_media_trust ~ I(treat == "video")*believed_true + age + educ + PID + polknow + internet_usage, dfsurvdat)
-summary(h7a_ii)
-h7a_ii <- lm(post_media_trust1 ~ I(treat == "video")*believed_true + age + educ + PID + polknow + internet_usage, dfsurvdat)
-summary(h7a_ii)
-h7a_ii <- lm(post_media_trust2 ~ I(treat == "video")*believed_true + age + educ + PID + polknow + internet_usage, dfsurvdat)
-summary(h7a_ii)
-h7a_ii <- lm(post_media_trust3 ~ I(treat == "video")*believed_true + age + educ + PID + polknow + internet_usage, dfsurvdat)
-summary(h7a_ii) 
-
+## 3b/IV: information prompts increase false detection rate of deepfakes
+## @SB: no effect of information prompt on FDR
+summary(lm(exp_2_pct_false_fake ~ exp_1_prompt, DAT))
+summary(lm(exp_2_pct_false_fake ~ exp_1_prompt + exp_2, DAT))
+summary(lm(exp_2_pct_false_fake ~ exp_1_prompt + exp_2 + exp_2_after_debrief + agegroup + educ + PID + gender + polknow + internet_usage, DAT))
 
 #####------------------------------------------------------#
-##### H7b: increased salience -> increased FPR in ID task ####
+##### H4: Heterogeneity in deception effect by info ####
 #####------------------------------------------------------#
 
-##salience via stage 1 info prompt:
-h7b_i <- lm(exp_2_pct_false_fake ~ exp_1_prompt, dfsurvdat)
-summary(h7b_i) ##baseline
-h7b_i <- lm(exp_2_pct_false_fake ~ exp_1_prompt + age + educ + PID + polknow + internet_usage, dfsurvdat)
-summary(h7b_i) ##with controls
+## @SB: EXTREMELY consistent effect negative effect on deception
+summary(lm(believed_true ~ treat*exp_1_prompt_info + response_wave_ID, DAT %>% filter(!is.na(treat))))
+summary(lm(believed_true ~ treat*exp_1_prompt_info + response_wave_ID, DAT %>% filter(!is.na(treat),treat %in% c("video","text"))))
+summary(lm(believed_true ~ treat*exp_1_prompt_info + response_wave_ID, DAT %>% filter(!is.na(treat),treat %in% c("video","audio"))))
+summary(lm(believed_true ~ treat*exp_1_prompt_info + response_wave_ID, DAT %>% filter(!is.na(treat),treat %in% c("video","skit"))))
 
-##salience via exposure-and-detection: 
-h7b_ii <- lm(exp_2_pct_false_fake ~ I(treat == "video")*believed_true*treat, dfsurvdat)
-summary(h7b_ii) ##baseline
-h7b_ii <- lm(exp_2_pct_false_fake ~ I(treat == "video")*believed_true*treat + age + educ + PID + polknow + internet_usage, dfsurvdat)
-summary(h7b_ii) ##with controls
+summary(lm(believed_true ~ treat*exp_1_prompt_info + response_wave_ID + agegroup + educ + PID + gender + polknow + internet_usage, DAT %>% filter(!is.na(treat))))
+summary(lm(believed_true ~ treat*exp_1_prompt_info + response_wave_ID + agegroup + educ + PID + gender + polknow + internet_usage, DAT %>% filter(!is.na(treat),treat %in% c("video","text"))))
+summary(lm(believed_true ~ treat*exp_1_prompt_info + response_wave_ID + agegroup + educ + PID + gender + polknow + internet_usage, DAT %>% filter(!is.na(treat),treat %in% c("video","audio"))))
+summary(lm(believed_true ~ treat*exp_1_prompt_info + response_wave_ID + agegroup + educ + PID + gender + polknow + internet_usage, DAT %>% filter(!is.na(treat),treat %in% c("video","skit"))))
 
-##salience via debriefing:
-h7b_iii <- lm(exp_2_pct_false_fake ~ exp_2_after_debrief, dfsurvdat)
-summary(h7b_iii) ##baseline
-h7b_iii <- lm(exp_2_pct_false_fake ~ exp_2_after_debrief*treat + age + educ + PID + polknow + internet_usage, dfsurvdat)
-summary(h7b_iii) ##with controls
+#####------------------------------------------------------#
+##### H5: Heterogeneity in deception effect by cognition ####
+#####------------------------------------------------------#
 
-##salience via stage 2 acc prompt:
-h7b_iv <- lm(exp_2_pct_false_fake ~ exp_2_prompt, dfsurvdat)
-summary(h7b_iv) ##baseline
-h7b_ii <- lm(exp_2_pct_false_fake ~ believed_true*treat + age + educ + PID + polknow + internet_usage, dfsurvdat)
-summary(h7b_iv) ##with controls
+DAT %>%
+    ggplot(aes(y=believed_true)) + 
+    geom_histogram() + 
+    facet_wrap(~ crt)
+
+## @SB: no effect of CRT
+summary(lm(believed_true ~ treat*crt + exp_1_prompt_info + response_wave_ID, DAT %>% filter(!is.na(treat))))
+summary(lm(believed_true ~ treat*crt + exp_1_prompt_info + response_wave_ID, DAT %>% filter(!is.na(treat),treat %in% c("video","text"))))
+summary(lm(believed_true ~ treat*crt + exp_1_prompt_info + response_wave_ID, DAT %>% filter(!is.na(treat),treat %in% c("video","audio"))))
+summary(lm(believed_true ~ treat*crt + exp_1_prompt_info + response_wave_ID, DAT %>% filter(!is.na(treat),treat %in% c("video","skit"))))
+
+summary(lm(believed_true ~ treat*crt + response_wave_ID + agegroup + educ + PID + gender + polknow + internet_usage, DAT %>% filter(!is.na(treat))))
+summary(lm(believed_true ~ treat*crt + response_wave_ID + agegroup + educ + PID + gender + polknow + internet_usage, DAT %>% filter(!is.na(treat),treat %in% c("video","text"))))
+summary(lm(believed_true ~ treat*crt + response_wave_ID + agegroup + educ + PID + gender + polknow + internet_usage, DAT %>% filter(!is.na(treat),treat %in% c("video","audio"))))
+summary(lm(believed_true ~ treat*crt + response_wave_ID + agegroup + educ + PID + gender + polknow + internet_usage, DAT %>% filter(!is.na(treat),treat %in% c("video","skit"))))
+
+#####------------------------------------------------------#
+##### H6: Heterogeneities by partisanship ####
+#####------------------------------------------------------#
+
+DAT %>%
+    ggplot(aes(y=believed1_true)) + 
+    geom_histogram() + 
+    facet_wrap(~ PID)
+
+## 6a: on deception
+## @SB: HUGE effects of partisanship in all cases, but no heterogeneties by video type or CRT
+summary(lm(believed_true ~ PID*treat, DAT))
+summary(lm(believed_true ~ PID*treat*crt, DAT))
+summary(lm(believed_true ~ PID*treat + response_wave_ID + agegroup + educ + PID + gender + polknow + internet_usage, DAT))
+
+## 6b: on favorability
+## @SB: HUGE effects of partisanship, some effects that CRT x Republican partisanship is 
+##      driving down favorability (actual "motivated" reasoning)
+summary(lm(post_favor_Warren ~ PID*treat, DAT))
+summary(lm(post_favor_Warren ~ PID*treat*crt, DAT))
+summary(lm(post_favor_Warren ~ PID*treat*crt + response_wave_ID + agegroup + educ + PID + gender + polknow + internet_usage, DAT))
+
+#####------------------------------------------------------#
+##### H7: Heterogeneities by ambivalent sexism ####
+#####------------------------------------------------------#
+
+## @SB: (manipulation check) Ambivalent sexism seems to predict 
+##      Warren being underfavored relative to men, but less so for Klobuchar;
+##      weirdly positive interaction with Republican PID
+summary(glm(I(post_favor_Warren > post_favor_Sanders) ~ ambivalent_sexism*PID, DAT, family=binomial(link="logit")))
+summary(glm(I(post_favor_Warren > post_favor_Biden) ~ ambivalent_sexism*PID, DAT, family=binomial(link="logit")))
+summary(glm(I(post_favor_Warren > post_favor_Bloomberg) ~ ambivalent_sexism*PID, DAT, family=binomial(link="logit")))
+summary(glm(I(post_favor_Klobuchar > post_favor_Sanders) ~ ambivalent_sexism*PID, DAT, family=binomial(link="logit")))
+summary(glm(I(post_favor_Klobuchar > post_favor_Biden) ~ ambivalent_sexism*PID, DAT, family=binomial(link="logit")))
+summary(glm(I(post_favor_Klobuchar > post_favor_Bloomberg) ~ ambivalent_sexism*PID, DAT, family=binomial(link="logit")))
+
+summary(lm(I(0.5*post_favor_Klobuchar + 0.5*post_favor_Warren - 0.33*post_favor_Biden - 0.33*post_favor_Bloomberg - 0.33*post_favor_Sanders) ~ ambivalent_sexism*PID, DAT))
+
+summary(glm(I(post_favor_Warren > post_favor_Sanders) ~ ambivalent_sexism*PID + response_wave_ID + agegroup + educ + PID + gender + polknow + internet_usage, DAT, family=binomial(link="logit")))
+summary(glm(I(post_favor_Warren > post_favor_Biden) ~ ambivalent_sexism*PID + response_wave_ID + agegroup + educ + PID + gender + polknow + internet_usage, DAT, family=binomial(link="logit")))
+summary(glm(I(post_favor_Warren > post_favor_Bloomberg) ~ ambivalent_sexism*PID + response_wave_ID + agegroup + educ + PID + gender + polknow + internet_usage, DAT, family=binomial(link="logit")))
+summary(glm(I(post_favor_Klobuchar > post_favor_Sanders) ~ ambivalent_sexism*PID + response_wave_ID + agegroup + educ + PID + gender + polknow + internet_usage, DAT, family=binomial(link="logit")))
+summary(glm(I(post_favor_Klobuchar > post_favor_Biden) ~ ambivalent_sexism*PID + response_wave_ID + agegroup + educ + PID + gender + polknow + internet_usage, DAT, family=binomial(link="logit")))
+summary(glm(I(post_favor_Klobuchar > post_favor_Bloomberg) ~ ambivalent_sexism*PID + response_wave_ID + agegroup + educ + PID + gender + polknow + internet_usage, DAT, family=binomial(link="logit")))
+
+summary(lm(I(0.5*post_favor_Klobuchar + 0.5*post_favor_Warren - 0.33*post_favor_Biden - 0.33*post_favor_Bloomberg - 0.33*post_favor_Sanders) ~ ambivalent_sexism*PID + response_wave_ID + agegroup + educ + PID + gender + polknow + internet_usage, DAT))
+
+## @SB: no evidence of interaction effects
+summary(lm(post_favor_Warren ~ ambivalent_sexism*treat, DAT))
+summary(lm(post_favor_Warren ~ ambivalent_sexism*treat + response_wave_ID + agegroup + educ + PID + polknow + internet_usage, DAT))
+summary(lm(post_favor_Warren ~ ambivalent_sexism*treat + response_wave_ID + agegroup + educ + PID*ambivalent_sexism + polknow + internet_usage, DAT))
+
+#####------------------------------------------------------#
+##### H8: Accuracy salience and detection accuracy ####
+#####------------------------------------------------------#
+
+## @SB: accuracy prompts don't increase accuracy
+summary(lm(exp_2_pct_correct ~ exp_2_prompt_accuracy, DAT))
+summary(lm(exp_2_pct_correct ~ exp_2_prompt_accuracy + response_wave_ID + agegroup + educ + PID + polknow + internet_usage, DAT))
+
+#####------------------------------------------------------#
+##### H9: Digital literacy and detection accuracy ####
+#####------------------------------------------------------#
+
+## @SB: statistically significant and positive effect of digital literacy
+##      on performance
+summary(lm(exp_2_pct_correct ~ post_dig_lit, DAT))
+summary(lm(exp_2_pct_correct ~ post_dig_lit + exp_2 + response_wave_ID + agegroup + educ + PID + polknow + internet_usage, DAT))
+summary(lm(exp_2_pct_correct ~ post_dig_lit*agegroup + exp_2 + response_wave_ID + educ + PID + polknow + internet_usage, DAT))
+
+## @SB: also seriously decreases false positive rate
+summary(lm(exp_2_pct_false_fake ~ post_dig_lit*agegroup + exp_2 + response_wave_ID + agegroup + educ + PID + polknow + internet_usage, DAT))
