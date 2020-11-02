@@ -15,6 +15,7 @@
 #
 # Input:
 # - respondent_demographics*.csv
+# - id_location.csv
 #
 # Output:
 # - deepfake.RData:
@@ -27,7 +28,7 @@
 ##### settings ####
 #####------------------------------------------------------#
 
-SAVE <- FALSE
+SAVE <- TRUE
 
 #####------------------------------------------------------#
 ##### pre-amble ####
@@ -41,7 +42,6 @@ qualtrics_api_credentials(api_key = "GTY6dlP9xnuMaaXUq364fHJkPFIZAKbLn6jYHRuN",
                           base_url = "harvard.az1.qualtrics.com")
 
 dfsurv_ids <- c("SV_0xlqWlOfO10wuYl", "SV_eyxdeXOuISXzakt")
-dfsurvqs <- survey_questions(dfsurv_id)
 
 if (!("datlist" %in% ls())) {
     datlist <- list()
@@ -57,38 +57,100 @@ for (dfsurv_id in dfsurv_ids) {
   dfsurvdat <- fetch_survey(surveyID = dfsurv_id,
                      force_request = TRUE,
                      verbose = TRUE)
+  dfsurvqs <- survey_questions(dfsurv_id)
+
+  id_locations <- read_csv("id_location.csv")
+  
+  ## drop non-Americans and tests
+  ## 5,982 --> 5494 (SV_eyxdeXOuISXzakt, CLEAN, Oct 9)
+  ## 11,519 --> 11,466 (SV_0xlqWlOfO10wuYl, $2, Oct 29)
+  IP_blacklist <- c("128.252.199.225") ## Chris's IP
+  outofUS <- sapply(id_locations$location, function(s) {
+    ss <- strsplit(s, split=",")[[1]]
+    if (length(ss) == 1 | all(is.na(ss))) {
+      return(TRUE)
+    } else {
+      if (grepl("United States", ss)) {
+        return(TRUE)
+      } else {
+        return(FALSE)
+      }
+    }
+  })
+  IP_blacklist <- c(IP_blacklist, id_locations$IPAddress[outofUS])
+  dfsurvdat <- dfsurvdat[!(dfsurvdat$IPAddress %in% IP_blacklist),]
   
 #####------------------------------------------------------#
 ##### filter on response quality ####
 #####------------------------------------------------------#
 
   ## consent: 
-  ## 5,982 --> 5,614 (SV_eyxdeXOuISXzakt, CLEAN, Oct 9)
-  ## 11,392 --> 11,183 (SV_0xlqWlOfO10wuYl, $2, Oct 29)
+  ## 5,982 --> 5,130 (SV_eyxdeXOuISXzakt, CLEAN, Oct 9)
+  ## 11,466 --> 11,254 (SV_0xlqWlOfO10wuYl, $2, Oct 29)
   dfsurvdat <- dfsurvdat[dfsurvdat$consent == "Yes",]
   
-  ## attention checks: 
-  ## 5,614 --> 1,914 (SV_eyxdeXOuISXzakt, CLEAN, Oct 9)
-  ## 11,392 --> 4,228 (SV_0xlqWlOfO10wuYl, $2, Oct 29)
+  ## attention check (front-end): 
+  ## 5,130  --> 1,476 (SV_eyxdeXOuISXzakt, CLEAN, Oct 9)
+  ## 11,254 --> 4,260 (SV_0xlqWlOfO10wuYl, $2, Oct 29)
   failed1 <- dfsurvdat$easy!="Quick and easy"|dfsurvdat$wikihow!="wikiHow"|dfsurvdat$careful!="I have a question"
   failed2 <- !(!is.na(dfsurvdat$bothand_1) & !is.na(dfsurvdat$bothand_4))
   table(!failed1 & !failed2)
   dfsurvdat <- dfsurvdat[!failed1 & !failed2,]
   
+  ## attention check (back-end): 
+  ## 1,476 --> 1,384 (SV_eyxdeXOuISXzakt, CLEAN, Oct 9)
+  ## 4,260 --> 4,061 (SV_0xlqWlOfO10wuYl, $2, Oct 29)
+  failed3 <- dfsurvdat$attn_check1 != "blue"
+  failed4 <- dfsurvdat$attn_check2 != 2
+
+  table(!failed1 & !failed2 & !failed3 & !failed4)
+
+  dfsurvdat$quality_failed_backend_attncheck <- failed3|failed4
+  
   if (FALSE) {
       ## survey time: 
-      ## 1,914 --> 1,530 (SV_eyxdeXOuISXzakt, CLEAN, Oct 9)
-      ## 4,228 --> 3,383 (SV_0xlqWlOfO10wuYl, $2, Oct 29)
+      ## 1,384 --> 1,180 (SV_eyxdeXOuISXzakt, CLEAN, Oct 9)
+      ## 4,061 --> 3,409 (SV_0xlqWlOfO10wuYl, $2, Oct 29)
       timeq <- quantile(dfsurvdat$`Duration (in seconds)`/60, probs=0:10/10)
       tooquick <- dfsurvdat$`Duration (in seconds)`/60 < timeq[2]
       tooslow <- dfsurvdat$`Duration (in seconds)`/60 > timeq[10]
-      dfsurvdat <- dfsurvdat[!tooquick & !tooslow,]
+      table(tooquick | tooslow)
+      dfsurvdat$quality_duration_tooquick <- as.numeric(tooquick)
+      dfsurvdat$quality_duration_tooslow <- as.numeric(tooslow)
   }
 
 #####------------------------------------------------------
 ##### clean and combine ####
 #####------------------------------------------------------
 
+  ## merge in demographics provided 
+  dem1 <- read_csv("respondent_demographics1.csv")
+  dem2 <- read_csv("respondent_demographics1.csv")
+  
+  dem <- bind_rows(dem1, dem2)
+  dem$rid <- dem$RID
+  dfsurvdat <- dfsurvdat %>% 
+    left_join(dem %>%
+                select(rid, Age, Gender, Zip, Region, Hispanic, Ethnicity, Education, `Political party`) %>%
+                distinct(rid, .keep_all = TRUE), 
+              by=c("rid")) 
+  
+  age_nonna <- !is.na(dfsurvdat$age) & !is.na(dfsurvdat$Age)
+  table(as.numeric(dfsurvdat$age[age_nonna]) == dfsurvdat$Age[age_nonna])
+  age_mismatch <- abs(as.numeric(dfsurvdat$age[age_nonna]) - dfsurvdat$Age[age_nonna]) > 10
+  table(age_mismatch)
+
+  gender_nonna <- !is.na(dfsurvdat$gender) & !is.na(dfsurvdat$Gender)
+  gender_mismatch <- dfsurvdat$gender[gender_nonna] == dfsurvdat$Gender[gender_nonna]
+  table(gender_mismatch)
+  
+  # dfsurvdat$Education_lvl <- 
+  # as.numeric(dfsurvdat$educ) ##TODO
+  
+  # party_nonna <- !is.na(dfsurvdat$PID_main) & !is.na(dfsurvdat$`Political party`)
+  # party_mismatch <- dfsurvdat$PID_main[party_nonna] == dfsurvdat$`Political party`[party_nonna]
+  # table(party_mismatch)
+  
   dat <- dfsurvdat[,c(
       "zip", "comments", "age", "gender", "hhi",
       "ethnicity", "hispanic", "education", "region",
@@ -210,9 +272,9 @@ for (dfsurv_id in dfsurv_ids) {
   ### sanity check: make sure each respondent is in one condition
   ### (should be 1 with some 0's for drop outs)
   table(
-  dat$treat_control + dat$treat_attackad + 
-  dat$treat_fake_text + dat$treat_fake_audio + 
-  dat$treat_fake_video + dat$treat_skit
+    dat$treat_control + dat$treat_attackad + 
+    dat$treat_fake_text + dat$treat_fake_audio + 
+    dat$treat_fake_video + dat$treat_skit
   )
   
   dat$treat <- factor(ifelse(
@@ -456,7 +518,6 @@ for (dfsurv_id in dfsurv_ids) {
   idlist[[dfsurv_id]] <- id
 }
 
-}
 
 #####------------------------------------------------------#
 ##### finalize and save ####
