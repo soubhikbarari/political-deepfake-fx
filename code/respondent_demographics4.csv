@@ -1,0 +1,442 @@
+﻿RID,Age,Gender,HHI,Zip,Hispanic,Region,Education,Ethnicity,ANES_PUBLIC_OPINION
+5f7de588-8b4e-235e-449a-190514c67bb3,37,Female,"$75,000 to $79,999",13669,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Other post high school vocational training,White ,1
+5f7cd0e5-2706-0273-2fda-c8dfa1b04ec7,51,Female,"$20,000 to $24,999",70072,"No , not of Hispanic, Latino, or Spanish origin",South,"Completed some college, but no degree",White ,2
+5f7ce05f-dcfd-b3aa-9485-d46fa27dff48,58,Female,"Less than $5,000",2723,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Middle School - Grades 4 - 8,White ,3
+5f83ce04-1ea2-6e58-c576-3456e4bf1b35,59,Female,"$90,000 to $94,999",75090,"No , not of Hispanic, Latino, or Spanish origin",South,"Completed some college, but no degree",Asian *** Filipino ,9
+5f7cb7f2-2434-dad5-5a85-aa32ae499949,74,Female,"$20,000 to $24,999",33324,"No , not of Hispanic, Latino, or Spanish origin",South,"Completed some college, but no degree",White ,2
+5f7cb4df-b111-6c0d-2b26-da13a48de19c,74,Female,"$10,000 to $14,999",29047,"No , not of Hispanic, Latino, or Spanish origin",South,High school graduate,White ,10
+5f81352d-889d-ae2a-ece6-811cc95390fb,30,Female,"$45,000 to $49,999",45320,"No , not of Hispanic, Latino, or Spanish origin",Midwest,High school graduate,White ,5
+5f7cb3da-0055-3132-a4d7-dc2a30935145,30,Female,"Less than $5,000",51106,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Other post high school vocational training,White ,10
+5f7cc532-c2c4-8526-797e-b507d3af0b1f,72,Female,"$30,000 to $34,999",97862,"No , not of Hispanic, Latino, or Spanish origin",West,Middle School - Grades 4 - 8,White +K10,7
+5f7d42c7-b0eb-e6c2-a0a1-64c2bffdd62f,55,Female,"Less than $5,000",15501,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Other post high school vocational training,White ,10
+5f81a17e-0ed3-c1ea-731a-e2ededdc0cc8,55,Female,"$25,000 to $29,999",48072,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Other post high school vocational training,"Black, or African American",3
+5f7cdd6a-1a37-ae14-ffd1-54d2feea0f7b,64,Female,"$5,000 to $9,999",63108,"No , not of Hispanic, Latino, or Spanish origin",Midwest,"Completed some college, but no degree","Black, or African American",1
+5f7cd623-ba71-c07a-6611-0e5f389690a0,42,Female,"Less than $5,000",38474,"No , not of Hispanic, Latino, or Spanish origin",South,High school graduate,White ,1
+5f82ea64-1bc0-d44c-c521-e7c7d263d360,69,Female,"$10,000 to $14,999",33809,"No , not of Hispanic, Latino, or Spanish origin",South,High school graduate,White ,1
+5f839cff-0001-ae1a-26b6-3d5375859c3c,37,Female,"$60,000 to $64,999",19115,"No , not of Hispanic, Latino, or Spanish origin",Northeast,High school graduate,White ,10
+5f7cd497-b1b2-d261-d428-b8ca35fbc24e,61,Female,"$95,000 to $99,999",20616,"No , not of Hispanic, Latino, or Spanish origin",South,High school graduate,"Black, or African American",1
+5f7cc662-ab88-b5ce-8c60-f08fcaf863a1,23,Female,"$10,000 to $14,999",98329,"No , not of Hispanic, Latino, or Spanish origin",West,High school graduate,White ,7
+5f7da9eb-64b1-9085-4438-0c82e9f9982e,43,Female,"$10,000 to $14,999",6450,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Middle School - Grades 4 - 8,White ,10
+5f7cc2d7-8d8f-fa4c-4a38-7816d5e97e99,64,Female,"$55,000 to $59,999",29841,"No , not of Hispanic, Latino, or Spanish origin",South,High school graduate,White ,9
+5f850696-7c49-1dd3-5dd3-7ac13b8af6f8,57,Female,"$20,000 to $24,999",46350,"No , not of Hispanic, Latino, or Spanish origin",Midwest,High school graduate,White ,1
+5f7cb3af-575d-ea69-bf18-e5510aa40fd1,39,Female,"$15,000 to $19,999",43551,"No , not of Hispanic, Latino, or Spanish origin",Midwest,"Completed some college, but no degree",White ,1
+5f7dd36a-eb44-de49-7506-59c323479f4d,64,Female,"$60,000 to $64,999",16101,"No , not of Hispanic, Latino, or Spanish origin",Northeast,High school graduate,White ,1
+5f7db8fd-55c4-577c-a756-b2bbdb105b98,49,Female,"$55,000 to $59,999",97401,"No , not of Hispanic, Latino, or Spanish origin",West,Associate Degree,White ,1
+5f823a81-27eb-3731-fcdc-e5da5f075cb2,75,Female,"$55,000 to $59,999",53140,"No , not of Hispanic, Latino, or Spanish origin",Midwest,High school graduate,White ,1
+5f7cd0cf-af4c-447c-148e-56fbe9042b69,54,Female,"$25,000 to $29,999",48708,"No , not of Hispanic, Latino, or Spanish origin",Midwest,"Completed some college, but no degree",White ,9
+5f7e04bd-8c9b-c7a1-1c03-e70addc6eced,68,Female,"$45,000 to $49,999",17319,"No , not of Hispanic, Latino, or Spanish origin",Northeast,"Completed some college, but no degree",White ,10
+5f83a663-8959-3bb6-728b-2a3073ac187c,39,Female,"$70,000 to $74,999",60073,"No , not of Hispanic, Latino, or Spanish origin",Midwest,"Completed some college, but no degree",White ,4
+5f7d0426-6f5f-56d8-2ef9-598e03b09275,65,Female,"$5,000 to $9,999",37725,"No , not of Hispanic, Latino, or Spanish origin",South,High school graduate,White ,2
+5f7d9f55-242e-7a27-2086-a01f925e769b,70,Female,"$45,000 to $49,999",48134,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Associate Degree,White ,1
+5f7d838a-4bfb-5010-8b99-b7c9d57dded2,61,Female,"$15,000 to $19,999",97420,"No , not of Hispanic, Latino, or Spanish origin",West,High school graduate,White ,2
+5f851dd5-c955-b974-c7ec-6c1eb6556986,61,Female,"$40,000 to $44,999",50049,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Middle School - Grades 4 - 8,White ,9
+5f7cfab1-95db-cdba-59ee-3c4b0f50fa42,59,Female,"$20,000 to $24,999",1082,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Completed some high school,White ,3
+5f7ead02-baa8-8000-a842-ab31c6945a41,39,Female,"$30,000 to $34,999",12204,"No , not of Hispanic, Latino, or Spanish origin",Northeast,"Completed some college, but no degree",White ,2
+5f825250-64ed-df87-e521-3d85291fe089,48,Female,"$95,000 to $99,999",18974,"No , not of Hispanic, Latino, or Spanish origin",Northeast,"Completed some college, but no degree",White ,4
+5f7cc175-0761-2732-0fe1-328097a55c36,47,Female,"$150,000 to $174,999",10001,"No , not of Hispanic, Latino, or Spanish origin",Northeast,"College Degree (such as B.A., B.S.)",White ,10
+5f7d6e2f-b152-b010-088a-94539a15f91a,29,Female,"$30,000 to $34,999",96818,"No , not of Hispanic, Latino, or Spanish origin",West,High school graduate,White ,1
+5f7d0e96-8e35-3c5d-f66e-4ce4e4bbac4f,25,Female,"$10,000 to $14,999",16689,"No , not of Hispanic, Latino, or Spanish origin",Northeast,High school graduate,White ,7
+5f7cb3b1-b09b-67fb-c536-e49cedd7ec1f,58,Male,"$25,000 to $29,999",77099,"No , not of Hispanic, Latino, or Spanish origin",South,"Completed some college, but no degree",White ,1
+5f7d12c4-1aca-82c9-6b9a-e520a38856e3,78,Female,"$35,000 to $39,999",32976,"No , not of Hispanic, Latino, or Spanish origin",South,High school graduate,White ,2
+5f7dc2ac-bab5-6ba9-2728-c4795e5f3e23,71,Female,Prefer not to answer,46614,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Associate Degree,White ,10
+5f7cd565-cf8f-cd0c-e963-990c0c940be3,50,Female,"Less than $5,000",27262,"Yes, another Hispanic, Latino, or Spanish origin *** Other Country",South,"Completed some college, but no degree",White ,2
+5f7d6a65-284f-368a-7c78-d75345ae8d16,48,Female,"$75,000 to $79,999",77065,"No , not of Hispanic, Latino, or Spanish origin",South,Middle School - Grades 4 - 8,White ,10
+5f7cba20-988b-cdab-9dd9-38e7e62869a3,73,Female,Prefer not to answer,15202,"No , not of Hispanic, Latino, or Spanish origin",Northeast,High school graduate,White ,1
+5f826b40-c5a1-9915-8ca8-cab9b9154776,27,Female,"Less than $5,000",29501,"No , not of Hispanic, Latino, or Spanish origin",South,Middle School - Grades 4 - 8,"Black, or African American",2
+5f7cb3c3-b391-172f-b82f-2dc7abf1465d,34,Female,Prefer not to answer,70447,"No , not of Hispanic, Latino, or Spanish origin",South,High school graduate,White ,1
+5f7cb3e1-73d5-6530-030a-ca68ef1a9644,78,Male,"$95,000 to $99,999",63104,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Associate Degree,White ,4
+5f811525-98ca-3033-56cc-92721df92c0c,26,Female,"$10,000 to $14,999",37617,"No , not of Hispanic, Latino, or Spanish origin",South,High school graduate,White ,10
+5f7d2385-a3e2-1c31-9e6a-02d4221b789a,31,Female,"$40,000 to $44,999",76051,"No , not of Hispanic, Latino, or Spanish origin",South,"Completed some college, but no degree",White ,7
+5f7deafe-9673-8464-483c-08f92417b360,31,Female,"$55,000 to $59,999",77356,"No , not of Hispanic, Latino, or Spanish origin",South,High school graduate,White ,10
+5f7da3c0-70d6-06b2-c767-b5c8f58c1633,70,Female,"$60,000 to $64,999",27011,"No , not of Hispanic, Latino, or Spanish origin",South,Middle School - Grades 4 - 8,White ,10
+5f7e1429-9bc4-45f3-7c54-1f4e495545dc,42,Male,"$125,000 to $149,999",15213,"No , not of Hispanic, Latino, or Spanish origin",Northeast,"College Degree (such as B.A., B.S.)",White ,10
+5f7cdb3f-2eef-6c74-af65-e907e486461c,76,Female,"$20,000 to $24,999",2302,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Middle School - Grades 4 - 8,White ,3
+5f7cb462-6abf-134e-02de-3ff9544f64be,23,Female,"$5,000 to $9,999",89107,"No , not of Hispanic, Latino, or Spanish origin",West,Other post high school vocational training,White ,1
+5f7cb328-88ca-8dae-aa25-fcb079fedaa1,69,Male,"$45,000 to $49,999",91016,"No , not of Hispanic, Latino, or Spanish origin",West,"Completed some college, but no degree",White ,4
+5f7def0a-9a70-5c17-f839-e34a60ddf103,38,Female,"$25,000 to $29,999",46986,"No , not of Hispanic, Latino, or Spanish origin",Midwest,"Completed some college, but no degree",Prefer not to answer ,3
+5f811498-9c5f-6d82-bbe4-e462aebbad5c,31,Female,Prefer not to answer,50009,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Middle School - Grades 4 - 8,White ,10
+5f7cce44-7b1e-1c18-2c98-13275e85fb75,66,Female,"$35,000 to $39,999",83524,"No , not of Hispanic, Latino, or Spanish origin",West,Associate Degree,White ,5
+5f7db2a2-a0ed-11ee-3343-b74306f52826,37,Female,"$90,000 to $94,999",16611,"No , not of Hispanic, Latino, or Spanish origin",Northeast,"Completed some college, but no degree",White ,9
+5f7dd0f8-9724-642a-c181-275794d5bb39,39,Female,"Less than $5,000",98027,Prefer not to answer,West,"Completed some college, but no degree",Prefer not to answer ,3
+5f7dc029-e824-f8d8-3d18-0da847d46f0a,67,Female,"$40,000 to $44,999",95993,"No , not of Hispanic, Latino, or Spanish origin",West,Middle School - Grades 4 - 8,Asian *** Chinese ,9
+5f844625-8947-d9ea-199d-e3a083336828,81,Female,"$85,000 to $89,999",27513,"No , not of Hispanic, Latino, or Spanish origin",South,Associate Degree,White ,9
+5f852191-294a-c693-767b-3d15cdf3644a,63,Female,"$65,000 to $69,999",95834,"No , not of Hispanic, Latino, or Spanish origin",West,"Completed some college, but no degree",White ,10
+5f7dd2a5-b4cc-da47-d002-0e93868fecf4,26,Female,"$30,000 to $34,999",34711,"No , not of Hispanic, Latino, or Spanish origin",South,Other post high school vocational training,White ,2
+5f812e9d-0d2c-9e30-f0ce-4c8a731906b3,28,Female,"$40,000 to $44,999",35173,"No , not of Hispanic, Latino, or Spanish origin",South,High school graduate,White ,1
+5f83a68b-224c-a813-6d29-9134e97bf36e,54,Female,"$15,000 to $19,999",49331,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Other post high school vocational training,White ,10
+5f7d3a34-f5a7-cd0e-1fd8-dc0796d166ce,20,Female,"Less than $5,000",47404,"No , not of Hispanic, Latino, or Spanish origin",Midwest,High school graduate,White ,1
+5f7dd298-e2f0-838a-f1cd-4e42110a230f,42,Female,"$40,000 to $44,999",38382,"No , not of Hispanic, Latino, or Spanish origin",South,High school graduate,White ,7
+5f7e70d5-08d0-b379-1b47-602f1a3b5088,40,Male,"$100,000 to $124,999",19426,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Associate Degree,White ,4
+5f7dd558-bbd7-255d-0c47-41aad4f77dd2,58,Female,"$125,000 to $149,999",83406,"No , not of Hispanic, Latino, or Spanish origin",West,Other post high school vocational training,White ,1
+5f859796-c53d-4085-31d5-6222a6e72c23,29,Female,"Less than $5,000",11953,"Yes, another Hispanic, Latino, or Spanish origin *** Other Country",Northeast,Other post high school vocational training,Some other race ,7
+5f7e0635-0bb9-036d-3168-68f0fcdaeb79,66,Female,"$20,000 to $24,999",47577,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Middle School - Grades 4 - 8,White ,2
+5f7f679d-b910-5a3b-157e-8589ee45bb33,39,Male,"$65,000 to $69,999",65757,"No , not of Hispanic, Latino, or Spanish origin",Midwest,High school graduate,White ,5
+5f844168-d096-570f-e86d-6f73d0813408,54,Female,"$90,000 to $94,999",53142,"No , not of Hispanic, Latino, or Spanish origin",Midwest,High school graduate,White ,9
+5f7cce2e-229d-5a59-3a4a-664fdd5773ac,56,Female,"$20,000 to $24,999",83713,"No , not of Hispanic, Latino, or Spanish origin",West,Associate Degree,White ,10
+5f85071a-2203-c025-bd1c-96c3d775170a,43,Female,"Less than $5,000",45054,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Completed some high school,White ,9
+5f864a0a-e43b-ed28-dee2-fcf11af19ecb,65,Female,"Less than $5,000",98133,Prefer not to answer,West,High school graduate,White ,1
+5f7cbd5e-c49f-586c-bde0-390f994a27d5,34,Female,"$80,000 to $84,999",82930,"No , not of Hispanic, Latino, or Spanish origin",West,"College Degree (such as B.A., B.S.)",White ,7
+5f7e067a-d38d-4097-460e-b7839d4d0fc2,26,Female,"Less than $5,000",12118,"No , not of Hispanic, Latino, or Spanish origin",Northeast,"Completed some college, but no degree",Asian *** Japanese ,1
+5f7ce32c-0e61-3d65-3a14-5cf74d1d1230,32,Female,"$45,000 to $49,999",23518,"No , not of Hispanic, Latino, or Spanish origin",South,High school graduate,"Black, or African American",3
+5f7e1524-2585-8425-0655-e10b9160cc61,72,Male,"$85,000 to $89,999",94131,"No , not of Hispanic, Latino, or Spanish origin",West,"Completed some college, but no degree",White ,1
+5f7cb32a-5702-4730-aded-4bee8d870bf9,70,Male,"$40,000 to $44,999",23225,"No , not of Hispanic, Latino, or Spanish origin",South,Other post high school vocational training,White ,9
+5f7cd97f-17ed-53f7-91ad-118ed0979252,41,Female,Prefer not to answer,21228,"No , not of Hispanic, Latino, or Spanish origin",South,"Completed some college, but no degree",White ,4
+5f7cd6ce-9247-e03e-1090-3c4e1cc1426d,70,Female,"$35,000 to $39,999",33412,"No , not of Hispanic, Latino, or Spanish origin",South,High school graduate,White ,2
+5f859024-2d6c-efe6-5cae-22d0a548eb66,21,Female,"$40,000 to $44,999",75262,"No , not of Hispanic, Latino, or Spanish origin",South,Middle School - Grades 4 - 8,Some other race ,1
+5f7d8b1d-bbcb-079c-0459-2d5bb90da665,66,Female,"$85,000 to $89,999",2132,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Middle School - Grades 4 - 8,White ,4
+5f7cba4b-dbee-d303-2854-ac6836f39154,53,Female,"$95,000 to $99,999",30101,"No , not of Hispanic, Latino, or Spanish origin",South,Other post high school vocational training,White ,9
+5f7cd0eb-e338-cafc-2e50-db10942ac43f,68,Female,"$30,000 to $34,999",31707,"No , not of Hispanic, Latino, or Spanish origin",South,"Completed some college, but no degree","Black, or African American",1
+5f7dd239-9818-ed8a-c6a3-5fccbc95105c,28,Female,"$40,000 to $44,999",91356,"Yes, another Hispanic, Latino, or Spanish origin *** Ecuador ",West,Associate Degree,Prefer not to answer ,10
+5f7cb456-7238-6c93-04a6-2f88d452a261,47,Female,Prefer not to answer,75020,"No , not of Hispanic, Latino, or Spanish origin",South,Associate Degree,Asian *** Chinese ,5
+5f7cce74-22d9-cceb-d91f-fa9dbe4a8579,66,Female,"$40,000 to $44,999",75754,"No , not of Hispanic, Latino, or Spanish origin",South,"Completed some college, but no degree",White ,9
+5f7cb30e-67c4-b614-e8ee-929b6308b40d,38,Male,"$70,000 to $74,999",15146,"No , not of Hispanic, Latino, or Spanish origin",Northeast,"Completed some college, but no degree",White ,9
+5f824e9e-10d1-40a9-aaf6-498923f0fbe2,18,Female,"Less than $5,000",45694,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Middle School - Grades 4 - 8,White ,1
+5f7d45ed-7652-d3db-28e9-22014ad71d6a,58,Female,"$10,000 to $14,999",80907,"No , not of Hispanic, Latino, or Spanish origin",West,Middle School - Grades 4 - 8,White ,7
+5f8452f1-9231-055b-aeba-0e72925ad27e,58,Female,"$25,000 to $29,999",31558,"No , not of Hispanic, Latino, or Spanish origin",South,Other post high school vocational training,White ,4
+5f7cd02b-c27d-d806-9fcd-cc64b8c90d18,65,Female,"$10,000 to $14,999",58701,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Middle School - Grades 4 - 8,White ,3
+5f7cdac8-054e-4ae5-cbb3-d1ce4095bd16,31,Female,"$15,000 to $19,999",32825,"No , not of Hispanic, Latino, or Spanish origin",South,Other post high school vocational training,White ,9
+5f859903-ca66-e076-450c-49154bd400c4,73,Female,"$10,000 to $14,999",77657,"No , not of Hispanic, Latino, or Spanish origin",South,"Completed some college, but no degree",White ,10
+5f8520b3-3b0d-e1fe-2214-b2f115d95514,55,Female,"$15,000 to $19,999",43157,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Middle School - Grades 4 - 8,White ,9
+5f7cdaa4-9f95-6d71-ca6e-bc47586ce3b4,40,Female,"$75,000 to $79,999",39479,"No , not of Hispanic, Latino, or Spanish origin",South,Middle School - Grades 4 - 8,White ,10
+5f84f8e6-4fc6-8c5e-0493-e3736ef74417,68,Female,"$15,000 to $19,999",74652,"No , not of Hispanic, Latino, or Spanish origin",South,Other post high school vocational training,White ,2
+5f827e3d-3221-2586-0ab1-e0f769fa3429,62,Female,"$40,000 to $44,999",75214,"No , not of Hispanic, Latino, or Spanish origin",South,High school graduate,White ,1
+5f7cc1d3-887e-0b2e-ee1a-33a56edf321e,22,Female,"$175,000 to $199,999",90231,"No , not of Hispanic, Latino, or Spanish origin",West,"Completed some college, but no degree",White ,4
+5f7cd3c9-b47d-849f-83d4-3480d2e9452b,41,Female,"$30,000 to $34,999",84123,"No , not of Hispanic, Latino, or Spanish origin",West,Middle School - Grades 4 - 8,White ,5
+5f7cbcfd-f13f-66d3-3677-9218623f555d,79,Female,Prefer not to answer,14063,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Middle School - Grades 4 - 8,White ,2
+5f7dadc1-d9dd-6aec-9c86-4280ea58f1a8,69,Female,"$15,000 to $19,999",54911,"No , not of Hispanic, Latino, or Spanish origin",Midwest,High school graduate,White ,1
+5f7cc20b-3336-f20c-8fc6-2e81df1eb53c,40,Female,"Less than $5,000",45830,"No , not of Hispanic, Latino, or Spanish origin",Midwest,"Completed some college, but no degree",White ,3
+5f7cdbce-2895-141c-da1a-295236b57940,61,Female,"$30,000 to $34,999",56549,"No , not of Hispanic, Latino, or Spanish origin",Midwest,High school graduate,White ,10
+5f7cdfbc-d66b-736a-3083-daced3919630,65,Female,"$10,000 to $14,999",40353,"No , not of Hispanic, Latino, or Spanish origin",South,Associate Degree,White ,10
+5f85ae16-20dc-5cb4-974c-0b246ff7090f,49,Female,"Less than $5,000",61554,"No , not of Hispanic, Latino, or Spanish origin",Midwest,"Completed some college, but no degree",White ,5
+5f7cef82-85d4-8b83-8a1d-6193e0ac326b,67,Female,"$15,000 to $19,999",55407,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Other post high school vocational training,Some other race ,1
+5f838f80-c979-984a-79ca-b308262555d1,62,Female,"$80,000 to $84,999",77083,"No , not of Hispanic, Latino, or Spanish origin",South,"Completed some college, but no degree",White ,4
+5f7cd016-e03c-a6cd-04a2-38761305a4d8,55,Female,"$125,000 to $149,999",22306,"No , not of Hispanic, Latino, or Spanish origin",South,Associate Degree,White ,1
+5f7cb3e8-6018-28de-aa8f-163ad4ff14f7,67,Female,"$40,000 to $44,999",60617,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Associate Degree,"Black, or African American",1
+5f7cb448-af0a-1f43-cced-6b2f78386b64,57,Male,"$45,000 to $49,999",13850,"No , not of Hispanic, Latino, or Spanish origin",Northeast,"Completed some college, but no degree",White ,9
+5f7db17e-3784-f9d0-9625-60cc76bc61f5,68,Female,Prefer not to answer,32804,Prefer not to answer,South,Associate Degree,Prefer not to answer ,2
+5f7d40f0-9d0a-6276-1f05-4bbb663b6515,67,Female,"$35,000 to $39,999",41553,"No , not of Hispanic, Latino, or Spanish origin",South,Middle School - Grades 4 - 8,White ,10
+5f83b5e1-b449-e9e5-1196-3bfdb5b83cd7,28,Female,"$30,000 to $34,999",10016,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Associate Degree,Asian *** Korean ,10
+5f7cb7eb-b583-9bd4-9f10-673b9adb7534,71,Female,"$15,000 to $19,999",19007,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Middle School - Grades 4 - 8,White ,2
+5f7e1842-32be-79ed-c8a1-a1dbe380b318,40,Male,"$90,000 to $94,999",95124,"No , not of Hispanic, Latino, or Spanish origin",West,Associate Degree,White ,10
+5f7e0629-6337-7690-374c-f3ba299a6464,42,Male,"$150,000 to $174,999",10116,"No , not of Hispanic, Latino, or Spanish origin",Northeast,"College Degree (such as B.A., B.S.)",White ,1
+5f7dcbf5-130c-75a0-8418-532592a579c1,65,Female,"$60,000 to $64,999",38135,"No , not of Hispanic, Latino, or Spanish origin",South,"Completed some college, but no degree",White ,9
+5f7cbd5a-9596-c1f8-10d6-f74d9d6efeae,57,Female,"$85,000 to $89,999",48035,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Associate Degree,White ,1
+5f7d12a1-4845-72b6-656d-69904d363ab8,74,Female,"$90,000 to $94,999",80916,"No , not of Hispanic, Latino, or Spanish origin",West,"Completed some college, but no degree",White ,10
+5f7cb3cf-40ce-4ee1-f8de-f1c465e5b8bc,39,Male,"$75,000 to $79,999",94111,"No , not of Hispanic, Latino, or Spanish origin",West,"Completed some college, but no degree",Asian *** Chinese ,1
+5f7cb577-cc0b-4856-ad76-33e02846d5fa,69,Female,"$5,000 to $9,999",31763,"No , not of Hispanic, Latino, or Spanish origin",South,High school graduate,White ,3
+5f7da848-7364-39ab-8937-b6eea1f8c11d,71,Female,"$10,000 to $14,999",33922,"No , not of Hispanic, Latino, or Spanish origin",South,Middle School - Grades 4 - 8,White ,4
+5f7cd101-036c-7121-4fc9-5d3645fe118d,59,Female,"$90,000 to $94,999",7462,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Other post high school vocational training,White ,10
+5f83bb23-4c18-038a-b895-23f9bf78ad2a,66,Female,"$85,000 to $89,999",17307,"No , not of Hispanic, Latino, or Spanish origin",Northeast,"Completed some college, but no degree",White ,10
+5f810be6-3fc3-7a6c-0614-3f8d3af479e1,61,Female,"$65,000 to $69,999",32547,"No , not of Hispanic, Latino, or Spanish origin",South,Other post high school vocational training,White ,10
+5f84d620-4a17-4f91-5876-176cb751275b,51,Female,"Less than $5,000",39503,"No , not of Hispanic, Latino, or Spanish origin",South,Other post high school vocational training,Some other race ,4
+5f7cb7f8-b15c-aaea-4fa8-7cd8177db0f2,68,Female,"$30,000 to $34,999",63130,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Associate Degree,White ,1
+5f7cc760-c987-d08f-4a09-3f149dc532de,22,Female,"$15,000 to $19,999",79765,"No , not of Hispanic, Latino, or Spanish origin",South,High school graduate,White ,7
+5f7e04b2-fe45-c348-5f4c-a1eff0cd2cd8,28,Female,"$90,000 to $94,999",19335,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Middle School - Grades 4 - 8,White ,1
+5f7cf760-10cb-2bc9-d5c9-eafcd24b7e8d,47,Female,"$25,000 to $29,999",77708,"No , not of Hispanic, Latino, or Spanish origin",South,Other post high school vocational training,"Black, or African American",3
+5f7cb497-798c-79bd-2960-1f12fe7f8ab1,67,Male,"$30,000 to $34,999",76502,"No , not of Hispanic, Latino, or Spanish origin",South,"Completed some college, but no degree",White ,2
+5f7cb469-bf3b-3f18-366f-fb9ea9b07621,72,Male,"$90,000 to $94,999",11223,"No , not of Hispanic, Latino, or Spanish origin",Northeast,"Completed some college, but no degree",White ,4
+5f7dcfd5-e8a2-934e-7a6d-839cd46fe535,44,Female,"$20,000 to $24,999",55104,"No , not of Hispanic, Latino, or Spanish origin",Midwest,"Completed some college, but no degree",White ,1
+5f826a6a-9d1a-b60b-36e2-18db136257a8,70,Female,"$25,000 to $29,999",52802,"No , not of Hispanic, Latino, or Spanish origin",Midwest,High school graduate,White ,9
+5f7e071e-a59a-3d5e-1738-7776f7548529,21,Female,"Less than $5,000",84010,"No , not of Hispanic, Latino, or Spanish origin",West,"Completed some college, but no degree",White ,10
+5f7d286e-83a4-ce36-d2eb-15890378adfc,68,Female,"$5,000 to $9,999",34758,"No , not of Hispanic, Latino, or Spanish origin",South,Completed some high school,White ,10
+5f7d0f3d-530a-68e8-35d9-7cc7fa5b4342,33,Female,"$45,000 to $49,999",76230,"No , not of Hispanic, Latino, or Spanish origin",South,Other post high school vocational training,White ,9
+5f858aaf-809b-b98e-fad1-d83c243f07c6,61,Female,"$40,000 to $44,999",29483,"No , not of Hispanic, Latino, or Spanish origin",South,High school graduate,White ,4
+5f81a0c5-4b9b-6479-ef93-a8960e398139,48,Female,"$15,000 to $19,999",32347,"No , not of Hispanic, Latino, or Spanish origin",South,High school graduate,White ,4
+5f7d279e-ba2d-00af-340e-5da16b442bab,36,Male,"$10,000 to $14,999",92275,"Yes, Mexican, Mexican American, Chicano",West,3rd Grade or less,Some other race ,2
+5f7cb3c9-dabd-780a-786d-b5d116245015,70,Male,"$75,000 to $79,999",33778,"No , not of Hispanic, Latino, or Spanish origin",South,Associate Degree,White ,10
+5f7cb344-17fd-0023-8954-8893e4ed1bdc,31,Male,"$10,000 to $14,999",44874,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Middle School - Grades 4 - 8,White ,2
+5f7cb329-1d7e-ea4a-ff37-62dd72d29bb3,62,Female,"$10,000 to $14,999",72076,"No , not of Hispanic, Latino, or Spanish origin",South,Other post high school vocational training,Prefer not to answer ,4
+5f826a61-3ade-55aa-173d-58a729f2532d,44,Female,Prefer not to answer,43207,Prefer not to answer,Midwest,Middle School - Grades 4 - 8,Prefer not to answer ,2
+5f7cd7ec-7c7a-549c-7b15-92b6b008a98d,69,Female,"$40,000 to $44,999",60462,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Middle School - Grades 4 - 8,White ,9
+5f83a8f8-d5ff-7258-d245-30c781f87a3c,60,Female,"$45,000 to $49,999",57719,"No , not of Hispanic, Latino, or Spanish origin",Midwest,High school graduate,White ,4
+5f8148a7-416b-33c3-f795-1ca143c41bc7,44,Female,"$50,000 to $54,999",30518,"No , not of Hispanic, Latino, or Spanish origin",South,Completed some high school,White ,9
+5f7cc901-f6ea-da8e-fa05-24b00c00de5c,70,Female,"$5,000 to $9,999",11754,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Middle School - Grades 4 - 8,White ,1
+5f7cbd5e-ef22-26fc-9360-ab7a8413cef2,81,Female,"$15,000 to $19,999",19056,"No , not of Hispanic, Latino, or Spanish origin",Northeast,High school graduate,White ,4
+5f7dba3a-6106-377d-bf45-aa0d46b503c5,64,Female,"Less than $5,000",32114,"No , not of Hispanic, Latino, or Spanish origin",South,High school graduate,White ,1
+5f7db1a3-feda-8180-6ac9-818440a2aea2,69,Female,"$35,000 to $39,999",67204,"No , not of Hispanic, Latino, or Spanish origin",Midwest,"Completed some college, but no degree",White ,1
+5f84458a-8aef-84d1-75d3-9e02ac66dca0,71,Female,"$70,000 to $74,999",62703,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Middle School - Grades 4 - 8,White ,10
+5f7cc486-9ca1-bb34-9c57-5abb625724d4,40,Male,"$100,000 to $124,999",10019,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Associate Degree,White ,5
+5f7d12d9-8fd1-9ea9-d2c3-75f14cfdc70f,22,Female,"Less than $5,000",53713,"No , not of Hispanic, Latino, or Spanish origin",Midwest,"Completed some college, but no degree",White ,10
+5f8265dc-7e1e-4f3f-1653-fd32d00d20c2,36,Female,Prefer not to answer,53073,"No , not of Hispanic, Latino, or Spanish origin",Midwest,"Completed some college, but no degree",White ,10
+5f7cea87-fad0-fbaa-ff12-8d8477ad1d89,58,Female,"$45,000 to $49,999",32024,"No , not of Hispanic, Latino, or Spanish origin",South,"Completed some college, but no degree",White ,1
+5f896685-385e-6569-acf4-7a5872808784,45,Male,"$175,000 to $199,999",10013,"No , not of Hispanic, Latino, or Spanish origin",Northeast,High school graduate,White ,10
+5f7fd33d-31e8-15e1-880a-4c9b700f2e7b,59,Female,"$25,000 to $29,999",37174,"No , not of Hispanic, Latino, or Spanish origin",South,Other post high school vocational training,White ,1
+5f7cb3d6-e2bb-5fff-9702-bf2a584d059f,67,Female,"$125,000 to $149,999",1721,"No , not of Hispanic, Latino, or Spanish origin",Northeast,"Completed some college, but no degree",White ,10
+5f7cd982-c22e-f0c8-1261-d091e339f034,63,Female,"$20,000 to $24,999",32539,"No , not of Hispanic, Latino, or Spanish origin",South,Other post high school vocational training,White ,4
+5f7e0578-4b99-da52-45d1-63c434742f67,42,Male,"$150,000 to $174,999",32810,"No , not of Hispanic, Latino, or Spanish origin",South,Associate Degree,White ,10
+5f813f61-40dc-d2dd-a4a0-8a1b7f1706a2,23,Female,Prefer not to answer,38930,"No , not of Hispanic, Latino, or Spanish origin",South,3rd Grade or less,"Black, or African American",3
+5f7cc5cc-8fb2-924b-6880-caeb8e0b2884,33,Female,"Less than $5,000",14411,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Completed some high school,White ,7
+5f7cb380-33c8-992c-e714-6b4822024170,68,Female,Prefer not to answer,44131,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Other post high school vocational training,White ,1
+5f7de059-4e51-6a8c-0943-1619e2b61322,39,Female,"$35,000 to $39,999",28704,"No , not of Hispanic, Latino, or Spanish origin",South,Other post high school vocational training,White ,7
+5f7cd804-6e3e-5294-488c-37c172b908b8,67,Female,"$65,000 to $69,999",71923,"No , not of Hispanic, Latino, or Spanish origin",South,"Completed some college, but no degree",White ,9
+5f7d354b-c93a-d59c-177e-891d8331da83,33,Female,"$45,000 to $49,999",96003,"No , not of Hispanic, Latino, or Spanish origin",West,"Completed some college, but no degree",Prefer not to answer ,8
+5f7ce377-6016-beca-0962-b9d529196ba3,54,Female,"$85,000 to $89,999",60050,"No , not of Hispanic, Latino, or Spanish origin",Midwest,High school graduate,White ,4
+5f7cbc06-5fd2-e1e9-cbe4-3c66134d071a,18,Female,Prefer not to answer,76513,"No , not of Hispanic, Latino, or Spanish origin",South,Middle School - Grades 4 - 8,"Black, or African American",1
+5f7d32bd-f945-9bac-d07c-afcbb1c908fb,73,Female,"$15,000 to $19,999",98122,"No , not of Hispanic, Latino, or Spanish origin",West,Other post high school vocational training,White ,3
+5f7df50b-48d6-e060-9a31-117d71c4aef0,74,Female,"$75,000 to $79,999",37774,"No , not of Hispanic, Latino, or Spanish origin",South,Associate Degree,White ,10
+5f7f55c6-eccf-5919-5c72-28633d23c18a,40,Male,"$100,000 to $124,999",10010,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Associate Degree,White ,10
+5f7d5a56-2362-df87-b332-b1df63d5c486,32,Female,Prefer not to answer,93266,"Yes, Mexican, Mexican American, Chicano",West,Other post high school vocational training,Some other race ,1
+5f7d874b-ce06-3ec8-9a51-7cc789cd7f73,61,Female,"Less than $5,000",72160,"No , not of Hispanic, Latino, or Spanish origin",South,High school graduate,White ,2
+5f826a6d-94be-b046-e4a0-ea8e1872d5ae,71,Female,"$15,000 to $19,999",34788,"No , not of Hispanic, Latino, or Spanish origin",South,Middle School - Grades 4 - 8,White ,1
+5f7d9d00-824c-b44d-2614-3cec52a15b57,28,Female,"$45,000 to $49,999",33132,"No , not of Hispanic, Latino, or Spanish origin",South,"Completed some college, but no degree",White ,5
+5f7cb34e-03f7-5aef-9477-2c2ac5129264,63,Female,"$10,000 to $14,999",35670,"No , not of Hispanic, Latino, or Spanish origin",South,Completed some high school,White ,6
+5f7cb4a6-2afd-fd2f-777c-0e79a025cb07,38,Male,"$30,000 to $34,999",35801,"No , not of Hispanic, Latino, or Spanish origin",South,"Completed some college, but no degree",White ,3
+5f7cb1d0-beef-a5ff-9963-09778ac6fb65,36,Female,"$45,000 to $49,999",28025,"No , not of Hispanic, Latino, or Spanish origin",South,"Completed some college, but no degree",White ,10
+5f7cbb39-2a54-3986-0f6f-96bb134232af,66,Female,"$25,000 to $29,999",35958,"No , not of Hispanic, Latino, or Spanish origin",South,High school graduate,White ,2
+5f7cd799-6873-ea6b-5a3d-bce01720e2b9,73,Female,"$65,000 to $69,999",37128,"No , not of Hispanic, Latino, or Spanish origin",South,High school graduate,White ,4
+5f7d331a-4a43-1101-6a80-f5118108b9b0,35,Female,"$85,000 to $89,999",97044,"Yes, Mexican, Mexican American, Chicano",West,"Completed some college, but no degree",White ,6
+5f7cbb9b-d41a-be93-cdb9-06b64a8a180a,77,Female,"$5,000 to $9,999",32825,"No , not of Hispanic, Latino, or Spanish origin",South,Middle School - Grades 4 - 8,White ,1
+5f7ce53f-6e09-0663-334c-cd8be085c391,62,Female,"$80,000 to $84,999",28778,"No , not of Hispanic, Latino, or Spanish origin",South,"Completed some college, but no degree",White ,2
+5f8280e9-4a79-ec7d-35f7-a542dab68dbb,70,Female,"$20,000 to $24,999",25271,"No , not of Hispanic, Latino, or Spanish origin",South,"Completed some college, but no degree",White ,10
+5f956920-6b7c-3e15-38c8-db07fb3c8f5a,30,Female,"$30,000 to $34,999",63703,"No , not of Hispanic, Latino, or Spanish origin",Midwest,"Completed some college, but no degree",White ,2
+5f7d1477-e652-4fdd-0cfc-6cc2dc67df45,68,Female,"$30,000 to $34,999",98620,"No , not of Hispanic, Latino, or Spanish origin",West,"Completed some college, but no degree",White ,10
+5f7cd7a2-5a16-d0d1-1b50-ea9fe8064991,24,Female,Prefer not to answer,55082,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Associate Degree,White ,1
+5f7ddf5d-6aeb-c8d8-3def-1f4b7327480f,28,Female,Prefer not to answer,45640,"No , not of Hispanic, Latino, or Spanish origin",Midwest,"Completed some college, but no degree",White ,9
+5f7ee398-aeed-64f0-6549-a5e898121dbd,32,Female,"Less than $5,000",46805,"No , not of Hispanic, Latino, or Spanish origin",Midwest,High school graduate,White ,8
+5f7cf193-2d5e-7756-258a-067010702f06,72,Female,"$45,000 to $49,999",2148,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Other post high school vocational training,White ,2
+5f7cc3fa-159d-6fc7-c8a9-4c32de324be5,65,Female,"$95,000 to $99,999",76240,"No , not of Hispanic, Latino, or Spanish origin",South,Associate Degree,White ,4
+5f8138a1-aa74-60b3-153c-7e30fef536e1,22,Female,Prefer not to answer,64114,"No , not of Hispanic, Latino, or Spanish origin",Midwest,3rd Grade or less,White ,10
+5f7cb91d-5f53-f01f-1991-277a544e4225,65,Female,"$15,000 to $19,999",57103,"No , not of Hispanic, Latino, or Spanish origin",Midwest,"Completed some college, but no degree",White ,9
+5f7d28ab-8ade-775a-dfdb-2f1815990b14,67,Female,"$90,000 to $94,999",30189,"No , not of Hispanic, Latino, or Spanish origin",South,"Completed some college, but no degree","Black, or African American",2
+5f8263d3-8a2a-6dd9-21b7-43bdffa74713,36,Female,"$90,000 to $94,999",20194,"No , not of Hispanic, Latino, or Spanish origin",South,Associate Degree,Some other race ,3
+5f7f785a-fcd7-11de-4ce7-7b7d1eb60244,55,Female,"$35,000 to $39,999",29464,"No , not of Hispanic, Latino, or Spanish origin",South,High school graduate,White ,3
+5f7d11b6-c72f-3fcb-3c63-9de659e72b59,19,Female,"Less than $5,000",53711,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Middle School - Grades 4 - 8,White ,1
+5f7ccb5d-4875-3ff3-2a93-c5e53dead1c8,18,Female,"$10,000 to $14,999",85037,"Yes, Mexican, Mexican American, Chicano",West,High school graduate,Some other race ,1
+5f7d5f2f-f469-a814-4658-14c08cb03f4c,54,Female,"$150,000 to $174,999",91352,"No , not of Hispanic, Latino, or Spanish origin",West,Other post high school vocational training,White ,10
+5f8646d9-d9e0-9205-7b68-7d61bd7ffbc1,49,Female,"$15,000 to $19,999",54501,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Middle School - Grades 4 - 8,White ,3
+5f7cb37d-74a3-829f-e91c-716c852f49d8,68,Female,"$95,000 to $99,999",23188,"No , not of Hispanic, Latino, or Spanish origin",South,"College Degree (such as B.A., B.S.)",White ,4
+5f7cb71a-ba48-20b5-f049-f2c970f3f992,68,Female,"$175,000 to $199,999",23113,"No , not of Hispanic, Latino, or Spanish origin",South,Associate Degree,White ,9
+5f7cc32d-b244-b3c4-bf67-e2ee7c0120ae,74,Female,"$75,000 to $79,999",7006,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Middle School - Grades 4 - 8,White ,3
+5f7dc567-1744-0f63-e00e-ef550add5440,40,Male,"$150,000 to $174,999",48098,"No , not of Hispanic, Latino, or Spanish origin",Midwest,"College Degree (such as B.A., B.S.)",White ,10
+5f7db465-0862-33a0-db1a-ebc7332a2c91,73,Female,"$95,000 to $99,999",10965,"No , not of Hispanic, Latino, or Spanish origin",Northeast,"Completed some college, but no degree",White ,9
+5f7e544a-0ddb-12d3-81d0-cc9ee910aa3f,52,Female,"$50,000 to $54,999",44512,"No , not of Hispanic, Latino, or Spanish origin",Midwest,"Completed some college, but no degree","Black, or African American",1
+5f7f559f-3376-6012-3cb9-21598d87e687,39,Male,"$150,000 to $174,999",11421,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Associate Degree,White ,9
+5f816a26-a471-69e4-fad0-329921388f08,24,Female,"Less than $5,000",24528,"No , not of Hispanic, Latino, or Spanish origin",South,Middle School - Grades 4 - 8,White ,7
+5f805a1d-9b71-4967-bfe2-c334852d8271,26,Female,"$55,000 to $59,999",48326,"No , not of Hispanic, Latino, or Spanish origin",Midwest,"Completed some college, but no degree",White ,9
+5f7da9df-d6ce-3d0c-5efa-e977d4d6671f,59,Female,"$90,000 to $94,999",33625,"No , not of Hispanic, Latino, or Spanish origin",South,"Completed some college, but no degree",White ,1
+5f7f7712-b2ca-19d6-343f-6f9fbb362036,44,Male,"$95,000 to $99,999",60645,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Associate Degree,White ,1
+5f7cb331-6249-dd48-d044-248cc3abf3a4,52,Female,"$175,000 to $199,999",12538,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Associate Degree,Asian *** Korean ,2
+5f838d72-972a-5718-29b0-cef10772bcbb,44,Female,"$35,000 to $39,999",12027,"No , not of Hispanic, Latino, or Spanish origin",Northeast,High school graduate,White ,9
+5f7ceb73-9547-0a9b-657e-9e8817ee3840,73,Female,"$75,000 to $79,999",11758,"No , not of Hispanic, Latino, or Spanish origin",Northeast,"Completed some college, but no degree",White ,4
+5f7cb451-e29e-9538-7e02-26cc267bb4ec,66,Female,"$25,000 to $29,999",79108,"No , not of Hispanic, Latino, or Spanish origin",South,High school graduate,White ,5
+5f7cf249-c81c-6afa-f24f-aa347cc45f7d,66,Female,"$45,000 to $49,999",48838,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Other post high school vocational training,White ,1
+5f7cb850-ab7c-c846-9601-5d3585efca9a,71,Female,"$55,000 to $59,999",67566,"No , not of Hispanic, Latino, or Spanish origin",Midwest,High school graduate,White ,9
+5f7cb1c9-4a8a-8a2d-96cb-48a8640b3415,69,Female,"$15,000 to $19,999",70357,"No , not of Hispanic, Latino, or Spanish origin",South,High school graduate,White ,10
+5f7cda7c-1d79-821f-d945-b31427be591b,41,Female,"$50,000 to $54,999",76134,"No , not of Hispanic, Latino, or Spanish origin",South,Associate Degree,"Black, or African American",1
+5f7d9cff-8d5e-72f8-2027-8de1a2a42222,57,Female,Prefer not to answer,22407,Prefer not to answer,South,Middle School - Grades 4 - 8,Prefer not to answer ,1
+5f813693-6e02-05b9-e37c-e3902f9b0d77,53,Female,"Less than $5,000",68767,"No , not of Hispanic, Latino, or Spanish origin",Midwest,High school graduate,White ,10
+5f7cb4cb-a38c-5dfa-e1cd-52de1713d2a2,23,Male,"$40,000 to $44,999",4474,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Associate Degree,White ,10
+5f7cb5a6-792c-b603-beee-0fbd85419594,22,Male,"$100,000 to $124,999",97233,"No , not of Hispanic, Latino, or Spanish origin",West,Other post high school vocational training,Asian *** Vietnamese ,4
+5f7cb39f-e36b-88e1-9df0-344df816f2f2,67,Male,"$55,000 to $59,999",63112,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Other post high school vocational training,"Black, or African American",1
+5f7cbb8a-3c84-d8f1-c387-4b5327c871f2,44,Female,"$90,000 to $94,999",24401,"No , not of Hispanic, Latino, or Spanish origin",South,"Completed some college, but no degree",White ,10
+5f8446d7-94cc-fd6d-ca4a-9906e1970860,31,Female,"$65,000 to $69,999",50009,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Middle School - Grades 4 - 8,White ,10
+5f7cd764-68df-8d6e-932b-ffee73d7f873,19,Female,"$10,000 to $14,999",20020,"No , not of Hispanic, Latino, or Spanish origin",South,High school graduate,"Black, or African American",2
+5f814d2c-f20a-1c32-064b-431ce204feef,63,Female,"$5,000 to $9,999",11370,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Other post high school vocational training,White ,10
+5f7d65dd-daa2-897f-9b11-8d68bb9b2e46,28,Female,"Less than $5,000",28655,"No , not of Hispanic, Latino, or Spanish origin",South,3rd Grade or less,White ,1
+5f7d1fff-49cf-2201-f26b-6da04565af8d,58,Female,"$25,000 to $29,999",8234,"No , not of Hispanic, Latino, or Spanish origin",Northeast,High school graduate,White ,9
+5f7dae0a-2ae1-36f5-1395-def736f115fc,29,Female,"$35,000 to $39,999",64117,"No , not of Hispanic, Latino, or Spanish origin",Midwest,High school graduate,White ,7
+5f7da5d7-7dd7-4e43-2f06-6f60715997c0,35,Female,"$95,000 to $99,999",36609,"No , not of Hispanic, Latino, or Spanish origin",South,Other post high school vocational training,White ,10
+5f7cb3e8-b8bf-a8bb-4308-83def2490eba,73,Female,"$5,000 to $9,999",89029,"No , not of Hispanic, Latino, or Spanish origin",West,Middle School - Grades 4 - 8,White ,2
+5f827d8b-e984-4418-06c9-9c51ee830f7f,33,Female,"Less than $5,000",8021,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Other post high school vocational training,White ,4
+5f7d92ae-3fe7-d542-a5cf-6fd8fe433942,73,Female,"$25,000 to $29,999",49445,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Middle School - Grades 4 - 8,White ,1
+5f7ea40e-0efa-93b0-3249-4a0542ad26a4,55,Female,"$25,000 to $29,999",61604,"No , not of Hispanic, Latino, or Spanish origin",Midwest,High school graduate,"Black, or African American",1
+5f7cb44e-c36d-7974-4ee8-e2254156af20,75,Female,Prefer not to answer,50613,Prefer not to answer,Midwest,Middle School - Grades 4 - 8,Prefer not to answer ,10
+5f7d0111-5255-9e29-96fb-a5a0df13b5c7,58,Female,"$20,000 to $24,999",48205,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Completed some high school,"Black, or African American",1
+5f7e17ae-cd36-42d7-e76d-f580c66a7738,24,Female,"$30,000 to $34,999",89149,"No , not of Hispanic, Latino, or Spanish origin",West,Completed some high school,Some other race ,3
+5f7cd6b2-1ce2-1c66-3a56-4a31c39bf3bf,68,Female,"$15,000 to $19,999",72022,"No , not of Hispanic, Latino, or Spanish origin",South,Associate Degree,White ,1
+5f7cc913-fe98-1dd1-b41f-876483e9234d,78,Female,"$5,000 to $9,999",75569,"No , not of Hispanic, Latino, or Spanish origin",South,High school graduate,White ,10
+5f7d505e-31e8-d229-cbb0-de3002b5fd03,46,Female,"$40,000 to $44,999",55376,"No , not of Hispanic, Latino, or Spanish origin",Midwest,"College Degree (such as B.A., B.S.)","Black, or African American",1
+5f7cb46e-914a-83de-af28-5974b5eeefac,71,Female,"$90,000 to $94,999",73069,"No , not of Hispanic, Latino, or Spanish origin",South,Other post high school vocational training,White ,2
+5f7d4391-904f-60ac-cd07-b50fffdee5d3,60,Female,"$50,000 to $54,999",75231,"No , not of Hispanic, Latino, or Spanish origin",South,Other post high school vocational training,"Black, or African American",1
+5f8119ad-a159-f9e7-6bf0-d755c9857eb5,63,Female,"$35,000 to $39,999",66053,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Associate Degree,White ,9
+5f7cbbab-08b4-7102-d65b-8db790b810ad,62,Female,"$55,000 to $59,999",31783,"No , not of Hispanic, Latino, or Spanish origin",South,Associate Degree,White ,10
+5f81009f-da05-832e-7dbf-b6e6433db2b1,42,Female,Prefer not to answer,7063,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Other post high school vocational training,"Black, or African American",1
+5f7daddf-8d59-6334-fe4d-90aa18e3b994,59,Female,"$40,000 to $44,999",29702,"No , not of Hispanic, Latino, or Spanish origin",South,Middle School - Grades 4 - 8,White ,10
+5f826551-9bc9-dad7-3e3d-d5a89b086843,27,Female,"$20,000 to $24,999",27529,"No , not of Hispanic, Latino, or Spanish origin",South,High school graduate,White ,7
+5f7cb34f-70e4-7978-d966-cee805825184,59,Female,"$20,000 to $24,999",98057,Prefer not to answer,West,"Completed some college, but no degree",Prefer not to answer ,2
+5f7df223-7fe1-ce30-967b-9e0bde3156ec,54,Female,Prefer not to answer,93256,"No , not of Hispanic, Latino, or Spanish origin",West,Other post high school vocational training,White ,10
+5f825330-a75a-bdb8-79fd-c014c29892fa,33,Female,"$90,000 to $94,999",75225,"No , not of Hispanic, Latino, or Spanish origin",South,"Completed some college, but no degree",White ,4
+5f7cbbab-d090-f230-2385-2bd74458e38d,57,Female,"$100,000 to $124,999",98311,"No , not of Hispanic, Latino, or Spanish origin",West,Other post high school vocational training,White ,1
+5f8506e4-9ddf-8967-595a-97c6d453eb00,21,Female,"Less than $5,000",92028,"No , not of Hispanic, Latino, or Spanish origin",West,High school graduate,White ,4
+5f7cbb7e-4de1-4300-175d-e9e5eca16237,51,Female,"$55,000 to $59,999",28787,"No , not of Hispanic, Latino, or Spanish origin",South,"Completed some college, but no degree",White ,2
+5f7cb795-2bda-7392-8514-7f582e7a7434,67,Male,"$15,000 to $19,999",7522,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Middle School - Grades 4 - 8,White ,9
+5f810363-277e-2798-f972-ffeb02533ccc,44,Female,Prefer not to answer,44314,"No , not of Hispanic, Latino, or Spanish origin",Midwest,High school graduate,White ,10
+5f8444d3-7750-bd40-842c-b1181cd1fd45,67,Female,"$25,000 to $29,999",29732,"Yes, Mexican, Mexican American, Chicano",South,High school graduate,White ,1
+5f7e061a-fc7b-f569-c17c-55bd908ea34f,40,Male,"$100,000 to $124,999",20190,"No , not of Hispanic, Latino, or Spanish origin",South,Associate Degree,White ,10
+5f7cd043-03bc-1e96-6874-66f2eb66a23d,62,Female,"$5,000 to $9,999",65270,"No , not of Hispanic, Latino, or Spanish origin",Midwest,"Completed some college, but no degree",White ,10
+5f7cd09a-331b-c302-d031-3dca0c352cd8,61,Female,"$60,000 to $64,999",45238,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Other post high school vocational training,White ,7
+5f7cd52f-ab2e-af55-1634-0dc8608ca8c3,32,Female,"$60,000 to $64,999",81058,"No , not of Hispanic, Latino, or Spanish origin",West,High school graduate,White ,8
+5f7d3846-e5e2-8545-7302-b5574069f275,47,Female,"$70,000 to $74,999",38501,"No , not of Hispanic, Latino, or Spanish origin",South,Middle School - Grades 4 - 8,White ,2
+5f7cb42c-795f-db3d-eef8-5bd4cb926e0c,72,Male,"$55,000 to $59,999",78251,"No , not of Hispanic, Latino, or Spanish origin",South,"College Degree (such as B.A., B.S.)",White ,3
+5f7cd0ef-9f6f-6a6f-e2fc-8ab5c70311cd,60,Female,"$40,000 to $44,999",19605,"No , not of Hispanic, Latino, or Spanish origin",Northeast,High school graduate,White ,9
+5f810536-0dce-dfe3-d9b0-f796ac947704,36,Female,"$25,000 to $29,999",44820,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Middle School - Grades 4 - 8,White ,5
+5f81166a-9f28-d09c-3ac6-991d51582987,55,Female,Prefer not to answer,78660,"No , not of Hispanic, Latino, or Spanish origin",South,Other post high school vocational training,White ,9
+5f80fc45-7ebd-ecfd-64f4-84869f5dfe7b,69,Female,"$175,000 to $199,999",37215,"No , not of Hispanic, Latino, or Spanish origin",South,Associate Degree,White ,1
+5f7cb3bb-e40b-5acc-cebe-0bc4750480fb,57,Female,"$20,000 to $24,999",88005,"No , not of Hispanic, Latino, or Spanish origin",West,High school graduate,White ,4
+5f8440a5-5d9a-ea77-96c3-eb13a07694d3,65,Female,"$100,000 to $124,999",33570,"No , not of Hispanic, Latino, or Spanish origin",South,Associate Degree,White ,4
+5f7cb464-242f-ee52-4e11-9ff86c2731e4,69,Female,"$90,000 to $94,999",35406,"No , not of Hispanic, Latino, or Spanish origin",South,Associate Degree,White ,2
+5f7cb87c-ac31-4552-ae2e-e4eab6c20103,72,Female,"$20,000 to $24,999",98686,"No , not of Hispanic, Latino, or Spanish origin",West,Middle School - Grades 4 - 8,White ,10
+5f7cd6dc-e5ba-1ca8-739b-f4363db00486,29,Female,"Less than $5,000",7753,"No , not of Hispanic, Latino, or Spanish origin",Northeast,High school graduate,White ,3
+5f7e0520-3d24-ab95-53ad-0a3186222fc4,69,Male,"$20,000 to $24,999",75605,"No , not of Hispanic, Latino, or Spanish origin",South,"Completed some college, but no degree",White ,5
+5f8383b0-8060-9003-5097-3f876305bbd7,54,Female,"$40,000 to $44,999",18072,"No , not of Hispanic, Latino, or Spanish origin",Northeast,"Completed some college, but no degree",White ,1
+5f7cbb4b-b064-6f12-ed5d-0473f05b364d,80,Female,"$85,000 to $89,999",79413,"No , not of Hispanic, Latino, or Spanish origin",South,Middle School - Grades 4 - 8,White ,10
+5f7cd7ce-622a-a6c3-4731-33345a88fbb6,35,Female,"$20,000 to $24,999",34292,"No , not of Hispanic, Latino, or Spanish origin",South,"Completed some college, but no degree",White ,1
+5f7dadf4-8afb-7f4a-a5c1-39096a032356,66,Female,"$95,000 to $99,999",19512,"No , not of Hispanic, Latino, or Spanish origin",Northeast,"Completed some college, but no degree",White ,10
+5f7dc29b-c7b7-e070-b802-7d9030ad2891,66,Female,"$40,000 to $44,999",21001,"No , not of Hispanic, Latino, or Spanish origin",South,High school graduate,White ,10
+5f83b337-e010-fc04-3cb8-049e224c3779,52,Female,"$25,000 to $29,999",27804,"No , not of Hispanic, Latino, or Spanish origin",South,Completed some high school,White ,10
+5f7dbebf-07fd-fe9d-4baf-e7575e37a339,69,Female,"$85,000 to $89,999",60606,"No , not of Hispanic, Latino, or Spanish origin",Midwest,"College Degree (such as B.A., B.S.)",White ,1
+5f8253f9-c259-b571-e450-a129870aefdf,44,Female,"$70,000 to $74,999",56156,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Associate Degree,White ,2
+5f839ce2-218f-3a7c-021f-e1348d04c577,28,Female,"Less than $5,000",71108,"No , not of Hispanic, Latino, or Spanish origin",South,High school graduate,"Black, or African American",4
+5f824dba-69a3-36af-bf05-49708cbe3c02,71,Female,"$45,000 to $49,999",2719,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Other post high school vocational training,White ,1
+5f7dd392-858a-e3eb-a640-a54c069ee447,29,Female,"$20,000 to $24,999",48846,"No , not of Hispanic, Latino, or Spanish origin",Midwest,High school graduate,White ,8
+5f83a685-4415-5ebd-c49a-08942fad3dc0,40,Female,"$20,000 to $24,999",29356,"No , not of Hispanic, Latino, or Spanish origin",South,Completed some high school,"Black, or African American",4
+5f74d117-f62b-6e17-10a6-0b1c8c532fd1,40,Male,"$60,000 to $64,999",92129,"No , not of Hispanic, Latino, or Spanish origin",West,"College Degree (such as B.A., B.S.)",Asian *** Asian Indian ,1
+5f7d35a9-2a20-57ee-bd9b-c946526d903a,44,Female,"$25,000 to $29,999",22310,"No , not of Hispanic, Latino, or Spanish origin",South,"Completed some college, but no degree",White ,3
+5f7cb80d-6e0f-69ce-a706-35b3b1bc1004,74,Female,"$90,000 to $94,999",45690,"No , not of Hispanic, Latino, or Spanish origin",Midwest,"Completed some college, but no degree",White ,1
+5f7dbcb8-34e7-e9ca-cf4f-21ada8b74ffc,55,Female,"$70,000 to $74,999",89131,"No , not of Hispanic, Latino, or Spanish origin",West,"Completed some college, but no degree",White ,10
+5f82781b-3d83-6eb6-ab25-e3f51e1f50ad,72,Female,"$20,000 to $24,999",97459,"No , not of Hispanic, Latino, or Spanish origin",West,Associate Degree,White ,5
+5f84e23b-8e82-7812-233d-e4664ad91fb7,62,Female,"$25,000 to $29,999",18519,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Completed some high school,White ,9
+5f7d4f2e-33ff-8ec4-4b04-311b9935885b,34,Female,"Less than $5,000",25302,"No , not of Hispanic, Latino, or Spanish origin",South,Middle School - Grades 4 - 8,White ,10
+5f7f69f5-cabe-2a2a-26d8-6ecf57777b5d,56,Male,"$70,000 to $74,999",20871,"No , not of Hispanic, Latino, or Spanish origin",South,"College Degree (such as B.A., B.S.)",Asian *** Asian Indian ,10
+5f8254bf-2c98-4cda-ebf8-afb623d38096,32,Female,"$20,000 to $24,999",78382,"No , not of Hispanic, Latino, or Spanish origin",South,Middle School - Grades 4 - 8,White ,4
+5f74f0ba-9668-91f6-e35b-52903e48d1e6,83,Female,"$25,000 to $29,999",44824,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Middle School - Grades 4 - 8,White ,1
+5f7dbdbe-af76-6add-e25d-c55978a8e99d,32,Female,Prefer not to answer,49038,"No , not of Hispanic, Latino, or Spanish origin",Midwest,"Completed some college, but no degree",Asian *** Vietnamese ,9
+5f83839b-9091-82b1-7677-6cd27359cbe1,49,Female,"$50,000 to $54,999",37174,"No , not of Hispanic, Latino, or Spanish origin",South,"Completed some college, but no degree",White ,9
+5f7d37f9-5592-d606-c044-a81c527fb63d,55,Female,"$25,000 to $29,999",39047,"No , not of Hispanic, Latino, or Spanish origin",South,Other post high school vocational training,White ,4
+5f7cbd11-e033-59af-0460-c407460e7b9a,60,Female,"$40,000 to $44,999",40155,"No , not of Hispanic, Latino, or Spanish origin",South,Middle School - Grades 4 - 8,White ,4
+5f7cfedf-d5b8-254b-06fd-078ebd7f6bc6,45,Female,"$30,000 to $34,999",72082,"No , not of Hispanic, Latino, or Spanish origin",South,Middle School - Grades 4 - 8,White ,9
+5f7df5ce-5398-b0be-68dc-c69f6a7576e2,30,Female,"$10,000 to $14,999",70552,"No , not of Hispanic, Latino, or Spanish origin",South,"Completed some college, but no degree",White ,10
+5f7cc5fc-7be9-d09f-8259-fd2efdf5f6d4,19,Female,"$15,000 to $19,999",95348,"No , not of Hispanic, Latino, or Spanish origin",West,Middle School - Grades 4 - 8,White ,3
+5f7d39a6-eb60-dcc9-f010-672e9b2cca8a,52,Female,"Less than $5,000",43004,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Middle School - Grades 4 - 8,White ,7
+5f7cb1c9-003e-5906-ebf6-e28d89931f6f,39,Female,"$100,000 to $124,999",23608,"Yes, Mexican, Mexican American, Chicano",South,Associate Degree,Some other race ,5
+5f7dbc42-7e60-ef83-0328-b6b9fbf5dcc9,68,Female,"$15,000 to $19,999",7047,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Middle School - Grades 4 - 8,White ,1
+5f7de8b0-5e62-8c37-74e8-a63741564782,50,Female,"$50,000 to $54,999",60643,"No , not of Hispanic, Latino, or Spanish origin",Midwest,"Completed some college, but no degree","Black, or African American",1
+5f844086-c160-984b-4bfe-50b56c9ecd96,66,Female,"$80,000 to $84,999",55406,"No , not of Hispanic, Latino, or Spanish origin",Midwest,"Completed some college, but no degree",White ,1
+5f7d227b-1ba2-fe7e-d11f-e21e11eb8eff,45,Female,"$15,000 to $19,999",46240,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Middle School - Grades 4 - 8,White ,4
+5f84f968-7d07-bb8d-ec95-d983628c010b,47,Female,"$35,000 to $39,999",44107,"No , not of Hispanic, Latino, or Spanish origin",Midwest,High school graduate,White ,3
+5f82326f-a98a-e3c3-4fb6-246921f64892,73,Female,"$60,000 to $64,999",19114,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Middle School - Grades 4 - 8,White ,2
+5f82326e-dc49-50db-4b11-f7f7ba1f9a16,21,Female,"Less than $5,000",14735,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Middle School - Grades 4 - 8,White ,4
+5f7cb44a-ac6d-dd07-57fe-acaf69570a3b,68,Female,"$15,000 to $19,999",1104,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Other post high school vocational training,White ,4
+5f7cb36b-6f06-083b-f396-0588034a34fa,91,Female,"$40,000 to $44,999",34222,"No , not of Hispanic, Latino, or Spanish origin",South,"Completed some college, but no degree",White ,10
+5f7cbbe6-9fec-723e-f5e5-fb89e5be53b6,54,Female,"$55,000 to $59,999",23005,"No , not of Hispanic, Latino, or Spanish origin",South,Other post high school vocational training,White ,9
+5f83834b-4c91-465f-b849-f45e8d07f1d2,55,Female,"$10,000 to $14,999",40962,"No , not of Hispanic, Latino, or Spanish origin",South,3rd Grade or less,White ,10
+5f80ebf0-a1eb-30fe-fb17-f035b3eb000a,31,Female,"$10,000 to $14,999",40213,"No , not of Hispanic, Latino, or Spanish origin",South,3rd Grade or less,White ,2
+5f7e168b-d408-8115-6c91-a672044b8c2c,61,Male,"Less than $5,000",91791,"No , not of Hispanic, Latino, or Spanish origin",West,High school graduate,Asian *** Chinese ,9
+5f7cd873-ba4e-0f86-a8e8-2e5478dfcf9e,24,Female,"Less than $5,000",37334,"No , not of Hispanic, Latino, or Spanish origin",South,Completed some high school,White ,6
+5f7cb3bd-1709-233d-0ba6-872126fca8bc,62,Female,"$10,000 to $14,999",97882,"No , not of Hispanic, Latino, or Spanish origin",West,"Completed some college, but no degree",White ,9
+5f84f845-cb90-fb0e-b524-7c8bdc39435f,68,Female,Prefer not to answer,13069,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Completed some high school,White ,9
+5f7cd5c3-02e4-00c0-8f49-0955a75605f2,77,Female,"$50,000 to $54,999",1568,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Associate Degree,White ,3
+5f7cb73a-4e96-d7ae-3b1b-80102264ccc5,56,Male,"$5,000 to $9,999",60406,"No , not of Hispanic, Latino, or Spanish origin",Midwest,"Completed some college, but no degree",White ,2
+5f7cb32d-c0cd-bf62-0cee-6e00a355e859,64,Female,"$25,000 to $29,999",14616,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Other post high school vocational training,White ,1
+5f7cd595-337a-f526-c26c-42831a381efb,66,Female,"$40,000 to $44,999",22025,"No , not of Hispanic, Latino, or Spanish origin",South,Associate Degree,White ,3
+5f7d67da-9dfb-f693-bf54-74be598f7d9c,87,Female,"$5,000 to $9,999",33707,"No , not of Hispanic, Latino, or Spanish origin",South,"Completed some college, but no degree",White ,1
+5f83a6bf-2adc-f254-a417-458867402176,58,Female,Prefer not to answer,16830,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Completed some high school,White ,1
+5f83b396-534b-17f3-63b7-c2e745d6c31e,19,Female,"Less than $5,000",20603,"No , not of Hispanic, Latino, or Spanish origin",South,High school graduate,"Black, or African American",1
+5f7cb8a9-f4b3-d009-84cc-24a6d3404ad2,54,Male,"$100,000 to $124,999",37650,"No , not of Hispanic, Latino, or Spanish origin",South,"Completed some college, but no degree",White ,10
+5f825435-20dc-9b21-926f-1e2d2fd115be,63,Female,"$90,000 to $94,999",63017,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Middle School - Grades 4 - 8,White ,4
+5f7ccfb3-f8a2-dca6-4c98-3e37a75bbc23,18,Female,"$10,000 to $14,999",32514,"No , not of Hispanic, Latino, or Spanish origin",South,Middle School - Grades 4 - 8,Some other race ,1
+5f839642-f473-fe38-14fc-97794c9621f5,34,Female,"$50,000 to $54,999",66215,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Associate Degree,White ,6
+5f7cc6bb-f7c4-4860-4978-6b75f5790193,36,Female,"$10,000 to $14,999",29710,Prefer not to answer,South,High school graduate,White ,7
+5f83eea0-faee-724e-5279-b6a0d75b124c,20,Female,Prefer not to answer,90001,"No , not of Hispanic, Latino, or Spanish origin",West,Middle School - Grades 4 - 8,Asian *** Japanese ,9
+5f7cb403-27f6-f250-8956-51921ca9b4a1,70,Female,"$65,000 to $69,999",50208,"No , not of Hispanic, Latino, or Spanish origin",Midwest,"Completed some college, but no degree",White ,2
+5f8253bb-9862-40b0-237c-437d13807ec7,68,Female,"$10,000 to $14,999",45426,"No , not of Hispanic, Latino, or Spanish origin",Midwest,High school graduate,"Black, or African American",1
+5f7cdbbe-8cc3-71f1-6bbf-f47ab97300e1,58,Female,"$65,000 to $69,999",75455,"No , not of Hispanic, Latino, or Spanish origin",South,Other post high school vocational training,White ,9
+5f7ce2ee-67a8-fc2f-0950-a98e00c99c3b,66,Female,"$70,000 to $74,999",60091,"No , not of Hispanic, Latino, or Spanish origin",Midwest,"College Degree (such as B.A., B.S.)",White ,3
+5f7cb866-0587-9cf1-7e8d-c4fd8ceee9a9,58,Female,"$25,000 to $29,999",10013,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Middle School - Grades 4 - 8,Asian *** Chinese ,2
+5f7ccdf6-d2c6-17ad-584d-f65f813245bf,62,Female,"Less than $5,000",34215,"No , not of Hispanic, Latino, or Spanish origin",South,"Completed some college, but no degree",White ,1
+5f7cc963-bc25-54ef-30d2-98727258b0d2,68,Male,"$45,000 to $49,999",75165,"No , not of Hispanic, Latino, or Spanish origin",South,High school graduate,White ,1
+5f7cb456-41a1-d6e1-3727-de14452526eb,69,Male,"$5,000 to $9,999",89014,"No , not of Hispanic, Latino, or Spanish origin",West,"Completed some college, but no degree",White ,4
+5f7ded8c-c6ea-16e1-fd03-53ab8c29f1ba,76,Female,"$55,000 to $59,999",40484,"No , not of Hispanic, Latino, or Spanish origin",South,Associate Degree,White ,2
+5f7e129a-bb9c-9cb2-5d49-ef841b8f7afa,43,Male,"$125,000 to $149,999",98115,"No , not of Hispanic, Latino, or Spanish origin",West,Associate Degree,White ,1
+5f7cfaa9-c86a-06a1-c905-a5295311fa65,46,Female,"$25,000 to $29,999",23060,"No , not of Hispanic, Latino, or Spanish origin",South,"Completed some college, but no degree",White ,1
+5f7dccb3-14f0-0131-1aec-ddff1aa40243,42,Female,"$40,000 to $44,999",1529,"No , not of Hispanic, Latino, or Spanish origin",Northeast,High school graduate,White ,9
+5f7dcb7e-2ef4-2072-c473-3d467c5da2a7,30,Female,"$20,000 to $24,999",12833,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Middle School - Grades 4 - 8,White ,4
+5f7dd333-82b4-37f8-6428-1369ec7ac6cb,35,Female,"$50,000 to $54,999",24016,"No , not of Hispanic, Latino, or Spanish origin",South,"Completed some college, but no degree",White ,1
+5f7cceb4-7150-1fe4-b622-e1f19750a7a1,81,Female,"$25,000 to $29,999",10706,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Middle School - Grades 4 - 8,White ,9
+5f7cc5d9-5529-0f31-9688-2be13b328b2f,71,Female,"$20,000 to $24,999",97080,"No , not of Hispanic, Latino, or Spanish origin",West,Middle School - Grades 4 - 8,Asian *** Chinese ,4
+5f7ce448-562a-3503-773b-631cbea41d47,72,Female,"$35,000 to $39,999",85142,"No , not of Hispanic, Latino, or Spanish origin",West,Other post high school vocational training,White ,10
+5f80ee4e-d5ae-9768-9ce8-b4ed55957eda,26,Female,"$20,000 to $24,999",80643,"No , not of Hispanic, Latino, or Spanish origin",West,High school graduate,White ,5
+5f7cb5a3-44e8-4e73-b654-21cb8c0bc266,38,Female,"$40,000 to $44,999",33809,"No , not of Hispanic, Latino, or Spanish origin",South,"Completed some college, but no degree",Asian *** Japanese ,5
+5f7dbd5a-03e7-25f1-b6ce-c24266eb0c30,56,Female,"$35,000 to $39,999",33614,"No , not of Hispanic, Latino, or Spanish origin",South,Other post high school vocational training,White ,2
+5f826ddf-1601-3baa-56bd-ed998e4dad04,73,Female,"$20,000 to $24,999",62002,"No , not of Hispanic, Latino, or Spanish origin",Midwest,"Completed some college, but no degree",White ,3
+5f8114cb-8cea-bbbd-1347-0d5b2bbb370b,31,Female,"Less than $5,000",17048,"No , not of Hispanic, Latino, or Spanish origin",Northeast,High school graduate,White ,1
+5f7dd9d3-02cc-4d49-c21f-873f6b4583b5,19,Female,"$10,000 to $14,999",22911,"No , not of Hispanic, Latino, or Spanish origin",South,High school graduate,White ,1
+5f849e5a-b842-ca22-dcac-636e707c59db,33,Male,"$30,000 to $34,999",94115,"No , not of Hispanic, Latino, or Spanish origin",West,"Completed some college, but no degree",White ,10
+5f7cb36f-34f8-6623-09e9-f1f7d9327407,70,Female,Prefer not to answer,78028,"No , not of Hispanic, Latino, or Spanish origin",South,Other post high school vocational training,White ,10
+5f82f3f4-7ffc-b15b-2964-23110b6ca77d,70,Female,"$75,000 to $79,999",63116,"No , not of Hispanic, Latino, or Spanish origin",Midwest,"Completed some college, but no degree",White ,2
+5f7cb414-4abf-f53c-f969-8592a6330a09,72,Male,"$50,000 to $54,999",2132,"No , not of Hispanic, Latino, or Spanish origin",Northeast,High school graduate,White ,4
+5f7cb18b-0a95-1d99-ce40-228003fbbb48,42,Female,"$10,000 to $14,999",46241,"No , not of Hispanic, Latino, or Spanish origin",Midwest,"Completed some college, but no degree",White ,1
+5f7da3da-40e3-892a-1b05-10c5934d03d8,70,Female,"$50,000 to $54,999",17579,"No , not of Hispanic, Latino, or Spanish origin",Northeast,High school graduate,White ,2
+5f7df7b0-0ba7-b6b0-9e9e-d4bf580d0df5,35,Female,"$90,000 to $94,999",53578,"No , not of Hispanic, Latino, or Spanish origin",Midwest,High school graduate,White ,1
+5f812010-210a-7d84-2c23-22877deb3809,64,Female,"$95,000 to $99,999",11963,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Associate Degree,White ,4
+5f7cbed4-c24d-22f9-d1c2-ad62e4f817fc,50,Female,"$20,000 to $24,999",92127,"No , not of Hispanic, Latino, or Spanish origin",West,"Completed some college, but no degree",Asian *** Filipino ,2
+5f7cd208-7731-96cd-5684-1551af250c37,36,Female,"$55,000 to $59,999",1907,"No , not of Hispanic, Latino, or Spanish origin",Northeast,"Completed some college, but no degree",White ,1
+5f80f67c-53e7-e951-4ddc-19224d7250b0,66,Female,"$5,000 to $9,999",15005,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Other post high school vocational training,White ,10
+5f7cbbfd-e672-34cb-e67a-e0f4708c65fa,57,Female,"Less than $5,000",37876,"No , not of Hispanic, Latino, or Spanish origin",South,Middle School - Grades 4 - 8,White ,10
+5f7ccaf4-cb02-669f-02ac-59766694df07,25,Female,"$45,000 to $49,999",96766,"Yes, another Hispanic, Latino, or Spanish origin *** Spain ",West,High school graduate,Asian *** Filipino ,9
+5f85940c-62d2-06a1-0215-af05d29c48cd,62,Female,"$30,000 to $34,999",67550,"No , not of Hispanic, Latino, or Spanish origin",Midwest,"Completed some college, but no degree",White ,2
+5f7d9872-647e-8ca3-29bf-220b166d5d2e,62,Female,"$5,000 to $9,999",59901,"No , not of Hispanic, Latino, or Spanish origin",West,Associate Degree,White ,10
+5f7cc939-79ed-0749-aac1-0480d0a4e08c,28,Female,"$35,000 to $39,999",57438,"No , not of Hispanic, Latino, or Spanish origin",Midwest,3rd Grade or less,White ,5
+5f7cb6e0-011d-ab70-7acb-bffacd0b5f8f,74,Female,"$95,000 to $99,999",10025,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Associate Degree,White ,9
+5f7f5796-d403-7edd-ec39-1670639c8833,24,Male,"$5,000 to $9,999",4073,"No , not of Hispanic, Latino, or Spanish origin",Northeast,High school graduate,White ,10
+5f7ceb7c-fb87-4b7a-78bf-b3f53aa1d7ff,78,Female,"$45,000 to $49,999",1902,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Completed some high school,White ,4
+5f844656-7696-8097-c231-57223fd76099,67,Female,Prefer not to answer,46818,"No , not of Hispanic, Latino, or Spanish origin",Midwest,High school graduate,White ,9
+5f7cc75e-b750-f714-da81-c5f9bed4d73f,55,Female,"$90,000 to $94,999",17314,"No , not of Hispanic, Latino, or Spanish origin",Northeast,"Completed some college, but no degree",White ,1
+5f7e0628-e62f-42b6-9345-63f7d0e12c19,44,Male,"$70,000 to $74,999",78727,"No , not of Hispanic, Latino, or Spanish origin",South,Associate Degree,White ,9
+5f7cb3a3-6efc-04c3-e349-4d8b9759b537,68,Male,"$45,000 to $49,999",11223,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Associate Degree,White ,10
+5f8168e7-a669-5f96-aa88-164e5cc4f0f9,62,Female,"$25,000 to $29,999",15747,"No , not of Hispanic, Latino, or Spanish origin",Northeast,High school graduate,White ,1
+5f85989b-d25b-879c-93a5-7b2b0b2ed24d,35,Female,"$90,000 to $94,999",10116,"No , not of Hispanic, Latino, or Spanish origin",Northeast,"College Degree (such as B.A., B.S.)",White ,5
+5f7e1257-5403-90cc-6e27-11727f787779,40,Male,"$100,000 to $124,999",10027,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Associate Degree,White ,10
+5f852233-234a-a568-b8fe-f27248f35ef5,73,Female,"$70,000 to $74,999",95436,"No , not of Hispanic, Latino, or Spanish origin",West,"Completed some college, but no degree",White ,1
+5f7cd97b-3173-0599-7576-944fbc3768e0,73,Female,"$15,000 to $19,999",60502,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Associate Degree,White ,1
+5f7cc3c8-d548-7942-f440-323fa2f73e8e,45,Female,Prefer not to answer,40059,"No , not of Hispanic, Latino, or Spanish origin",South,"Completed some college, but no degree",Prefer not to answer ,9
+5f7cb477-d9cc-f09c-ea23-560c53e13add,48,Female,"$5,000 to $9,999",37191,"No , not of Hispanic, Latino, or Spanish origin",South,Middle School - Grades 4 - 8,White ,9
+5f7df518-f167-f8be-ac20-878154765ad7,43,Female,"$5,000 to $9,999",7940,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Associate Degree,White ,1
+5f7dbf71-2e88-e925-af44-fa487ea8e741,68,Female,Prefer not to answer,72520,"No , not of Hispanic, Latino, or Spanish origin",South,Middle School - Grades 4 - 8,White ,1
+5f7e04ea-dc4c-59df-550a-ba8b7f1ae471,38,Female,"$5,000 to $9,999",10009,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Associate Degree,White ,10
+5f864b95-815f-dbd5-c9db-c3fd16804aa2,56,Female,Prefer not to answer,38125,"No , not of Hispanic, Latino, or Spanish origin",South,Associate Degree,Asian *** Asian Indian ,7
+5f82f52f-0004-d750-25a7-92e4d0684c7e,33,Female,"$70,000 to $74,999",17044,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Middle School - Grades 4 - 8,White ,9
+5f7cc71e-e753-642c-f2bc-544c7589dc98,46,Female,"$65,000 to $69,999",36863,"No , not of Hispanic, Latino, or Spanish origin",South,"Completed some college, but no degree",White ,4
+5f83835c-3571-a6be-078b-c300b477d17f,42,Female,"$75,000 to $79,999",55104,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Associate Degree,White ,1
+5f824d61-f7e7-aff8-5f49-ffd602f5e1b2,19,Female,Prefer not to answer,26505,"No , not of Hispanic, Latino, or Spanish origin",South,Middle School - Grades 4 - 8,White ,3
+5f812a4a-411b-1473-c542-7efd491fec51,76,Female,"$30,000 to $34,999",44118,"No , not of Hispanic, Latino, or Spanish origin",Midwest,"Completed some college, but no degree",White ,1
+5f7d04c0-df46-ead3-c0f8-1a3042fcc42c,66,Female,"$10,000 to $14,999",75020,"No , not of Hispanic, Latino, or Spanish origin",South,Middle School - Grades 4 - 8,White ,5
+5f7ccb0a-a8e1-bbb0-f7b0-1f8386e516c6,18,Female,"$175,000 to $199,999",7981,"No , not of Hispanic, Latino, or Spanish origin",Northeast,High school graduate,White ,10
+5f7cda7f-f2b4-f96d-4098-2890fee177c8,45,Female,"$100,000 to $124,999",34231,"No , not of Hispanic, Latino, or Spanish origin",South,Other post high school vocational training,White ,7
+5f7cb9f8-7b9c-fc30-89ae-e512434587b1,66,Female,"Less than $5,000",13488,"No , not of Hispanic, Latino, or Spanish origin",Northeast,3rd Grade or less,White ,10
+5f7cb5f4-c52f-811a-c745-144ca21670e8,75,Female,"Less than $5,000",92262,"No , not of Hispanic, Latino, or Spanish origin",West,Other post high school vocational training,White ,1
+5f8649d8-922e-ea2b-6d09-a0c2dc67a4dd,42,Female,"$60,000 to $64,999",70124,"No , not of Hispanic, Latino, or Spanish origin",South,Other post high school vocational training,"Black, or African American",1
+5f7cb32f-f28c-a51b-664d-c17d29499cce,63,Female,Prefer not to answer,75765,"No , not of Hispanic, Latino, or Spanish origin",South,Other post high school vocational training,White ,10
+5f7cc1d3-a4d4-d664-bb21-58c4211c96fe,33,Female,"$150,000 to $174,999",11010,"No , not of Hispanic, Latino, or Spanish origin",Northeast,"College Degree (such as B.A., B.S.)",White ,10
+5f7dc37d-a6d2-ee82-4494-3542992cdf8c,65,Female,"$70,000 to $74,999",64506,"No , not of Hispanic, Latino, or Spanish origin",Midwest,"Completed some college, but no degree",White ,9
+5f823259-4751-ad27-300c-bc9566f3effc,41,Female,"Less than $5,000",8102,"Yes, another Hispanic, Latino, or Spanish origin *** Other Country",Northeast,3rd Grade or less,Some other race ,1
+5f844765-3a01-0e41-0a7d-90744fa6425e,65,Female,"$40,000 to $44,999",46214,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Associate Degree,Asian *** Japanese ,5
+5f7cc21d-2dce-bc2c-4798-4631f31591c7,67,Female,"Less than $5,000",25705,"No , not of Hispanic, Latino, or Spanish origin",South,High school graduate,White ,9
+5f86580b-7d1f-4acf-a35e-f8c5bb42e8af,66,Female,"$15,000 to $19,999",44138,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Associate Degree,White ,2
+5f7cb320-59ee-ab0f-8d67-979d772dd2ce,69,Male,"$35,000 to $39,999",80249,"No , not of Hispanic, Latino, or Spanish origin",West,High school graduate,White ,10
+5f7cb989-3c9f-b9d6-d103-db313024b391,82,Male,"$40,000 to $44,999",55421,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Other post high school vocational training,White ,10
+5f827e1a-acca-e2d5-409e-d7074baacb6f,37,Female,"Less than $5,000",66086,Prefer not to answer,Midwest,"Completed some college, but no degree",White ,7
+5f7cb449-6b17-d229-dc26-eb019eda90ac,72,Male,"$95,000 to $99,999",34238,"No , not of Hispanic, Latino, or Spanish origin",South,Associate Degree,White ,2
+5f865681-9f45-be60-e2db-b2153496b246,61,Female,"$10,000 to $14,999",95821,"No , not of Hispanic, Latino, or Spanish origin",West,High school graduate,White ,3
+5f843e2c-8870-8008-ecf3-884188d19f61,70,Female,"$20,000 to $24,999",77802,"No , not of Hispanic, Latino, or Spanish origin",South,High school graduate,White ,9
+5f81578c-d602-fb9a-c2bc-d47dff5edf50,66,Female,"$20,000 to $24,999",85351,"No , not of Hispanic, Latino, or Spanish origin",West,Other post high school vocational training,White ,10
+5f7cb3b5-6845-65ff-fac0-b1dd65c293f1,35,Male,"$100,000 to $124,999",19426,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Associate Degree,White ,9
+5f7cb819-0d4d-efe8-d636-c28678ab5a91,67,Female,"$85,000 to $89,999",94553,"No , not of Hispanic, Latino, or Spanish origin",West,Completed some high school,White ,2
+5f7cbed8-51e7-8b49-7001-f162ccfa6009,30,Female,"$40,000 to $44,999",28630,"No , not of Hispanic, Latino, or Spanish origin",South,High school graduate,White ,10
+5f7dbdd0-75f5-e000-5d38-96abc394492b,72,Female,"$55,000 to $59,999",46307,"No , not of Hispanic, Latino, or Spanish origin",Midwest,Associate Degree,White ,5
+5f7cb466-66eb-ef75-e76f-ded5172d5b1c,32,Female,"$90,000 to $94,999",17112,"No , not of Hispanic, Latino, or Spanish origin",Northeast,"Completed some college, but no degree",White ,3
+5f8263c1-7025-e366-5786-e9846211a591,67,Female,Prefer not to answer,29576,"No , not of Hispanic, Latino, or Spanish origin",South,"Completed some college, but no degree",White ,10
+5f7ce00b-3149-8e51-f242-4a6f4b1a1cf2,74,Female,"$10,000 to $14,999",28906,"No , not of Hispanic, Latino, or Spanish origin",South,Associate Degree,White ,10
+5f7cc58f-9a3b-1907-c1e0-7a94c1fc637b,23,Female,"$20,000 to $24,999",76401,"No , not of Hispanic, Latino, or Spanish origin",South,High school graduate,White ,4
+5f7cd8c0-3301-44f9-921f-26361d7eb337,48,Female,"$100,000 to $124,999",19446,"No , not of Hispanic, Latino, or Spanish origin",Northeast,Associate Degree,White ,1
+5f8117e2-2d67-7555-373c-c3d65b324f7d,37,Female,"$25,000 to $29,999",28804,"No , not of Hispanic, Latino, or Spanish origin",South,Middle School - Grades 4 - 8,White ,9
+5f826aee-b985-fda7-0195-82daa426b07b,48,Female,"$20,000 to $24,999",24541,Prefer not to answer,South,Other post high school vocational training,White ,4
+5f7cd51e-4bc4-f9fa-8a52-8defae4534b3,67,Female,"$10,000 to $14,999",33909,"No , not of Hispanic, Latino, or Spanish origin",South,Other post high school vocational training,White ,10
+5f7cdc1f-8f35-5f49-52e5-02d8cef286fa,21,Female,"$80,000 to $84,999",95843,"No , not of Hispanic, Latino, or Spanish origin",West,"Completed some college, but no degree",White ,5
+5f7cb3e9-3575-4a4c-c284-cc206a6e8b5b,65,Female,"$10,000 to $14,999",33928,"No , not of Hispanic, Latino, or Spanish origin",South,Middle School - Grades 4 - 8,White ,9
+5f7cb339-90e7-bf9f-2532-fd8b8ddde8d8,73,Female,"$50,000 to $54,999",42104,"No , not of Hispanic, Latino, or Spanish origin",South,High school graduate,White ,10
+5f83b3ab-c1a5-851f-f385-9f459d0d441b,64,Female,"$10,000 to $14,999",72852,"No , not of Hispanic, Latino, or Spanish origin",South,3rd Grade or less,White ,9
+5f7cbfef-97ef-bacd-5fb3-2ceaa6b9488d,36,Female,"$75,000 to $79,999",19504,"No , not of Hispanic, Latino, or Spanish origin",Northeast,High school graduate,White ,10
+5f8442f6-8aff-bf5c-d640-836d536eddcc,71,Female,"$60,000 to $64,999",50554,"No , not of Hispanic, Latino, or Spanish origin",Midwest,High school graduate,American Indian or Alaska Native ,10
+5f7cb6f7-0f24-7475-066d-b049a790dfdc,71,Female,"$50,000 to $54,999",19901,"No , not of Hispanic, Latino, or Spanish origin",South,High school graduate,White ,5
+5f7cf205-04b3-f692-ccf5-c27f49142549,65,Female,"$95,000 to $99,999",7083,"No , not of Hispanic, Latino, or Spanish origin",Northeast,"Completed some college, but no degree","Black, or African American",1
