@@ -3,7 +3,7 @@
 
 This is the replication code repository for the aforementioned research article (currently a working paper).
 
-- `deepfake.RData`: R object containing cleaned and anonymized results of three waves of the two survey experiments (*exposure* and *detection*) in `dat`, the raw but anonymized survey results in `dfsurvdat`, and clip-level results of the detection experiment.
+- `deepfake.RData`: R object containing cleaned and anonymized results of three waves of the two survey experiments (*exposure* and *detection*) in `dat`, the raw but anonymized survey results in `dfsurvdat`, and clip-level results of the detection experiment (`*fakes`).
 
 - `cps2018_crosstabs.rds`: Crosstabs of demographic categories from the U.S. Census's 2018 Current Population Survey.
 
@@ -11,9 +11,7 @@ This is the replication code repository for the aforementioned research article 
 
 - `2-prereg_analyses.R`: replicates analyses specified in pre-analysis plan; generates outputs in `/table` and `/figure` found in Appendix of article.
 
-- `3-prereg_analyses_sensitivity.R`: replicates sensitivity analysis on particular pre-registered specifications.
+- `3-prereg_topline_results.R`: summarise pre-registered analysis results in a series of topline tables/figures; this replicates figures found in main text of article.
 
-- `4-prereg_topline_results.R`: summarise pre-registered analysis results in a series of topline tables/figures; this replicates figures found in main text of article.
-
-- `5-exploratory_analyses.R`: replicates exploratory analyses found in Appendix of article.
+- `4-exploratory_analyses.R`: replicates exploratory analyses found in Appendix of article.
 
