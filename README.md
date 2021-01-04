@@ -3,7 +3,7 @@
 
 This is the replication code repository for the aforementioned research article (currently a working paper).
 
-- `deepfake.RData`: R object containing cleaned and anonymized results of three waves of the two survey experiments (*exposure* and *detection*) in `dat`, the raw but anonymized survey results in `dfsurvdat`, and clip-level results of the detection experiment (`*fakes`).
+- `deepfake.RData`: R object containing cleaned and anonymized results of three waves of the two survey experiments (**exposure** and **detection**) in `dat`, the raw but anonymized survey results in `dfsurvdat`, and clip-level results of the detection experiment (`*fakes`).
 
 - `cps2018_crosstabs.rds`: Crosstabs of demographic categories from the U.S. Census's 2018 Current Population Survey.
 
