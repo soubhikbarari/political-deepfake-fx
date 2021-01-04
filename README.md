@@ -1,2 +1,4 @@
-# Political-Deepfakes-Fx
-Public repository for research article on behavioral fx of political deepfakes (Barari, Lucas, &amp; Munger 2021)
+# Political Deepfake Videos Misinform the Public, But No More than Other Fake Media
+## Soubhik Barari, Christopher Lucas, and Kevin Munger
+### public code repository
+
