@@ -1,7 +1,7 @@
 # Political Deepfake Videos Misinform the Public, But No More than Other Fake Media
 ## Soubhik Barari, Christopher Lucas, and Kevin Munger
 
-This is the replication code repository for the aforementioned research article (currently a working paper).
+This is the replication code repository for the aforementioned research article.
 
 - `deepfake.RData`: R object containing cleaned and anonymized results of three waves of the two survey experiments (**exposure** and **detection**) in `dat`, the raw but anonymized survey results in `dfsurvdat`, and clip-level results of the detection experiment (`*fakes`).
 
