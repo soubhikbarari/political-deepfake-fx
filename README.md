@@ -1,4 +1,4 @@
-# Political Deepfake Videos Misinform the Public, But No More than Other Fake Media
+# Political Deepfakes Are As Credible As Other Fake Media And (Sometimes) Real Media
 ## Soubhik Barari, Christopher Lucas, and Kevin Munger
 
 This is the replication code repository for the aforementioned research article, which can be found at: https://osf.io/cdfh3/ .
