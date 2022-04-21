@@ -1,4 +1,4 @@
-# Political Deepfakes Are As Credible As Other Fake Media And (Sometimes) Real Media
+# Political Deepfakes are as Credible as Other Fake Media and (Sometimes) Real Media
 ## Soubhik Barari, Christopher Lucas, and Kevin Munger
 
 This is the replication code repository for the aforementioned research article, which can be found at: https://osf.io/cdfh3/ .
