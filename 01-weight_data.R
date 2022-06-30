@@ -23,7 +23,7 @@ library(weights)
 
 rm(list=ls())
 
-load("code/deepfake.RData")
+load("deepfake.RData")
 
 #####------------------------------------------------------#
 #####  Aggregate/clean CPS 2018 ####
