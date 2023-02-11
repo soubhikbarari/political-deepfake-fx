@@ -1,7 +1,7 @@
 # Political Deepfakes are as Credible as Other Fake Media and (Sometimes) Real Media
 ## Soubhik Barari, Christopher Lucas, and Kevin Munger
 
-This is the replication code repository for the aforementioned research article, which can be found at: https://osf.io/cdfh3/ .
+This is the replication code repository for the aforementioned research article, which can be found [here](https://osf.io/cdfh3/).
 
 - `deepfake.RData`: R object containing cleaned and anonymized results of three waves of the two survey experiments (**exposure** and **detection**) in `dat`, the raw but anonymized survey results in `dfsurvdat`, and clip-level results of the detection experiment (`*fakes`).
 
