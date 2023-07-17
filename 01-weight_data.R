@@ -9,11 +9,11 @@
 # Runtime: ~few seconds
 # 
 # Input:
-# - code/cps2018_crosstabs*
-# - code/deepfake.RData
+# - cps2018_crosstabs*
+# - deepfake.RData
 #
 # Output:
-# - code/deepfake.RData
+# - deepfake.RData
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 library(tidyverse)
@@ -23,7 +23,7 @@ library(weights)
 
 rm(list=ls())
 
-load("code/deepfake.RData")
+load("deepfake.RData")
 
 select <- dplyr::select
 
@@ -31,7 +31,7 @@ select <- dplyr::select
 #####  Aggregate/clean CPS 2018 ####
 #####------------------------------------------------------#
 
-cps2018_ <- readRDS("code/cps2018_crosstabs.rds")
+cps2018_ <- readRDS("cps2018_crosstabs.rds")
 cps2018 <- cps2018_
 cps2018$value <- cps2018$name
 
@@ -64,7 +64,7 @@ cps2018 <- cps2018 %>%
 # cps2018$value[cps2018$name == "45 to 64 years"] <- "45-64"
 # cps2018$value[cps2018$name == "65 years and over"] <- "65+"
 # cps2018$value[cps2018$variable == "age" & is.na(cps2018$name)] <- "N/A"
-cps2018age <- read_delim("code/cps2018_crosstabs_age.txt", delim="|",
+cps2018age <- read_delim("cps2018_crosstabs_age.txt", delim="|",
                          col_names = c("cat", "n"))
 cps2018age$prop <- as.numeric(gsub(",", "", cps2018age$n))/323156
 cps2018age$cat <- as.factor(cps2018age$cat)
@@ -118,7 +118,7 @@ agg_cps2018age <- cps2018age %>%
 # cps2018$value[cps2018$name == "professional school degree"] <- "Postgraduate"
 # cps2018$value[cps2018$name == "doctorate degree"] <- "Postgraduate"
 # cps2018$value[cps2018$name == "niu or blank"] <- "N/A"
-cps2018educ <- read_delim("code/cps2018_crosstabs_educ.txt", delim="|",
+cps2018educ <- read_delim("cps2018_crosstabs_educ.txt", delim="|",
                        col_names = c("cat", "n"))
 cps2018educ$prop <- cps2018educ$n/sum(cps2018educ$n)
 cps2018educ$cat <- as.factor(cps2018educ$cat)
@@ -147,7 +147,7 @@ agg_cps2018educ <- cps2018educ %>%
     summarise(prop=sum(prop))
 
 ## income
-cps2018inc_f <- readLines("code/cps2018_crosstabs_income.txt")
+cps2018inc_f <- readLines("cps2018_crosstabs_income.txt")
 cps2018inc <- data.frame(
     cat = strsplit(cps2018inc_f[1], split="\t")[[1]],
     n = strsplit(cps2018inc_f[2], split="\t")[[1]]
@@ -230,7 +230,7 @@ cps2018 <- cps2018 %>% dplyr::select(-n)
 
 cps2018 <- as.data.frame(cps2018)
 
-# write_csv(cps2018, "code/cps2018.csv")
+# write_csv(cps2018, "cps2018.csv")
 
 #####------------------------------------------------------#
 #####  Compare CPS 2018 with survey ####
@@ -388,5 +388,5 @@ dat$weight[is.na(dat$weight)] <- 0
 
 ## update data file
 save(dat, dfsurvdat, nofake_vids, lowfake_vids, hifake_vids, 
-     file = "code/deepfake.RData")
+     file = "deepfake.RData")
 
