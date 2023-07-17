@@ -1,4 +1,4 @@
-############################################################
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # Weight data to be more representative of national population.
 # 
 # Author: Soubhik Barari
@@ -14,7 +14,7 @@
 #
 # Output:
 # - code/deepfake.RData
-############################################################
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 library(tidyverse)
 library(survey)
@@ -23,7 +23,9 @@ library(weights)
 
 rm(list=ls())
 
-load("deepfake.RData")
+load("code/deepfake.RData")
+
+select <- dplyr::select
 
 #####------------------------------------------------------#
 #####  Aggregate/clean CPS 2018 ####
@@ -63,7 +65,7 @@ cps2018 <- cps2018 %>%
 # cps2018$value[cps2018$name == "65 years and over"] <- "65+"
 # cps2018$value[cps2018$variable == "age" & is.na(cps2018$name)] <- "N/A"
 cps2018age <- read_delim("code/cps2018_crosstabs_age.txt", delim="|",
-                       col_names = c("cat", "n"))
+                         col_names = c("cat", "n"))
 cps2018age$prop <- as.numeric(gsub(",", "", cps2018age$n))/323156
 cps2018age$cat <- as.factor(cps2018age$cat)
 cps2018age$cat <- fct_collapse(cps2018age$cat,
@@ -205,7 +207,7 @@ agg_cps2018inc <- cps2018inc %>%
 
 ## aggregate all 
 cps2018 <- cps2018 %>% 
-    select(-name, -year) %>%
+    dplyr::select(-name, -year) %>%
     group_by(variable, value) %>%
     summarise(n=sum(n)) %>%
     ungroup() %>% 
@@ -224,9 +226,11 @@ cps2018 <- bind_rows(
         rename(value=cat) %>%
         mutate(variable="age")
 )
-cps2018 <- cps2018 %>% select(-n)
+cps2018 <- cps2018 %>% dplyr::select(-n)
 
 cps2018 <- as.data.frame(cps2018)
+
+# write_csv(cps2018, "code/cps2018.csv")
 
 #####------------------------------------------------------#
 #####  Compare CPS 2018 with survey ####
@@ -265,15 +269,15 @@ pop.agegroup <- agg_cps2018age %>%
     mutate(Freq=Freq*nrow(dat))
 pop.gender <- cps2018 %>% ungroup() %>%
     filter(variable == "sex") %>% 
-    select(gender=value, Freq=prop) %>%
+    dplyr::select(gender=value, Freq=prop) %>%
     mutate(Freq=Freq*nrow(dat))
 pop.Ethnicity <- cps2018 %>% ungroup() %>%
     filter(variable == "race") %>% 
-    select(Ethnicity=value, Freq=prop) %>%
+    dplyr::select(Ethnicity=value, Freq=prop) %>%
     mutate(Freq=Freq*nrow(dat))
 pop.Hispanic <- cps2018 %>% ungroup() %>%
     filter(variable == "hispan") %>% 
-    select(Hispanic=value, Freq=prop) %>%
+    dplyr::select(Hispanic=value, Freq=prop) %>%
     mutate(Freq=Freq*nrow(dat))
 
 
@@ -295,9 +299,9 @@ dd_svy_rake <- rake(design = dd_svy_uwt, ## full
                      population.margins = list(pop.gender, pop.Ethnicity, pop.agegroup, pop.HHI, pop.Hispanic, pop.educ))
 
 if (FALSE) {
-dd_svy_rake <- rake(design = dd_svy_uwt, ## simple
-                     sample.margins = list(~gender),
-                     population.margins = list(pop.gender))
+  dd_svy_rake <- rake(design = dd_svy_uwt, ## simple
+                       sample.margins = list(~gender),
+                       population.margins = list(pop.gender))
 }
 dd_svy_rake_trim <- trimWeights(dd_svy_rake, lower=0.3, upper=3,
                                 strict=TRUE)
@@ -326,7 +330,7 @@ raked_wts_df <- raked_wts %>%
 
 props_df <- dat_cps_props %>% 
     left_join(raked_wts_df %>% rename(prop.wt=mean)) %>%
-    select(variable, value, prop.cps, prop.dat, prop.wt) %>%
+    dplyr::select(variable, value, prop.cps, prop.dat, prop.wt) %>%
     filter(value != "N/A", !is.na(value), !is.na(prop.cps), !(value=="Other"&variable=="gender")) %>%
     mutate(prop.cps=paste0(round(prop.cps*100, 2),"%"),
            prop.dat=paste0(round(prop.dat*100, 2),"%"),
@@ -355,7 +359,6 @@ colnames(props_df) <- c(
 )
 View(props_df)
 
-
 #####------------------------------------------------------#
 ##### Save weights and summary ####
 #####------------------------------------------------------#
@@ -371,7 +374,7 @@ stargazer(props_df,
           summary=FALSE, 
           rownames=FALSE,
           font.size = "footnotesize",
-          label = "weiights",
+          label = "tab:weights",
           notes=c("\\scriptsize \\textit{Notes:} Weights are constructed via Iterative Proportional Fitting to match sample marginal totals to CPS",
                   "\\scriptsize marginal totals on displayed demographic traits. Weights in the final column used for all analyses in paper."
           ),
@@ -380,7 +383,7 @@ stargazer(props_df,
 
 dd$weight <- weights(dd_svy_rake_trim)
 dat <- dat %>% 
-  left_join(dd %>% select(rid, weight))
+  left_join(dd %>% dplyr::select(rid, weight))
 dat$weight[is.na(dat$weight)] <- 0
 
 ## update data file
