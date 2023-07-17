@@ -12,7 +12,7 @@
 # - must use R 3.6
 #
 # Input:
-# - code/deepfakes.RData
+# - deepfakes.RData
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
@@ -24,7 +24,7 @@ samp_fracs <- c(0.10,
 n_draws <- 100
 
 if (!("dat" %in% ls())) {
-    load("code/deepfake.Rdata")
+    load("deepfake.Rdata")
     dat$lowq <- FALSE
     dat$lowq[dat$quality_pretreat_duration_tooquick | dat$quality_pretreat_duration_tooslow | dat$quality_demographic_mismatch] <- TRUE
     dat$internet_usage <- scales::rescale(dat$internet_usage)
