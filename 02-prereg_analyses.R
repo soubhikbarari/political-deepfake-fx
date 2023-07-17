@@ -9,7 +9,7 @@
 # Runtime: <1 min
 # 
 # Input:
-# - code/deepfake.Rdata:
+# - deepfake.Rdata:
 #       `dat` object made from `deepfake_make_data`       
 #
 # Output:
@@ -30,7 +30,7 @@ library(broom)
 library(stargazer)
 
 setwd("~/Research_Group Dropbox/Soubhik Barari/Projects/repos/deepfakes_project")
-load("code/deepfake.Rdata")
+load("deepfake.Rdata")
 
 select <- dplyr::select
 
