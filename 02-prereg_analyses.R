@@ -10,13 +10,18 @@
 # 
 # Input:
 # - code/deepfake.Rdata:
-#       contains `dat` object with weights appended to a 
-#       column from step 1.
+#       `dat` object made from `deepfake_make_data`       
 #
 # Output:
 # - figures/*
 # - tables/*
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+#####------------------------------------------------------#
+##### Pre-amble ####
+#####------------------------------------------------------#
+
+rm(list=ls())
 
 library(optparse)
 library(tidyverse)
@@ -24,9 +29,10 @@ library(ggplot2)
 library(broom)
 library(stargazer)
 
-rm(list=ls())
 setwd("~/Research_Group Dropbox/Soubhik Barari/Projects/repos/deepfakes_project")
 load("code/deepfake.Rdata")
+
+select <- dplyr::select
 
 if (!file.exists("tables")) {
     system("mkdir tables")
@@ -38,8 +44,13 @@ if (!file.exists("figures")) {
 COVARS <- c("educ", "meta_OS", "age_65", "PID", "crt", "gender", "polknow", 
             "internet_usage", "ambivalent_sexism")
 
+theme_linedraw2 <- theme_linedraw() + 
+    theme(panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.spacing = unit(2, "lines"))
+
 #####------------------------------------------------------#
-##### Settings ####
+##### Data ####
 #####------------------------------------------------------#
 
 arg_list <- list(     
@@ -57,8 +68,10 @@ ARGS <- parse_args(OptionParser(option_list=arg_list))
 
 SHOW_PDFS <- ARGS$show_pdfs
 
+## last minute data cleaning
 dat$lowq <- FALSE
 dat$lowq[dat$quality_pretreat_duration_tooquick | dat$quality_pretreat_duration_tooslow | dat$quality_demographic_mismatch] <- TRUE
+dat$internet_usage <- scales::rescale(dat$internet_usage)
 
 # if (ARGS$response_quality == "low") {
 #     dat <- dat[dat$quality_pretreat_duration_tooquick | dat$quality_pretreat_duration_tooslow | dat$quality_demographic_mismatch,] ## cond on low quality
@@ -72,7 +85,7 @@ dat$lowq[dat$quality_pretreat_duration_tooquick | dat$quality_pretreat_duration_
 # }
 
 #####------------------------------------------------------#
-##### Helpers ####
+##### HELPERS ####
 #####------------------------------------------------------#
 
 coefviz <- function(df, ylab_="y", title_="") {
@@ -88,7 +101,7 @@ coefviz <- function(df, ylab_="y", title_="") {
         coord_flip() + 
         scale_color_identity() + 
         xlab("") + ylab(ylab_) +
-        theme_bw() + geom_hline(yintercept=0, lty=2, alpha=0.5) + 
+        theme_linedraw2 + geom_hline(yintercept=0, lty=2, alpha=0.5) + 
         theme(
             legend.position = "none",
             axis.text.x = element_text(size=14),
@@ -123,7 +136,7 @@ groupcoefviz <- function(df, ylab_="y", title_="", nudge=0.05) {
         scale_shape_manual(values=c(15, 17)) +
         scale_color_identity() +
         xlab("") + ylab(ylab_) +
-        theme_bw() + geom_hline(yintercept=0, lty=2, alpha=0.5) + 
+        theme_linedraw2 + geom_hline(yintercept=0, lty=2, alpha=0.5) + 
         theme(
             legend.position = "none",
             axis.text.x = element_text(size=14),
@@ -162,7 +175,7 @@ t.test(na.omit(dat$believed_true[dat$treat_fake_video == 1]),
 ### descriptive plots
 dat %>% 
     mutate(treat = as.character(treat)) %>%
-    filter(!(treat%in%c("ad","control")), !is.na(treat), exp_1_prompt_control==T) %>%
+    filter(!(treat%in%c("ad","control","skit")), !is.na(treat), exp_1_prompt_control==T) %>%
     mutate(treat = replace(treat, treat == "text", "text")) %>%
     mutate(treat = replace(treat, treat == "audio", "audio")) %>%
     mutate(treat = replace(treat, treat == "video", "video")) %>%
@@ -174,11 +187,11 @@ dat %>%
               ymax=weighted.mean(believed_true,weight,na.rm=T)+1.96*weighted.sd(believed_true,weight,na.rm=T)/sqrt(n()),
               ymin=weighted.mean(believed_true,weight,na.rm=T)-1.96*weighted.sd(believed_true,weight,na.rm=T)/sqrt(n())) %>%
     ggplot(aes(x=treat, y=y, ymin=ymin, ymax=ymax)) + 
-    geom_bar(stat="identity") +
+    geom_bar(stat="identity") + ylim(c(0, 5)) + 
     geom_errorbar(position=position_dodge(.9), width=.2, size=1) +
-    xlab("presentation of scandal") + ylab("level of deception") +
+    xlab("Scandal clipping") + ylab("Credibility confidence") +
     ggtitle(paste0("n=",n)) +
-    theme_bw() + 
+    theme_linedraw2 + 
         theme(
             title = element_text(size=5),
             axis.text.x = element_text(size=12),
@@ -191,7 +204,7 @@ if(SHOW_PDFS) system("open figures/firststage_deception.pdf")
 
 dat %>% 
     mutate(treat = as.character(treat)) %>%
-    filter(!(treat%in%c("ad","control")), !is.na(treat), exp_1_prompt_control==T) %>%
+    filter(!(treat%in%c("ad","control","skit")), !is.na(treat), exp_1_prompt_control==T) %>%
     mutate(treat = replace(treat, treat == "text", "text")) %>%
     mutate(treat = replace(treat, treat == "audio", "audio")) %>%
     mutate(treat = replace(treat, treat == "video", "video")) %>%
@@ -204,24 +217,23 @@ dat %>%
     geom_bar(stat="identity") +
     geom_text(aes(label=scales::percent(round(y,2), accuracy=1), y=y+0.03)) +
     scale_y_continuous(labels = scales::percent_format(accuracy = 1)) + 
-    xlab("presentation of scandal") + ylab("% believe clipping is real") +
+    xlab("Scandal clipping") + ylab("% somewhat/strongly confident in credibility") +
     ggtitle(paste0("n=",n)) +
-    theme_bw() + 
+    theme_linedraw2 + 
         theme(
             title = element_text(size=5),
             axis.text.x = element_text(size=12),
             axis.text.y = element_text(size=12),
             axis.title.x = element_text(size=14),
-            axis.title.y = element_text(size=14)
+            axis.title.y = element_text(size=8)
         )
 ggsave(file = "figures/firststage_deception_binary.pdf", width=5, height=3.05)
 if(SHOW_PDFS) system("open figures/firststage_deception_binary.pdf")
 
-
 ## difference-in-means
-(h1.m <- lm(believed_true ~ treat, dat %>% filter(treat != "ad",exp_1_prompt_control==T))); summary(h1.m);
-(h1.m.wt <- lm(believed_true ~ treat, dat %>% filter(treat != "ad",exp_1_prompt_control==T), weights=weight)); summary(h1.m.wt); 
-(h1.m.hq <- lm(believed_true ~ treat, dat %>% filter(treat != "ad",exp_1_prompt_control==T, !lowq))); summary(h1.m.hq); 
+(h1.m <- lm(believed_true ~ treat, dat %>% filter(treat != "ad",treat != "skit",exp_1_prompt_control==T))); summary(h1.m);
+(h1.m.wt <- lm(believed_true ~ treat, dat %>% filter(treat != "ad",treat != "skit",exp_1_prompt_control==T), weights=weight)); summary(h1.m.wt); 
+(h1.m.hq <- lm(believed_true ~ treat, dat %>% filter(treat != "ad",treat != "skit",exp_1_prompt_control==T, !lowq))); summary(h1.m.hq); 
 
 tidy(h1.m) %>%
     filter(term != "(Intercept)", term != "treatad") %>%
@@ -229,46 +241,45 @@ tidy(h1.m) %>%
     mutate(term = replace(term, term == "treataudio", "audio")) %>%
     mutate(term = replace(term, term == "treatskit", "skit")) %>%
     mutate(term = fct_relevel(term, "audio", after=1)) %>%
-    coefviz(ylab = "effect on level of deception (relative to video)", title = "no other controls")
+    coefviz(ylab = "Effect on credibility confidence (relative to fake video)", title = "no other controls")
 ggsave(file = "figures/firststage_treatfx.pdf", width=7, height=3.05)
 if(SHOW_PDFS) system("open figures/firststage_treatfx.pdf")
 
-(h1.m.bin <- lm(believed1_true ~ treat, dat %>% filter(exp_1_prompt_control==T,treat != "ad"))); summary(h1.m.bin); 
-(h1.m.bin.wt <- lm(believed1_true ~ treat, dat %>% filter(exp_1_prompt_control==T,treat != "ad"), weights=weight)); summary(h1.m.bin.wt); 
-(h1.m.bin.hq <- lm(believed1_true ~ treat, dat %>% filter(exp_1_prompt_control==T,treat != "ad",!lowq))); summary(h1.m.bin.hq); 
+(h1.m.bin <- lm(believed1_true ~ treat, dat %>% filter(exp_1_prompt_control==T,treat != "ad",treat != "skit"))); summary(h1.m.bin); 
+(h1.m.bin.wt <- lm(believed1_true ~ treat, dat %>% filter(exp_1_prompt_control==T,treat != "ad",treat != "skit"), weights=weight)); summary(h1.m.bin.wt); 
+(h1.m.bin.hq <- lm(believed1_true ~ treat, dat %>% filter(exp_1_prompt_control==T,treat != "ad",treat != "skit",!lowq))); summary(h1.m.bin.hq); 
 
 tidy(h1.m.bin) %>%
-    filter(term != "(Intercept)", term != "treatad") %>%
+    filter(term != "(Intercept)", term != "treatad", term != "treatskit") %>%
     mutate(term = replace(term, term == "treattext", "text")) %>%
     mutate(term = replace(term, term == "treataudio", "audio")) %>%
-    mutate(term = replace(term, term == "treatskit", "skit")) %>%
     mutate(term = fct_relevel(term, "audio", after=1)) %>%
-    coefviz(ylab = "effect on deception (relative to video)", title = "no other controls")
+    coefviz(ylab = "Effect on credibility confidence (relative to fake video)", title = "no other controls")
 ggsave(file = "figures/firststage_treatfx_binary.pdf", width=7, height=3.05)
 if(SHOW_PDFS) system("open figures/firststage_treatfx_binary.pdf")
 
 
 ## adjustments
-(h1.m.adj <- lm(believed_true ~ treat + meta_OS + age_65 + educ + crt + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(!is.na(treat),treat != "ad",exp_1_prompt_control==T))); summary(h1.m.adj);
-(h1.m.adj.wt <- lm(believed_true ~ treat + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(!is.na(treat),treat != "ad",exp_1_prompt_control==T), weights=weight)); summary(h1.m.adj.wt);
-(h1.m.adj.hq <- lm(believed_true ~ treat + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(!is.na(treat),treat != "ad",exp_1_prompt_control==T,!lowq))); summary(h1.m.adj.hq);
-(h1.m.adj.wt.hq <- lm(believed_true ~ treat + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(!is.na(treat),treat != "ad",exp_1_prompt_control==T,!lowq), weights=weight)); summary(h1.m.adj.wt.hq);
+(h1.m.adj <- lm(believed_true ~ treat + meta_OS + age_65 + educ + crt + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(!is.na(treat),treat != "ad",treat != "skit",exp_1_prompt_control==T))); summary(h1.m.adj);
+(h1.m.adj.wt <- lm(believed_true ~ treat + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(!is.na(treat),treat != "ad",treat != "skit",exp_1_prompt_control==T), weights=weight)); summary(h1.m.adj.wt);
+(h1.m.adj.hq <- lm(believed_true ~ treat + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(!is.na(treat),treat != "ad",treat != "skit",exp_1_prompt_control==T,!lowq))); summary(h1.m.adj.hq);
+(h1.m.adj.wt.hq <- lm(believed_true ~ treat + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(!is.na(treat),treat != "ad",treat != "skit",exp_1_prompt_control==T,!lowq), weights=weight)); summary(h1.m.adj.wt.hq);
 
 tidy(h1.m.adj) %>%
     filter(grepl("treat", term)) %>%
-    filter(term != "(Intercept)", term != "treatad") %>%
+    filter(term != "(Intercept)", term != "treatad", term != "treatskit") %>%
     mutate(term = replace(term, term == "treattext", "text")) %>%
     mutate(term = replace(term, term == "treataudio", "audio")) %>%
     mutate(term = replace(term, term == "treatskit", "skit")) %>%
     mutate(term = fct_relevel(term, "audio", after=1)) %>%
-    coefviz(ylab = "effect on level of deception (relative to video)", title = "adjusted for controls")
+    coefviz(ylab = "Effect on credibility confidence (relative to fake video)", title = "adjusted for controls")
 ggsave(file = "figures/firststage_treatfx_controlled.pdf", width=7, height=3.05)
 if(SHOW_PDFS) system("open figures/firststage_treatfx_controlled.pdf")
 
-(h1.m.bin.adj <- lm(believed1_true ~ treat + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(!is.na(treat),treat != "ad",exp_1_prompt_control==T))); summary(h1.m.bin.adj);
-(h1.m.bin.adj.wt <- lm(believed1_true ~ treat + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(!is.na(treat),treat != "ad",exp_1_prompt_control==T), weights=weight)); summary(h1.m.bin.adj.wt);
-(h1.m.bin.adj.hq <- lm(believed1_true ~ treat + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(!is.na(treat),treat != "ad",exp_1_prompt_control==T,!lowq))); summary(h1.m.bin.adj.hq);
-(h1.m.bin.adj.wt.hq <- lm(believed1_true ~ treat + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(!is.na(treat),treat != "ad",exp_1_prompt_control==T,!lowq), weights=weight)); summary(h1.m.bin.adj.wt.hq);
+(h1.m.bin.adj <- lm(believed1_true ~ treat + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(!is.na(treat),treat != "ad",treat != "skit",exp_1_prompt_control==T))); summary(h1.m.bin.adj);
+(h1.m.bin.adj.wt <- lm(believed1_true ~ treat + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(!is.na(treat),treat != "ad",treat != "skit",exp_1_prompt_control==T), weights=weight)); summary(h1.m.bin.adj.wt);
+(h1.m.bin.adj.hq <- lm(believed1_true ~ treat + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(!is.na(treat),treat != "ad",treat != "skit",exp_1_prompt_control==T,!lowq))); summary(h1.m.bin.adj.hq);
+(h1.m.bin.adj.wt.hq <- lm(believed1_true ~ treat + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(!is.na(treat),treat != "ad",treat != "skit",exp_1_prompt_control==T,!lowq), weights=weight)); summary(h1.m.bin.adj.wt.hq);
 
 tidy(h1.m.bin.adj) %>%
     filter(grepl("treat", term), term != "treatad") %>%
@@ -277,7 +288,7 @@ tidy(h1.m.bin.adj) %>%
     mutate(term = replace(term, term == "treataudio", "audio")) %>%
     mutate(term = replace(term, term == "treatskit", "skit")) %>%
     mutate(term = fct_relevel(term, "audio", after=1)) %>%
-    coefviz(ylab = "effect on deception (relative to video)", title = "adjusted for controls")
+    coefviz(ylab = "Effect on credibility confidence (relative to fake video)", title = "adjusted for controls")
 ggsave(file = "figures/firststage_treatfx_binary_controlled.pdf", width=7, height=3.05)
 if(SHOW_PDFS) system("open figures/firststage_treatfx_binary_controlled.pdf")
 
@@ -285,32 +296,40 @@ if(SHOW_PDFS) system("open figures/firststage_treatfx_binary_controlled.pdf")
 ### combined coefficients plots
 tidy(h1.m) %>% mutate(model="without controls") %>%
     bind_rows(tidy(h1.m.adj) %>% mutate(model="with controls")) %>%
-    filter(grepl("treat", term), term != "treatad") %>%
-    filter(term != "(Intercept)", term != "treatad") %>%
+    filter(grepl("treat", term), term != "treatad", term != "treatskit") %>%
     mutate(term = replace(term, term == "treattext", "text")) %>%
     mutate(term = replace(term, term == "treataudio", "audio")) %>%
-    mutate(term = replace(term, term == "treatskit", "skit")) %>%
     mutate(term = fct_relevel(term, "audio", after=1)) %>%
-    groupcoefviz(ylab = "effect on level of deception (relative to video)",
+    groupcoefviz(ylab = "Effect on credibility confidence (relative to fake video)",
                  nudge = 0.01)
 ggsave(file = "figures/firststage_treatfx_controlled2.pdf", width=7, height=3.05)
 if(SHOW_PDFS) system("open figures/firststage_treatfx_controlled2.pdf")
 
 tidy(h1.m.bin) %>% mutate(model="without controls") %>%
     bind_rows(tidy(h1.m.bin.adj) %>% mutate(model="with controls")) %>%
-    filter(grepl("treat", term), term != "treatad") %>%
-    filter(term != "(Intercept)", term != "treatad") %>%
+    filter(grepl("treat", term), term != "treatad", term != "treatskit") %>%
     mutate(term = replace(term, term == "treattext", "text")) %>%
     mutate(term = replace(term, term == "treataudio", "audio")) %>%
     mutate(term = replace(term, term == "treatskit", "skit")) %>%
     mutate(term = fct_relevel(term, "audio", after=1)) %>%
-    groupcoefviz(ylab = "effect on deception (relative to video)",
+    groupcoefviz(ylab = "Effect on credibility confidence (relative to fake video)",
                  nudge = 0.005)
 ggsave(file = "figures/firststage_treatfx_binary_controlled2.pdf", width=7, height=3.05)
 if(SHOW_PDFS) system("open figures/firststage_treatfx_binary_controlled2.pdf")
 
 
 ### regression tables
+h1.m.df <- bind_rows(
+    tidy(h1.m),
+    tidy(h1.m.wt),
+    tidy(h1.m.hq),
+    tidy(h1.m.adj),
+    tidy(h1.m.adj.wt),
+    tidy(h1.m.adj.hq),
+    tidy(h1.m.adj.wt.hq)
+)
+h1.m.df$p.value.adj <- (h1.m.df$p.value/order(h1.m.df$p.value))*nrow(h1.m.df) ##BHq corrections
+
 stargazer(h1.m,
           h1.m.wt,
           h1.m.hq,
@@ -319,35 +338,47 @@ stargazer(h1.m,
           h1.m.adj.hq,
           h1.m.adj.wt.hq,
           header = FALSE,
+          apply.p = function(p) { h1.m.df$p.value.adj[h1.m.df$p.value == p][1] },
+          notes =  c("\\textit{Notes:} $^{.}$ $p \\cdot r/K < .1$ * $p \\cdot r/K < .05$ ** $p \\cdot r/K < .01$ *** $p \\cdot r/K < .001$"),
+          notes.append = FALSE,
           no.space=TRUE,
           digits=2,
           table.layout ="=d#-t-a-s=n",
           notes.align = "l",
-          title="\\textbf{Models of Belief in Exposure-Stage (News Feed) Scandal Clipping}",
-          notes = c("\\textit{Notes}: Reference category for medium is Video. CRT is scaled 0-1, political knowledge and ambivalent",
-                    "sexism are 0-1, internet usage is 1-7. Sample did not receive information in the first stage."),
+          title="\\textbf{Models of Credibility Confidence in Incidental Exposure Experiment}",
           add.lines = list(c("Weighted?", "", "\\checkmark", "", "", "\\checkmark","","\\checkmark"),
                            c("Low-Quality Dropped?","","","\\checkmark","","","\\checkmark","\\checkmark")),
           covariate.labels = c("Audio",
                                "Text",
-                               "Skit",
+                               # "Skit",
                                # "Attack Ad",
                                "On Mobile",
                                "Age 65+",
                                "High School", "College", "Postgrad",
                                "Independent PID", "Republican PID",
-                               "CRT",
+                               "C.R.",
                                "Male",
                                "Political Knowledge",
                                "Internet Usage",
                                "Ambivalent Sexism"),
-          dep.var.labels = c("\\normalsize Extent of belief that clipping was not fake or doctored [1-5]"),
+          dep.var.labels = c("\\normalsize Confidence that clipping was credible [1-5]"),
           omit.stat=c("f", "ser"),
           column.sep.width = "1pt",
           font.size = "footnotesize",
           style = "apsr",
           label = "firststage_deception",
           out="tables/firststage_deception.tex")
+
+h1.m.bin.df <- bind_rows(
+    tidy(h1.m.bin),
+    tidy(h1.m.bin.wt),
+    tidy(h1.m.bin.hq),
+    tidy(h1.m.bin.adj),
+    tidy(h1.m.bin.adj.wt),
+    tidy(h1.m.bin.adj.hq),
+    tidy(h1.m.bin.adj.wt.hq)
+)
+h1.m.bin.df$p.value.adj <- (h1.m.bin.df$p.value/order(h1.m.bin.df$p.value))*nrow(h1.m.bin.df) ##BHq corrections
 
 stargazer(h1.m.bin,
           h1.m.bin.wt,
@@ -361,25 +392,26 @@ stargazer(h1.m.bin,
           digits=2,
           table.layout ="=d#-t-a-s=n",
           notes.align = "l",
-          title="\\textbf{Models of Binarized Belief in Exposure-Stage (News Feed) Scandal Clipping}",
-          notes = c("\\textit{Notes}: Reference category for medium is Video. CRT is scaled 0-1, political knowledge and ambivalent",
-                    "sexism are 0-1, internet usage is 1-7. Sample did not receive information in the first stage."),
+          title="\\textbf{Models of Binarized Credibility Confidence of Scandal Clipping in Incidental Exposure Experiment}",
+          apply.p = function(p) { h1.m.bin.df$p.value.adj[h1.m.bin.df$p.value == p][1] },
+          notes =  c("\\textit{Notes:} $^{.}$ $p \\cdot r/K < .1$ * $p \\cdot r/K < .05$ ** $p \\cdot r/K < .01$ *** $p \\cdot r/K < .001$"),
+          notes.append = FALSE,
           add.lines = list(c("Weighted?", "", "\\checkmark", "", "", "\\checkmark","","\\checkmark"),
                            c("Low-Quality Dropped?","","","\\checkmark","","","\\checkmark","\\checkmark")),
           covariate.labels = c("Audio",
                                "Text",
-                               "Skit",
+                               # "Skit",
                                # "Attack Ad",
                                "On Mobile",
                                "Age 65+",
                                "High School", "College", "Postgrad",
                                "Independent PID", "Republican PID",
-                               "CRT",
+                               "C.R.",
                                "Male",
                                "Political Knowledge",
                                "Internet Usage",
                                "Ambivalent Sexism"),
-          dep.var.labels = c("\\normalsize Belief that clipping was not fake or doctored [y/n]"),
+          dep.var.labels = c("\\normalsize Somewhat/strongly confident clipping was credible"),
           omit.stat=c("f", "ser"),
           column.sep.width = "1pt",
           font.size = "footnotesize",
@@ -393,7 +425,6 @@ stargazer(h1.m.bin,
 #####------------------------------------------------------#
 
 ## @SB: no difference in medium in unfavorability effect
-
 n <- dat %>%
     filter(!is.na(treat), !is.na(post_favor_Warren)) %>%
     filter(exp_1_prompt_control==T) %>% nrow()
@@ -437,9 +468,9 @@ dat %>%
     scale_y_continuous(limits=c(30,50),oob = scales::rescale_none) +
     geom_errorbar(position=position_dodge(.9), width=.2, size=1) +
     geom_vline(xintercept=2.5, lty=2, size=.5) +
-    xlab("             reference stimuli                                 scandal clipping modality") + ylab("feeling thermometer") +
+    xlab("             Reference stimuli                                 Fake scandal clipping") + ylab("Candidate affect thermometer") +
     ggtitle(paste0("n=",n)) +
-    theme_bw() + 
+    theme_linedraw2 + 
         theme(
             title = element_text(size=5),
             axis.text.x = element_text(size=12),
@@ -454,10 +485,21 @@ if(SHOW_PDFS) system("open figures/firststage_feelings.pdf")
 (h2.m <- lm(post_favor_Warren ~ treat, dat)); summary(h2.m);
 (h2.m.wt <- lm(post_favor_Warren ~ treat, dat, weights=weight)); summary(h2.m.wt);
 (h2.m.hq <- lm(post_favor_Warren ~ treat, dat %>% filter(!lowq))); summary(h2.m.hq);
-(h2.m.adj <- lm(post_favor_Warren ~ treat + response_wave_ID + exp_1_prompt + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat)); summary(h2.m.adj);
-(h2.m.adj.wt <- lm(post_favor_Warren ~ treat + response_wave_ID + exp_1_prompt + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat, weights=weight)); summary(h2.m.adj.wt);
-(h2.m.adj.hq <- lm(post_favor_Warren ~ treat + response_wave_ID + exp_1_prompt + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat%>%filter(!lowq))); summary(h2.m.adj.hq);
-(h2.m.adj.hq.wt <- lm(post_favor_Warren ~ treat + response_wave_ID + exp_1_prompt + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat%>%filter(!lowq), weights=weight)); summary(h2.m.adj.hq.wt);
+(h2.m.adj <- lm(post_favor_Warren ~ treat + exp_1_prompt + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat)); summary(h2.m.adj);
+(h2.m.adj.wt <- lm(post_favor_Warren ~ treat + exp_1_prompt + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat, weights=weight)); summary(h2.m.adj.wt);
+(h2.m.adj.hq <- lm(post_favor_Warren ~ treat + exp_1_prompt + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat%>%filter(!lowq))); summary(h2.m.adj.hq);
+(h2.m.adj.hq.wt <- lm(post_favor_Warren ~ treat + exp_1_prompt + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat%>%filter(!lowq), weights=weight)); summary(h2.m.adj.hq.wt);
+
+h2.m.df <- bind_rows(
+    tidy(h2.m),
+    tidy(h2.m.wt),
+    tidy(h2.m.hq),
+    tidy(h2.m.adj),
+    tidy(h2.m.adj.wt),
+    tidy(h2.m.adj.hq),
+    tidy(h2.m.adj.hq.wt)
+)
+h2.m.df$p.value.adj <- (h2.m.df$p.value/order(h2.m.df$p.value))*nrow(h2.m.df) ##BHq corrections
 
 stargazer(h2.m, 
           h2.m.wt,
@@ -471,27 +513,30 @@ stargazer(h2.m,
           digits=2,
           table.layout ="=d#-t-a-s=n",
           notes.align = "l",
-          title="\\textbf{Models of Scandal Target Affect}",
-          omit = "response_wave_ID",
+          apply.p = function(p) { h2.m.df$p.value.adj[h2.m.df$p.value == p][1] },
+          notes =  c("\\textit{Notes:} $^{.}$ $p \\cdot r/K < .1$ * $p \\cdot r/K < .05$ ** $p \\cdot r/K < .01$ *** $p \\cdot r/K < .001$",
+                     "Reference category for clip type is \\texttt{control}."),
+          notes.append = FALSE,
+          title="\\textbf{Models of Scandal Target Affect in Incidental Exposure Experiment}",
+          # omit = "response_wave_ID",
           add.lines = list(c("Weighted?", "", "\\checkmark", "", "", "\\checkmark","","\\checkmark"),
                            c("Low-Quality Dropped?","","","\\checkmark","","","\\checkmark","\\checkmark")),
-          notes = c("\\textit{Notes}: Reference category for medium is Control."),
           covariate.labels = c("Video",
                                "Audio",
                                "Text",
                                "Skit",
                                "Attack Ad",
-                               "Info Provided",
+                               "Information",
                                "On Mobile",
                                "Age 65+",
                                "High School", "College", "Postgrad",
                                "Independent PID", "Republican PID",
-                               "CRT",
+                               "C.R.",
                                "Male",
                                "Political Knowledge",
                                "Internet Usage",
                                "Ambivalent Sexism"),
-          dep.var.labels = c("\\normalsize Elizabeth Warren Feeling Thermometer"),
+          dep.var.labels = c("\\normalsize Elizabeth Warren Affect Thermometer"),
           omit.stat=c("f", "ser"),
           column.sep.width = "-2pt",
           font.size = "footnotesize",
@@ -502,9 +547,9 @@ stargazer(h2.m,
 ### manipulation/placebo checks
 (h2.m.adj.part <- lm(post_favor_Warren ~ treat + response_wave_ID + PID*crt, dat)); summary(h2.m.adj.part);
 
-plcbs_df <- tidy(h2.m) %>% mutate(model="without controls") %>%
+plcbs_df <- tidy(h2.m) %>% mutate(model="Without controls") %>%
     bind_rows(tidy(h2.m.adj.part) %>% mutate(model="PID controls")) %>%
-    bind_rows(tidy(h2.m.adj) %>% mutate(model="full controls")) %>%
+    bind_rows(tidy(h2.m.adj) %>% mutate(model="Full controls")) %>%
     filter(grepl("treat", term)) %>%
     filter(term != "(Intercept)") %>%
     mutate(term = replace(term, term == "treattext", "text")) %>%
@@ -522,9 +567,9 @@ for (favor in c("post_favor_Biden","post_favor_Klobuchar","post_favor_Sanders","
     (h2.plcb.m.adj.part <- lm(post_favor_ ~ treat + response_wave_ID + PID*crt, dat, weights=weight)); summary(h2.plcb.m.adj.part);
     (h2.plcb.m.adj <- lm(post_favor_ ~ treat + response_wave_ID + exp_1_prompt + meta_OS + age_65 + educ + PID*crt + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat, weights=weight)); summary(h2.plcb.m.adj);
     
-    plcb_df <- tidy(h2.plcb.m) %>% mutate(model="without controls") %>%
+    plcb_df <- tidy(h2.plcb.m) %>% mutate(model="Without controls") %>%
         bind_rows(tidy(h2.plcb.m.adj.part) %>% mutate(model="PID controls")) %>%
-        bind_rows(tidy(h2.plcb.m.adj) %>% mutate(model="full controls")) %>%
+        bind_rows(tidy(h2.plcb.m.adj) %>% mutate(model="Full controls")) %>%
         filter(grepl("treat", term)) %>%
         filter(term != "(Intercept)") %>%
         mutate(term = replace(term, term == "treattext", "text")) %>%
@@ -548,13 +593,13 @@ plcbs_df %>%
     ggplot(aes(x=target, y=estimate, ymin=estimate-1.96*std.error, ymax=estimate+1.96*std.error, group=term, color=sig)) +
     geom_pointrange(position = position_dodge(width=0.5), size=1) +
     geom_text(aes(label = term, y = estimate+1.96*std.error+2), position = position_dodge(width=0.5), color="black") +
-    coord_flip() +
+    coord_flip() +z
     geom_hline(yintercept=0, lty=2, alpha=0.5) + 
     geom_vline(xintercept=4.5, lty=1, alpha=0.5) +
-    ylab("effect on feeling thermometer") + xlab("feeling thermometer target") +
+    ylab("Effect on affect thermometer") + xlab("Affect thermometer target") +
     facet_wrap(. ~ model) + 
     scale_color_identity() +
-    theme_bw() + 
+    theme_linedraw2 + 
         theme(
             legend.position = "none",
             axis.text.x = element_text(size=20),
@@ -587,24 +632,25 @@ dat %>%
     mutate(treat = replace(treat, treat == "ad", "ad")) %>%
     mutate(belief = gsub("believed_|1", "", belief)) %>%
     mutate(belief = replace(belief, belief == "true", "real")) %>%
+    filter(!(belief == "real")) %>%
+    mutate(belief = stringr::str_to_title(belief)) %>%
     mutate(treat = fct_relevel(as.factor(treat), "ad", after=0)) %>%
     mutate(treat = fct_relevel(as.factor(treat), "skit", after=5)) %>%
     mutate(belief = fct_relevel(as.factor(belief), "real", after=0)) %>%
-    filter(!(treat == "ad" & belief == "real")) %>%
     ggplot(aes(x=treat, y=`%`)) + 
     facet_grid(~ belief, scales="free_x") +
     geom_text(aes(label=scales::percent(round(`%`,2), accuracy=1), y=`%`+0.05)) +
     geom_bar(stat="identity") +
     scale_y_continuous(labels = scales::percent_format(accuracy = 1)) + 
     geom_vline(aes(xintercept=ifelse(belief != "real", 1.5, -1)), lty=2, size=.5, alpha=0.8) +
-    ylab("% believe clipping was...") + xlab("") +
-    theme_bw() + 
+    ylab("% somewhat/strongly believe clipping was...") + xlab("") +
+    theme_linedraw2 + 
         theme(
             axis.text.x = element_text(size=10),
             axis.text.y = element_text(size=12),
             strip.text = element_text(size=18),
             axis.title.x = element_text(size=16),
-            axis.title.y = element_text(size=16)
+            axis.title.y = element_text(size=8)
         )
 ggsave("figures/firststage_belief_other.pdf", width=8, height=3.05)
 if(SHOW_PDFS) system("open figures/firststage_belief_other.pdf") ## this is technically not pre-registered
@@ -627,25 +673,39 @@ if(SHOW_PDFS) system("open figures/firststage_belief_other.pdf") ## this is tech
 ## (overall, offline, online-only, social media)
 
 ## @SB: no effect
-(h3aI.m <- lm(post_media_trust ~ exp_1_prompt, dat)); summary(h3aI.m); 
-(h3aI.m.adj <- lm(post_media_trust ~ exp_1_prompt + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage, dat)); summary(h3aI.m.adj); 
-(h3aI.m.wt <- lm(post_media_trust ~ exp_1_prompt, dat, weights=weight)); summary(h3aI.m.wt); 
-(h3aI.m.adj.wt <- lm(post_media_trust ~ exp_1_prompt + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage, dat, weights=weight)); summary(h3aI.m.adj.wt); 
-(h3aI.m.hq <- lm(post_media_trust ~ exp_1_prompt, dat%>%filter(!lowq))); summary(h3aI.m.hq); 
-(h3aI.m.adj.hq <- lm(post_media_trust ~ exp_1_prompt + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage, dat%>%filter(!lowq))); summary(h3aI.m.adj.hq); 
-(h3aI.m.hq.wt <- lm(post_media_trust ~ exp_1_prompt, dat%>%filter(!lowq), weights=weight)); summary(h3aI.m.hq); 
-(h3aI.m.adj.hq.wt <- lm(post_media_trust ~ exp_1_prompt + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage, dat%>%filter(!lowq), weights=weight)); summary(h3aI.m.adj.hq); 
+(h3aI.m <- lm(post_media_trust ~ exp_1_prompt, dat%>%filter(!lowq)%>%filter(treat!="skit",treat!="ad"))); summary(h3aI.m); 
+(h3aI.m.adj <- lm(post_media_trust ~ exp_1_prompt + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage, dat%>%filter(!lowq)%>%filter(treat!="skit",treat!="ad"))); summary(h3aI.m.adj); 
+(h3aI.m.wt <- lm(post_media_trust ~ exp_1_prompt, dat%>%filter(!lowq)%>%filter(treat!="skit",treat!="ad"), weights=weight)); summary(h3aI.m.wt); 
+(h3aI.m.adj.wt <- lm(post_media_trust ~ exp_1_prompt + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage, dat%>%filter(!lowq)%>%filter(treat!="skit",treat!="ad"), weights=weight)); summary(h3aI.m.adj.wt); 
+(h3aI.m.hq <- lm(post_media_trust ~ exp_1_prompt, dat%>%filter(!lowq)%>%filter(treat!="skit",treat!="ad"))); summary(h3aI.m.hq); 
+(h3aI.m.adj.hq <- lm(post_media_trust ~ exp_1_prompt + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage, dat%>%filter(!lowq)%>%filter(treat!="skit",treat!="ad"))); summary(h3aI.m.adj.hq); 
+(h3aI.m.hq.wt <- lm(post_media_trust ~ exp_1_prompt, dat%>%filter(!lowq)%>%filter(treat!="skit",treat!="ad"), weights=weight)); summary(h3aI.m.hq); 
+(h3aI.m.adj.hq.wt <- lm(post_media_trust ~ exp_1_prompt + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage, dat%>%filter(!lowq)%>%filter(treat!="skit",treat!="ad"), weights=weight)); summary(h3aI.m.adj.hq); 
 
-(h3aI.m.onl <- lm(post_media_trust1 ~ exp_1_prompt, dat)); summary(h3aI.m.onl); 
-(h3aI.m.onl.adj <- lm(post_media_trust1 ~ exp_1_prompt + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage, dat)); summary(h3aI.m.onl.adj); 
+(h3aI.m.onl <- lm(post_media_trust1 ~ exp_1_prompt, dat%>%filter(!lowq)%>%filter(treat!="skit",treat!="ad"))); summary(h3aI.m.onl); 
+(h3aI.m.onl.adj <- lm(post_media_trust1 ~ exp_1_prompt + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage, dat%>%filter(!lowq)%>%filter(treat!="skit",treat!="ad"))); summary(h3aI.m.onl.adj); 
 
-(h3aI.m.off <- lm(post_media_trust2 ~ exp_1_prompt, dat)); summary(h3aI.m.off); 
-(h3aI.m.off.adj <- lm(post_media_trust2 ~ exp_1_prompt + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage, dat)); summary(h3aI.m.off.adj); 
+(h3aI.m.off <- lm(post_media_trust2 ~ exp_1_prompt, dat%>%filter(!lowq)%>%filter(treat!="skit",treat!="ad"))); summary(h3aI.m.off); 
+(h3aI.m.off.adj <- lm(post_media_trust2 ~ exp_1_prompt + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage, dat%>%filter(!lowq)%>%filter(treat!="skit",treat!="ad"))); summary(h3aI.m.off.adj); 
 
-(h3aI.m.soc <- lm(post_media_trust3 ~ exp_1_prompt, dat)); summary(h3aI.m.soc); 
-(h3aI.m.soc.adj <- lm(post_media_trust3 ~ exp_1_prompt + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage, dat)); summary(h3aI.m.soc.adj); 
+(h3aI.m.soc <- lm(post_media_trust3 ~ exp_1_prompt, dat%>%filter(!lowq)%>%filter(treat!="skit",treat!="ad"))); summary(h3aI.m.soc); 
+(h3aI.m.soc.adj <- lm(post_media_trust3 ~ exp_1_prompt + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage, dat%>%filter(!lowq)%>%filter(treat!="skit",treat!="ad"))); summary(h3aI.m.soc.adj); 
+
 
 ### regression tables
+
+h3aI.m.df <- bind_rows(
+    tidy(h3aI.m),
+    tidy(h3aI.m.adj),
+    tidy(h3aI.m.wt),
+    tidy(h3aI.m.adj.wt),
+    tidy(h3aI.m.hq),
+    tidy(h3aI.m.adj.hq),
+    tidy(h3aI.m.hq.wt),
+    tidy(h3aI.m.adj.hq.wt)
+)
+h3aI.m.df$p.value.adj <- (h3aI.m.df$p.value/order(h3aI.m.df$p.value))*nrow(h3aI.m.df) ##BHq corrections
+
 stargazer(h3aI.m,
           h3aI.m.wt,
           h3aI.m.hq,
@@ -654,26 +714,41 @@ stargazer(h3aI.m,
           h3aI.m.adj.hq,
           h3aI.m.adj.hq.wt,
           header = FALSE,
+          apply.p = function(p) { h3aI.m.df$p.value.adj[h3aI.m.df$p.value == p][1] },
+          notes =  c("\\textit{Notes:} $^{.}$ $p \\cdot r/K < .1$ * $p \\cdot r/K < .05$ ** $p \\cdot r/K < .01$ *** $p \\cdot r/K < .001$",
+                     "Respondents in \\texttt{skit} and \\texttt{ad} conditions are excluded."),
           no.space = TRUE,
           digits=2,
           table.layout ="=ld#-t-a-s=n",
           notes.append = FALSE,
           notes.align = "l",
           # notes = c("$^{*}$p $<$ 0.1; $^{**}$p $<$ .05; $^{***}$p $<$ .01"),
-          title="\\textbf{Models of Deepfake Salience (via Information Provision) and Media Trust}",
+          title="\\textbf{Models of Information Provision and Media Trust in Incidental Exposure Experiment}",
           add.lines = list(c("Weighted?", "", "\\checkmark", "", "", "\\checkmark","","\\checkmark"),
                            c("Low-Quality Dropped?","","","\\checkmark","","","\\checkmark","\\checkmark"),
                            c("Controls?","","","","\\checkmark","\\checkmark","\\checkmark","\\checkmark")),    
           omit = c("response_wave_ID", COVARS),
-          notes = c("\\textit{Notes}: Same controls used as in previous models."),
-          covariate.labels = c("Info Provided"),
+          # notes = c("\\textit{Notes}: Same controls used as in previous models."),
+          covariate.labels = c("Information"),
           dep.var.labels = c("\\normalsize Trust in Media (Combined Index)"),
           omit.stat=c("f", "ser"),
           column.sep.width = "-2pt",
           font.size = "footnotesize",
-          style = "apsr",
+          # style = "apsr",
           label = "firststage_mediatrust",
           out="tables/firststage_mediatrust.tex") ##NEED TO MANUALLY ADJUST TO MATCH FORMAT OF REST
+
+h3aI.m.df2 <- bind_rows(
+    tidy(h3aI.m.onl),
+    tidy(h3aI.m.onl.adj),
+    tidy(h3aI.m.off),
+    tidy(h3aI.m.off.adj),
+    tidy(h3aI.m.soc),
+    tidy(h3aI.m.soc.adj),
+    tidy(h3aI.m),
+    tidy(h3aI.m.adj)
+)
+h3aI.m.df2$p.value.adj <- (h3aI.m.df2$p.value/order(h3aI.m.df2$p.value))*nrow(h3aI.m.df2) ##BHq corrections
 
 stargazer(h3aI.m.onl,
           h3aI.m.onl.adj,
@@ -684,17 +759,19 @@ stargazer(h3aI.m.onl,
           h3aI.m, 
           h3aI.m.adj,
           header = FALSE,
+          apply.p = function(p) { h3aI.m.df$p.value.adj[h3aI.m.df$p.value == p][1] },
+          notes =  c("$^{.}$ $p \\cdot r/K < .1$ * $p \\cdot r/K < .05$ ** $p \\cdot r/K < .01$ *** $p \\cdot r/K < .001$",
+                     "Respondents in \\texttt{skit} and \\texttt{ad} conditions are excluded."),
           no.space = TRUE,
           digits=2,
           table.layout ="=ld#-t-a-s=n",
           notes.append = FALSE,
           notes.align = "l",
           # notes = c("$^{*}$p $<$ 0.1; $^{**}$p $<$ .05; $^{***}$p $<$ .01"),
-          title="\\textbf{Models of Deepfake Salience (via Information Provision) and Media Trust Across Sources}",
+          title="\\textbf{Models of Information Provision and Media Trust Across Sources in Incidental Exposure Experiment}",
           add.lines = list(c("Controls?","","\\checkmark","","\\checkmark","","\\checkmark","","\\checkmark")),    
           omit = c("response_wave_ID", COVARS),
-          notes = c("Reference categories for medium and age are Video and 18-30 respectively."),
-          covariate.labels = c("Info Provided"),
+          covariate.labels = c("Information"),
           dep.var.caption  = "\\normalsize Trust in...",
           dep.var.labels = c("Offline Media", "Online Media", "Social Media", "Combined Index"),
           omit.stat=c("f", "ser"),
@@ -710,27 +787,39 @@ stargazer(h3aI.m.onl,
 ##      offline media, NOT online media; may not be moving social media trust 
 ##      becauase there's a floor there -- no heterogeneity by medium
 
-(h3aII.m <- lm(post_media_trust ~ believed_true*I(treat=="video"), dat %>% filter(!is.na(treat), exp_1_prompt_control))); summary(h3aII.m); 
-(h3aII.m1 <- lm(post_media_trust1 ~ believed_true*I(treat=="video"), dat %>% filter(!is.na(treat), exp_1_prompt_control))); summary(h3aII.m1); 
-(h3aII.m2 <- lm(post_media_trust2 ~ believed_true*I(treat=="video"), dat %>% filter(!is.na(treat), exp_1_prompt_control))); summary(h3aII.m2); 
-(h3aII.m3 <- lm(post_media_trust3 ~ believed_true*I(treat=="video"), dat %>% filter(!is.na(treat), exp_1_prompt_control))); summary(h3aII.m3); 
+(h3aII.m <- lm(post_media_trust ~ believed_true*I(treat=="video"), dat %>% filter(!is.na(treat), treat%in%c("audio","video","text","control"), exp_1_prompt_control))); summary(h3aII.m); 
+(h3aII.m1 <- lm(post_media_trust1 ~ believed_true*I(treat=="video"), dat %>% filter(!is.na(treat), treat%in%c("audio","video","text","control"), exp_1_prompt_control))); summary(h3aII.m1); 
+(h3aII.m2 <- lm(post_media_trust2 ~ believed_true*I(treat=="video"), dat %>% filter(!is.na(treat), treat%in%c("audio","video","text","control"), exp_1_prompt_control))); summary(h3aII.m2); 
+(h3aII.m3 <- lm(post_media_trust3 ~ believed_true*I(treat=="video"), dat %>% filter(!is.na(treat), treat%in%c("audio","video","text","control"), exp_1_prompt_control))); summary(h3aII.m3); 
 
-(h3aII.m.adj <- lm(post_media_trust ~ believed_true*I(treat=="video")  + response_wave_ID + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage, dat %>% filter(!is.na(treat), exp_1_prompt_control))); summary(h3aII.m.adj); 
-(h3aII.m.adj.wt <- lm(post_media_trust ~ believed_true*I(treat=="video")  + response_wave_ID + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage, dat %>% filter(!is.na(treat), exp_1_prompt_control), weights=weight)); summary(h3aII.m.adj.wt); 
-(h3aII.m.adj.hq <- lm(post_media_trust ~ believed_true*I(treat=="video")  + response_wave_ID + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage, dat %>% filter(!is.na(treat), exp_1_prompt_control, !lowq))); summary(h3aII.m.adj.hq); 
-(h3aII.m.adj.hq.wt <- lm(post_media_trust ~ believed_true*I(treat=="video")  + response_wave_ID + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage, dat %>% filter(!is.na(treat), exp_1_prompt_control, !lowq), weights=weight)); summary(h3aII.m.adj.hq.wt); 
-(h3aII.m.adj.b1 <- lm(post_media_trust ~ believed_true*I(treat=="video")  + response_wave_ID + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage, dat %>% filter(!is.na(treat), exp_1_prompt_control) %>% mutate(believed_true=believed1_true))); summary(h3aII.m.adj.b1); 
-(h3aII.m.adj.hq.wt.b1 <- lm(post_media_trust ~ believed_true*I(treat=="video")  + response_wave_ID + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage, dat %>% filter(!is.na(treat), exp_1_prompt_control) %>% mutate(believed_true=believed1_true,!lowq), weights=weight)); summary(h3aII.m.adj.hq.wt.b1); 
+(h3aII.m.adj <- lm(post_media_trust ~ believed_true*I(treat=="video")  + response_wave_ID + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage, dat %>% filter(!is.na(treat), treat%in%c("audio","video","text","control"), exp_1_prompt_control))); summary(h3aII.m.adj); 
+(h3aII.m.adj.wt <- lm(post_media_trust ~ believed_true*I(treat=="video")  + response_wave_ID + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage, dat %>% filter(!is.na(treat), treat%in%c("audio","video","text","control"), exp_1_prompt_control), weights=weight)); summary(h3aII.m.adj.wt); 
+(h3aII.m.adj.hq <- lm(post_media_trust ~ believed_true*I(treat=="video")  + response_wave_ID + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage, dat %>% filter(!is.na(treat), treat%in%c("audio","video","text","control"), exp_1_prompt_control, !lowq))); summary(h3aII.m.adj.hq); 
+(h3aII.m.adj.hq.wt <- lm(post_media_trust ~ believed_true*I(treat=="video")  + response_wave_ID + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage, dat %>% filter(!is.na(treat), treat%in%c("audio","video","text","control"), exp_1_prompt_control, !lowq), weights=weight)); summary(h3aII.m.adj.hq.wt); 
+(h3aII.m.adj.b1 <- lm(post_media_trust ~ believed_true*I(treat=="video")  + response_wave_ID + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage, dat %>% filter(!is.na(treat), treat%in%c("audio","video","text","control"), exp_1_prompt_control) %>% mutate(believed_true=believed1_true))); summary(h3aII.m.adj.b1); 
+(h3aII.m.adj.hq.wt.b1 <- lm(post_media_trust ~ believed_true*I(treat=="video")  + response_wave_ID + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage, dat %>% filter(!is.na(treat), treat%in%c("audio","video","text","control"), exp_1_prompt_control) %>% mutate(believed_true=believed1_true,!lowq), weights=weight)); summary(h3aII.m.adj.hq.wt.b1); 
 
-(h3aII.m1.adj <- lm(post_media_trust1 ~ believed_true*I(treat=="video") + response_wave_ID + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage, dat %>% filter(!is.na(treat), exp_1_prompt_control))); summary(h3aII.m1.adj); 
-(h3aII.m1.adj.b1 <- lm(post_media_trust1 ~ believed_true*I(treat=="video") + response_wave_ID + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage, dat %>% filter(!is.na(treat), exp_1_prompt_control) %>% mutate(believed_true=believed1_true))); summary(h3aII.m1.adj.b1); 
-(h3aII.m2.adj <- lm(post_media_trust2 ~ believed_true*I(treat=="video") + response_wave_ID + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage, dat %>% filter(!is.na(treat), exp_1_prompt_control))); summary(h3aII.m2.adj); 
-(h3aII.m2.adj.b1 <- lm(post_media_trust2 ~ believed_true*I(treat=="video") + response_wave_ID + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage, dat %>% filter(!is.na(treat), exp_1_prompt_control) %>% mutate(believed_true=believed1_true))); summary(h3aII.m2.adj.b1); 
-(h3aII.m3.adj <- lm(post_media_trust3 ~ believed_true*I(treat=="video") + response_wave_ID + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage, dat %>% filter(!is.na(treat), exp_1_prompt_control))); summary(h3aII.m3.adj); 
-(h3aII.m3.adj.b1 <- lm(post_media_trust3 ~ believed_true*I(treat=="video") + response_wave_ID + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage, dat %>% filter(!is.na(treat), exp_1_prompt_control) %>% mutate(believed_true=believed1_true))); summary(h3aII.m3.adj.b1); 
+(h3aII.m1.adj <- lm(post_media_trust1 ~ believed_true*I(treat=="video") + response_wave_ID + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage, dat %>% filter(!is.na(treat), treat%in%c("audio","video","text","control"), exp_1_prompt_control))); summary(h3aII.m1.adj); 
+(h3aII.m1.adj.b1 <- lm(post_media_trust1 ~ believed_true*I(treat=="video") + response_wave_ID + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage, dat %>% filter(!is.na(treat), treat%in%c("audio","video","text","control"), exp_1_prompt_control) %>% mutate(believed_true=believed1_true))); summary(h3aII.m1.adj.b1); 
+(h3aII.m2.adj <- lm(post_media_trust2 ~ believed_true*I(treat=="video") + response_wave_ID + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage, dat %>% filter(!is.na(treat), treat%in%c("audio","video","text","control"), exp_1_prompt_control))); summary(h3aII.m2.adj); 
+(h3aII.m2.adj.b1 <- lm(post_media_trust2 ~ believed_true*I(treat=="video") + response_wave_ID + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage, dat %>% filter(!is.na(treat), treat%in%c("audio","video","text","control"), exp_1_prompt_control) %>% mutate(believed_true=believed1_true))); summary(h3aII.m2.adj.b1); 
+(h3aII.m3.adj <- lm(post_media_trust3 ~ believed_true*I(treat=="video") + response_wave_ID + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage, dat %>% filter(!is.na(treat), treat%in%c("audio","video","text","control"), exp_1_prompt_control))); summary(h3aII.m3.adj); 
+(h3aII.m3.adj.b1 <- lm(post_media_trust3 ~ believed_true*I(treat=="video") + response_wave_ID + meta_OS + age_65 + educ + PID + crt + I(gender=="Male") + polknow + internet_usage, dat %>% filter(!is.na(treat), treat%in%c("audio","video","text","control"), exp_1_prompt_control) %>% mutate(believed_true=believed1_true))); summary(h3aII.m3.adj.b1); 
 
 
 ### regression tables
+
+h3aII.m.df <- bind_rows(
+    tidy(h3aII.m),
+    tidy(h3aII.m.adj),
+    tidy(h3aII.m.adj.b1),
+    tidy(h3aII.m.adj.wt),
+    tidy(h3aII.m.adj.hq),
+    tidy(h3aII.m.adj.hq.wt),
+    tidy(h3aII.m.adj.hq.wt.b1)
+)
+h3aII.m.df$p.value.adj <- (h3aII.m.df$p.value/order(h3aII.m.df$p.value))*nrow(h3aII.m.df) ##BHq corrections
+
 stargazer(h3aII.m,
           h3aII.m.adj,
           h3aII.m.adj.b1,
@@ -743,25 +832,38 @@ stargazer(h3aII.m,
           digits=2,
           table.layout ="=ld#-t-a-s=n",
           notes.append = FALSE,
+          apply.p = function(p) { h3aII.m.df$p.value.adj[h3aII.m.df$p.value == p][1] },
+          notes =  c("\\textit{Notes:} $^{.}$ $p \\cdot r/K < .1$ * $p \\cdot r/K < .05$ ** $p \\cdot r/K < .01$ *** $p \\cdot r/K < .001$",
+                     "Respondents in \\texttt{skit} and \\texttt{ad} conditions are excluded."),
           notes.align = "l",
             add.lines = list(
                              c("Weighted?","","","","\\checkmark","","\\checkmark","\\checkmark"),
                              c("Low-Quality Dropped?","","","","","\\checkmark","\\checkmark","\\checkmark"),
                              c("Controls?","","\\checkmark","\\checkmark","\\checkmark","\\checkmark","\\checkmark","\\checkmark"),
-                             c("Belief Binarized?","","","\\checkmark","","","","\\checkmark")),    
-          title="\\textbf{Models of Deepfake Salience (via Recognition) and Media Trust Across Sources}",
+                             c("Credibility Binarized?","","","\\checkmark","","","","\\checkmark")),    
+          title="\\textbf{Models of Deepfake Exposure, Credibility, and Media Trust Across Sources in Incidental Exposure Experiment}",
           omit = c(COVARS, "response_wave_ID"),
-          notes = c("\\textit{Notes}: Respondents subset to those exposed to a clipping and not provided with info before",
-                    "exposure. Estimates are larger but similar in magnitude when excluding controls."),
-          covariate.labels = c("Believed",
+          covariate.labels = c("Credible",
                                "Video",
-                               "Believed x Video"),
+                               "Credible x Video"),
           dep.var.labels  = "\\normalsize Trust in Media (Combined Index)",
           omit.stat=c("f", "ser"),
           column.sep.width = "-2pt",
           font.size = "footnotesize",
           style = "apsr",
           out="tables/firststage_mediatrust3.tex") ##NEED TO MANUALLY ADJUST TO MATCH FORMAT OF REST
+
+h3aII.m.df2 <- bind_rows(
+    tidy(h3aII.m1.adj),
+    tidy(h3aII.m1.adj.b1),
+    tidy(h3aII.m2.adj),
+    tidy(h3aII.m2.adj.b1),
+    tidy(h3aII.m3.adj),
+    tidy(h3aII.m3.adj.b1),
+    tidy(h3aII.m.adj)
+)
+h3aII.m.df2$p.value.adj <- (h3aII.m.df2$p.value/order(h3aII.m.df2$p.value))*nrow(h3aII.m.df2) ##BHq corrections
+
 
 stargazer(h3aII.m1.adj,
           h3aII.m1.adj.b1,
@@ -775,17 +877,18 @@ stargazer(h3aII.m1.adj,
           no.space = TRUE,
           digits=2,
           table.layout ="=ld#-t-a-s=n",
+          apply.p = function(p) { h3aII.m.df2$p.value.adj[h3aII.m.df2$p.value == p][1] },
+          notes =  c("\\textit{Notes:} $^{.}$ $p \\cdot r/K < .1$ * $p \\cdot r/K < .05$ ** $p \\cdot r/K < .01$ *** $p \\cdot r/K < .001$",
+                     "Respondents in \\texttt{skit} and \\texttt{ad} conditions are excluded."),
           notes.append = FALSE,
           notes.align = "l",
             add.lines = list(c("Controls?","\\checkmark","\\checkmark","\\checkmark","\\checkmark","\\checkmark","\\checkmark","\\checkmark","\\checkmark"),
-                             c("Belief Binarized?","", "\\checkmark","","\\checkmark","","\\checkmark","","\\checkmark")),    
-          title="\\textbf{Models of Deepfake Salience (via Recognition) and Media Trust Across Sources}",
+                             c("Credibility Binarized?","", "\\checkmark","","\\checkmark","","\\checkmark","","\\checkmark")),    
+          title="\\textbf{Models of Deepfake Exposure, Credibility, and Media Trust Across Sources in Incidental Exposure Experiment}",
           omit = c(COVARS, "response_wave_ID"),
-          notes = c("\\textit{Notes}: Respondents subset to those exposed to a clipping and not provided with info before",
-                    "exposure. Estimates are larger but similar in magnitude when excluding controls."),
-          covariate.labels = c("Believed",
+          covariate.labels = c("Credibility",
                                "Video",
-                               "Believed x Video"),
+                               "Credibility x Video"),
           dep.var.caption  = "\\normalsize Trust in...",
           dep.var.labels = c("Offline Media", "Online Media", "Social Media", "Combined Index"),
           omit.stat=c("f", "ser"),
@@ -837,15 +940,15 @@ dat %>%
               ymax=weighted.mean(believed_true,weight,na.rm=T)+1.96*weighted.sd(believed_true,weight,na.rm=T)/sqrt(n())) %>%
     ungroup() %>%
     mutate(exp_1_prompt = as.character(exp_1_prompt)) %>%
-    mutate(exp_1_prompt = replace(exp_1_prompt, exp_1_prompt == "info", "information")) %>%
-    mutate(exp_1_prompt = replace(exp_1_prompt, exp_1_prompt == "control", "no information")) %>%
-    mutate(exp_1_prompt = fct_relevel(as.factor(exp_1_prompt), "no information", after=0)) %>%
+    mutate(exp_1_prompt = replace(exp_1_prompt, exp_1_prompt == "info", "Information")) %>%
+    mutate(exp_1_prompt = replace(exp_1_prompt, exp_1_prompt == "control", "No information")) %>%
+    mutate(exp_1_prompt = fct_relevel(as.factor(exp_1_prompt), "No information", after=0)) %>%
     ggplot(aes(x=exp_1_prompt, y=y, ymin=ymin, ymax=ymax)) +
     geom_bar(stat="identity") +
-    ylab("level of deception") + xlab("information condition") +
+    ylab("Credibility confidence") + xlab("") +
     geom_errorbar(position=position_dodge(.9), width=.2, size=1) +
     ggtitle(paste0("n_control=",n0," | n_info=",n1)) +
-    theme_bw() + 
+    theme_linedraw2 + 
         theme(
             title = element_text(size=5),
             axis.text.x = element_text(size=12),
@@ -863,22 +966,22 @@ dat %>%
     summarise(y=weighted.mean(believed1_true,weight,na.rm=T)) %>%
     ungroup() %>%
     mutate(exp_1_prompt = as.character(exp_1_prompt)) %>%
-    mutate(exp_1_prompt = replace(exp_1_prompt, exp_1_prompt == "info", "information")) %>%
-    mutate(exp_1_prompt = replace(exp_1_prompt, exp_1_prompt == "control", "no information")) %>%
-    mutate(exp_1_prompt = fct_relevel(as.factor(exp_1_prompt), "no information", after=0)) %>%
+    mutate(exp_1_prompt = replace(exp_1_prompt, exp_1_prompt == "info", "Information")) %>%
+    mutate(exp_1_prompt = replace(exp_1_prompt, exp_1_prompt == "control", "No information")) %>%
+    mutate(exp_1_prompt = fct_relevel(as.factor(exp_1_prompt), "No information", after=0)) %>%
     ggplot(aes(x=exp_1_prompt, y=y)) +
-    geom_bar(stat="identity") +
-    ylab("% believe clipping is real") + xlab("information condition") +
+    geom_bar(stat="identity") + xlab("") +
+    ylab("% somewhat/strongly confident in credibility") +
     scale_y_continuous(labels = scales::percent_format(accuracy = 1)) + 
     ggtitle(paste0("n_control=",n0," | n_info=",n1)) +
-    theme_bw() + 
+    theme_linedraw2 + 
         theme(
             title = element_text(size=5),
             axis.text.x = element_text(size=12),
             axis.text.y = element_text(size=12),
             strip.text = element_text(size=16),
             axis.title.x = element_text(size=14),
-            axis.title.y = element_text(size=14)
+            axis.title.y = element_text(size=8)
         )
 ggsave("figures/firststage_belief_byinfo_binary.pdf", width=4, height=3.05)
 if(SHOW_PDFS) system("open figures/firststage_belief_byinfo_binary.pdf")
@@ -886,16 +989,16 @@ if(SHOW_PDFS) system("open figures/firststage_belief_byinfo_binary.pdf")
 ### visualise by info condition and medium
 dat.viz <- dat %>% 
     filter(!is.na(exp_1_prompt)) %>%
-    filter(!is.na(treat), treat != "ad", treat != "control") %>%
+    filter(!is.na(treat), treat != "ad", treat != "control", treat != "skit") %>%
     group_by(exp_1_prompt, treat) %>%
     summarise(y=weighted.mean(believed_true,weight,na.rm=T),
               ymin=weighted.mean(believed_true,weight,na.rm=T)-1.96*weighted.sd(believed_true,weight,na.rm=T)/sqrt(n()),
               ymax=weighted.mean(believed_true,weight,na.rm=T)+1.96*weighted.sd(believed_true,weight,na.rm=T)/sqrt(n())) %>%
     ungroup() %>%
     mutate(exp_1_prompt = as.character(exp_1_prompt)) %>%
-    mutate(exp_1_prompt = replace(exp_1_prompt, exp_1_prompt == "info", "information provided")) %>%
-    mutate(exp_1_prompt = replace(exp_1_prompt, exp_1_prompt == "control", "no information provided")) %>%
-    mutate(exp_1_prompt = fct_relevel(as.factor(exp_1_prompt), "no information provided", after=0)) %>%
+    mutate(exp_1_prompt = replace(exp_1_prompt, exp_1_prompt == "info", "Information")) %>%
+    mutate(exp_1_prompt = replace(exp_1_prompt, exp_1_prompt == "control", "No information")) %>%
+    mutate(exp_1_prompt = fct_relevel(as.factor(exp_1_prompt), "No information", after=0)) %>%
     mutate(treat = as.character(treat)) %>%
     mutate(treat = replace(treat, treat == "text", "text")) %>%
     mutate(treat = replace(treat, treat == "audio", "audio")) %>%
@@ -909,14 +1012,14 @@ dat.viz <- dat %>%
 dat.viz %>%
     ggplot(aes(x=treat, y=y, ymin=ymin, ymax=ymax)) +
     geom_bar(stat="identity") +
-    ylab("level of deception") + xlab("presentation of scandal") +
+    ylab("Credibility confidence") + xlab("Scandal clipping") +
     geom_errorbar(position=position_dodge(.9), width=.2, size=1) +
     scale_y_continuous(limits=c(2,3.75),oob = scales::rescale_none) +
     facet_wrap(~exp_1_prompt) +
     geom_hline(data = dat.viz %>% group_by(exp_1_prompt) %>% summarise(yint=mean(y)),
                aes(yintercept = yint), size=1, lty=1, color="red") +
     ggtitle(paste0("n_control=",n0," | n_info=",n1)) +
-    theme_bw() + 
+    theme_linedraw2 + 
         theme(
             title = element_text(size=5),
             axis.text.x = element_text(size=12),
@@ -930,56 +1033,121 @@ if(SHOW_PDFS) system("open figures/firststage_belief_byinfo2.pdf")
 
 dat.viz <- dat %>% 
     filter(!is.na(exp_1_prompt)) %>%
-    filter(!is.na(treat), treat != "ad", treat != "control") %>%
+    filter(!is.na(treat), treat != "ad", treat != "control", treat != "skit") %>%
     group_by(exp_1_prompt, treat) %>%
     summarise(y=weighted.mean(believed1_true,weight,na.rm=T)) %>%
     ungroup() %>%
     mutate(exp_1_prompt = as.character(exp_1_prompt)) %>%
-    mutate(exp_1_prompt = replace(exp_1_prompt, exp_1_prompt == "info", "information provided")) %>%
-    mutate(exp_1_prompt = replace(exp_1_prompt, exp_1_prompt == "control", "no information provided")) %>%
-    mutate(exp_1_prompt = fct_relevel(as.factor(exp_1_prompt), "no information provided", after=0)) %>%
+    mutate(exp_1_prompt = replace(exp_1_prompt, exp_1_prompt == "info", "Information")) %>%
+    mutate(exp_1_prompt = replace(exp_1_prompt, exp_1_prompt == "control", "No information")) %>%
+    mutate(exp_1_prompt = fct_relevel(as.factor(exp_1_prompt), "No information", after=0)) %>%
     mutate(treat = as.character(treat)) %>%
     mutate(treat = replace(treat, treat == "text", "text")) %>%
     mutate(treat = replace(treat, treat == "audio", "audio")) %>%
-    mutate(treat = replace(treat, treat == "video", "video")) %>%
-    mutate(treat = replace(treat, treat == "skit", "skit")) %>%
-    mutate(treat = fct_relevel(as.factor(treat), "skit", after=5))
+    mutate(treat = replace(treat, treat == "video", "video"))
+
 
 dat.viz %>%
     ggplot(aes(x=treat, y=y)) +
     geom_bar(stat="identity") +
-    ylab("% believe clipping is real") + xlab("presentation of scandal") +
+    ylab("% somewhat/strongly confident in credibility") + xlab("Scandal clipping") +
     # scale_y_continuous(limits=c(2,3.75),oob = scales::rescale_none) +
     scale_y_continuous(labels = scales::percent_format(accuracy = 1)) + 
     facet_wrap(~exp_1_prompt) +
     geom_text(aes(label=scales::percent(round(y,2), accuracy=1), y=y+0.04)) +
     geom_hline(data = dat.viz %>% group_by(exp_1_prompt) %>% summarise(yint=mean(y)),
                aes(yintercept = yint), size=1, lty=1, color="red") +
-    theme_bw() + 
+    theme_linedraw2 + 
         theme(
             title = element_text(size=5),
             axis.text.x = element_text(size=12),
             axis.text.y = element_text(size=12),
             strip.text = element_text(size=16),
             axis.title.x = element_text(size=14),
-            axis.title.y = element_text(size=14)
+            axis.title.y = element_text(size=8)
         )
 ggsave("figures/firststage_belief_byinfo_binary2.pdf", width=8, height=3.05)
 if(SHOW_PDFS) system("open figures/firststage_belief_byinfo_binary2.pdf")
 
 
-## @SB: EXTREMELY consistent effect negative effect on deception
+## @SB: EXTREMELY consistent negative effect on deception
 # (h4.full.m <- lm(believed_true ~ exp_1_prompt*treat, dat, weights=weight)); summary(h4.full.m); 
 # (h4.full.m.adj <- lm(believed_true ~  exp_1_prompt*treat + response_wave_ID +meta_OS + age_65 + educ + PID*crt + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat, weights=weight)); summary(h4.full.m.adj);
 
-(h4.full.m.bin <- lm(believed1_true ~  exp_1_prompt*treat, dat%>%filter(treat != "ad"))); summary(h4.full.m.bin); 
-(h4.full.m.bin.wt <- lm(believed1_true ~  exp_1_prompt*treat, dat%>%filter(treat != "ad"), weights=weight)); summary(h4.full.m.bin.wt); 
-(h4.full.m.bin.hq <- lm(believed1_true ~  exp_1_prompt*treat, dat%>%filter(!lowq,treat != "ad"))); summary(h4.full.m.bin.hq); 
+(h4.full.m <- lm(believed_true ~  exp_1_prompt*treat, dat%>%filter(treat != "ad", treat != "skit"))); summary(h4.full.m); 
+(h4.full.m.wt <- lm(believed_true ~  exp_1_prompt*treat, dat%>%filter(treat != "ad", treat != "skit"), weights=weight)); summary(h4.full.m.wt); 
+(h4.full.m.hq <- lm(believed_true ~  exp_1_prompt*treat, dat%>%filter(!lowq,treat != "ad", treat != "skit"))); summary(h4.full.m.hq); 
 
-(h4.full.m.bin.adj <- lm(believed1_true ~ exp_1_prompt*treat + response_wave_ID +meta_OS + age_65 + educ + PID*crt + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat%>%filter(treat != "ad"))); summary(h4.full.m.bin.adj);
-(h4.full.m.bin.adj.wt <- lm(believed1_true ~ exp_1_prompt*treat + response_wave_ID +meta_OS + age_65 + educ + PID*crt + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat%>%filter(treat != "ad"), weights=weight)); summary(h4.full.m.bin.adj.wt);
-(h4.full.m.bin.adj.hq <- lm(believed1_true ~ exp_1_prompt*treat + response_wave_ID +meta_OS + age_65 + educ + PID*crt + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat%>%filter(!lowq,treat != "ad"))); summary(h4.full.m.bin.adj.hq);
-(h4.full.m.bin.adj.wt.hq <- lm(believed1_true ~ exp_1_prompt*treat + response_wave_ID +meta_OS + age_65 + educ + PID*crt + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat%>%filter(!lowq,treat != "ad"), weights=weight)); summary(h4.full.m.bin.adj.wt.hq);
+(h4.full.m.adj <- lm(believed_true ~ exp_1_prompt*treat +meta_OS + age_65 + educ + PID*crt + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat%>%filter(treat != "ad", treat != "skit"))); summary(h4.full.m.adj);
+(h4.full.m.adj.wt <- lm(believed_true ~ exp_1_prompt*treat +meta_OS + age_65 + educ + PID*crt + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat%>%filter(treat != "ad", treat != "skit"), weights=weight)); summary(h4.full.m.adj.wt);
+(h4.full.m.adj.hq <- lm(believed_true ~ exp_1_prompt*treat +meta_OS + age_65 + educ + PID*crt + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat%>%filter(!lowq,treat != "ad", treat != "skit"))); summary(h4.full.m.adj.hq);
+(h4.full.m.adj.wt.hq <- lm(believed_true ~ exp_1_prompt*treat +meta_OS + age_65 + educ + PID*crt + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat%>%filter(!lowq,treat != "ad", treat != "skit"), weights=weight)); summary(h4.full.m.adj.wt.hq);
+
+h4.full.m.df <- bind_rows(
+    tidy(h4.full.m),
+    tidy(h4.full.m.wt),
+    tidy(h4.full.m.hq),
+    tidy(h4.full.m.adj),
+    tidy(h4.full.m.adj.wt),
+    tidy(h4.full.m.adj.hq),
+    tidy(h4.full.m.adj.wt.hq)
+) 
+h4.full.m.df$p.value.adj <- (h4.full.m.df$p.value/order(h4.full.m.df$p.value))*nrow(h4.full.m.df) ##BHq corrections
+
+
+stargazer(h4.full.m,
+          h4.full.m.wt,
+          h4.full.m.hq,
+          h4.full.m.adj,
+          h4.full.m.adj.wt,
+          h4.full.m.adj.hq,
+          h4.full.m.adj.wt.hq,
+          header = FALSE,
+          no.space=TRUE,
+          digits=2,
+          table.layout ="=d#-t-a-s=n",
+          apply.p = function(p) { h4.full.m.df$p.value.adj[h4.full.m.df$p.value == p][1] },
+          notes =  c("\\textit{Notes:} $^{.}$ $p \\cdot r/K < .1$ * $p \\cdot r/K < .05$ ** $p \\cdot r/K < .01$ *** $p \\cdot r/K < .001$"),
+          notes.append = FALSE,
+          notes.align = "l",
+          title="\\textbf{Models of Information Provision and Credibility Confidence of Clipping in Incidental Exposure Experiment}",
+          covariate.labels = c(
+              "Information", "Audio", "Text",# "Skit", 
+              # "Attack Ad",
+              "Info x Audio", "Info x Text"#, "Info x Skit"
+              # "Info x Ad"
+          ),
+          omit = c(COVARS, "response_wave_ID"),
+          dep.var.labels = c("\\normalsize Confidence that clipping was credible [1-5]"),
+          add.lines = list(c("Weighted?", "", "\\checkmark", "", "", "\\checkmark","","\\checkmark"),
+                           c("Low-Quality Dropped?","","","\\checkmark","","","\\checkmark","\\checkmark"),
+                           c("Controls?","","","","\\checkmark","\\checkmark","\\checkmark","\\checkmark")),
+          omit.stat=c("f", "ser"),
+          column.sep.width = "1pt",
+          font.size = "footnotesize",
+          style = "apsr",
+          label="firststage_deception_byinfo",
+          out="tables/firststage_deception_byinfo.tex")
+
+(h4.full.m.bin <- lm(believed1_true ~  exp_1_prompt*treat, dat%>%filter(treat != "ad", treat != "skit"))); summary(h4.full.m.bin); 
+(h4.full.m.bin.wt <- lm(believed1_true ~  exp_1_prompt*treat, dat%>%filter(treat != "ad", treat != "skit"), weights=weight)); summary(h4.full.m.bin.wt); 
+(h4.full.m.bin.hq <- lm(believed1_true ~  exp_1_prompt*treat, dat%>%filter(!lowq,treat != "ad", treat != "skit"))); summary(h4.full.m.bin.hq); 
+
+(h4.full.m.bin.adj <- lm(believed1_true ~ exp_1_prompt*treat +meta_OS + age_65 + educ + PID*crt + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat%>%filter(treat != "ad", treat != "skit"))); summary(h4.full.m.bin.adj);
+(h4.full.m.bin.adj.wt <- lm(believed1_true ~ exp_1_prompt*treat +meta_OS + age_65 + educ + PID*crt + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat%>%filter(treat != "ad", treat != "skit"), weights=weight)); summary(h4.full.m.bin.adj.wt);
+(h4.full.m.bin.adj.hq <- lm(believed1_true ~ exp_1_prompt*treat +meta_OS + age_65 + educ + PID*crt + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat%>%filter(!lowq,treat != "ad", treat != "skit"))); summary(h4.full.m.bin.adj.hq);
+(h4.full.m.bin.adj.wt.hq <- lm(believed1_true ~ exp_1_prompt*treat +meta_OS + age_65 + educ + PID*crt + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat%>%filter(!lowq,treat != "ad", treat != "skit"), weights=weight)); summary(h4.full.m.bin.adj.wt.hq);
+
+h4.full.m.bin.df <- bind_rows(
+    tidy(h4.full.m.bin),
+    tidy(h4.full.m.bin.wt),
+    tidy(h4.full.m.bin.hq),
+    tidy(h4.full.m.bin.adj),
+    tidy(h4.full.m.bin.adj.wt),
+    tidy(h4.full.m.bin.adj.hq),
+    tidy(h4.full.m.bin.adj.wt.hq)
+)
+h4.full.m.bin.df$p.value.adj <- (h4.full.m.bin.df$p.value/order(h4.full.m.bin.df$p.value))*nrow(h4.full.m.bin.df) ##BHq corrections
 
 stargazer(h4.full.m.bin,
           h4.full.m.bin.wt,
@@ -992,18 +1160,19 @@ stargazer(h4.full.m.bin,
           no.space=TRUE,
           digits=2,
           table.layout ="=d#-t-a-s=n",
+          apply.p = function(p) { h4.full.m.bin.df$p.value.adj[h4.full.m.bin.df$p.value == p][1] },
+          notes =  c("\\textit{Notes:} $^{.}$ $p \\cdot r/K < .1$ * $p \\cdot r/K < .05$ ** $p \\cdot r/K < .01$ *** $p \\cdot r/K < .001$"),
+          notes.append = FALSE,
           notes.align = "l",
-          title="\\textbf{Interactive Models of Information Provision and Belief in Clipping}",
+          title="\\textbf{Models of Information Provision and Binarized Credibility Confidence of Clipping in Incidental Exposure Experiment}",
           covariate.labels = c(
-              "Info Provided", "Audio", "Text", "Skit", 
+              "Information", "Audio", "Text",# "Skit", 
               # "Attack Ad",
-              "Info x Audio", "Info x Text", "Info x Skit"
+              "Info x Audio", "Info x Text"#, "Info x Skit"
               # "Info x Ad"
           ),
-          notes = c("\\textit{Notes}: Respondents subset to those exposed to a clipping. Reference category for",
-                    "medium is Video."),
           omit = c(COVARS, "response_wave_ID"),
-          dep.var.labels = c("\\normalsize Belief that clipping was not fake or doctored [y/n]"),
+          dep.var.labels = c("\\normalsize Somewhat/strongly confident clipping was credible"),
           add.lines = list(c("Weighted?", "", "\\checkmark", "", "", "\\checkmark","","\\checkmark"),
                            c("Low-Quality Dropped?","","","\\checkmark","","","\\checkmark","\\checkmark"),
                            c("Controls?","","","","\\checkmark","\\checkmark","\\checkmark","\\checkmark")),
@@ -1011,8 +1180,8 @@ stargazer(h4.full.m.bin,
           column.sep.width = "1pt",
           font.size = "footnotesize",
           style = "apsr",
-          label="firststage_deception_byinfo",
-          out="tables/firststage_deception_byinfo.tex")
+          label="firststage_deception_byinfo2",
+          out="tables/firststage_deception_byinfo2.tex")
 
 
 
@@ -1021,51 +1190,50 @@ stargazer(h4.full.m.bin,
 #####------------------------------------------------------#
 
 n <- dat %>% 
-    filter(!is.na(treat), treat != "ad", treat != "control", exp_1_prompt_control==T, !is.na(crt), !is.na(believed_true)) %>% nrow()
+    filter(!is.na(treat), treat != "ad", treat != "control", treat != "skit", exp_1_prompt_control==T, !is.na(crt), !is.na(believed_true)) %>% nrow()
 n.low <- dat %>%
     mutate(crt=cut(crt, breaks=c(-1,0,.34,1.1), 
-                   labels=c("low CRT", "moderate CRT", "high CRT"))) %>%
-    filter(!is.na(treat), treat != "ad", treat != "control", exp_1_prompt_control==T, !is.na(crt), !is.na(believed_true)) %>%
-    filter(crt == "low CRT") %>% nrow()
+                   labels=c("Low c.r.", "Moderate c.r.", "High c.r."))) %>%
+    filter(!is.na(treat), treat != "ad", treat != "control", treat != "skit", exp_1_prompt_control==T, !is.na(crt), !is.na(believed_true)) %>%
+    filter(crt == "Low c.r.") %>% nrow()
 n.mod <- dat %>%
     mutate(crt=cut(crt, breaks=c(-1,0,.34,1.1), 
-                   labels=c("low CRT", "moderate CRT", "high CRT"))) %>%
-    filter(!is.na(treat), treat != "ad", treat != "control", exp_1_prompt_control==T, !is.na(crt), !is.na(believed_true)) %>%
-    filter(crt == "moderate CRT") %>% nrow()
+                   labels=c("Low c.r.", "Moderate c.r.", "High c.r."))) %>%
+    filter(!is.na(treat), treat != "ad", treat != "control", treat != "skit", exp_1_prompt_control==T, !is.na(crt), !is.na(believed_true)) %>%
+    filter(crt == "Moderate c.r.") %>% nrow()
 n.high <- dat %>%
     mutate(crt=cut(crt, breaks=c(-1,0,.34,1.1), 
-                   labels=c("low CRT", "moderate CRT", "high CRT"))) %>%
-    filter(!is.na(treat), treat != "ad", treat != "control", exp_1_prompt_control==T, !is.na(crt), !is.na(believed_true)) %>%
-    filter(crt == "high CRT") %>% nrow()
+                   labels=c("Low c.r.", "Moderate c.r.", "High c.r."))) %>%
+    filter(!is.na(treat), treat != "ad", treat != "control", treat != "skit", exp_1_prompt_control==T, !is.na(crt), !is.na(believed_true)) %>%
+    filter(crt == "High c.r.") %>% nrow()
 
 ## descriptive plots
 ### visualize by medium
 dat.viz <- dat %>% 
-    filter(!is.na(treat), treat != "ad", treat != "control", exp_1_prompt_control==T) %>%
+    filter(!is.na(treat), treat != "ad", treat != "control", treat != "skit", exp_1_prompt_control==T) %>%
     # mutate(crt=cut(crt, breaks=c(-1,0,.34,.67,1.1), 
-    #                              labels=c("CRT = 0/3", "CRT = 1/3", "CRT = 2/3", "CRT = 3/3"))) %>%
+    #                              labels=c("C.R. = 0/3", "C.R. = 1/3", "C.R. = 2/3", "C.R. = 3/3"))) %>%
     mutate(crt=cut(crt, breaks=c(-1,0,.34,1.1), 
-                                 labels=c("low CRT", "moderate CRT", "high CRT"))) %>%
+                                 labels=c("Low c.r.", "Moderate c.r.", "High c.r."))) %>%
     filter(!is.na(crt), !is.nan(crt)) %>%
     group_by(treat, crt) %>%
     summarise(y=weighted.mean(believed_true,weight,na.rm=T),
               ymin=weighted.mean(believed_true,weight,na.rm=T)-1.96*weighted.sd(believed_true,weight,na.rm=T)/sqrt(n()),
               ymax=weighted.mean(believed_true,weight,na.rm=T)+1.96*weighted.sd(believed_true,weight,na.rm=T)/sqrt(n())) %>%
     ungroup() %>%
-    mutate(treat = as.character(treat)) %>%
-    mutate(treat = fct_relevel(as.factor(treat), "skit", after=5))
+    mutate(treat = as.character(treat))
 
 dat.viz %>%
     ggplot(aes(x=treat, y=y, ymin=ymin, ymax=ymax)) +
     geom_bar(stat="identity") +
-    ylab("level of deception") + xlab("presentation of scandal") +
+    ylab("Credibility confidence") + xlab("Scandal clipping") +
     geom_errorbar(position=position_dodge(.9), width=.2, size=1) +
     scale_y_continuous(limits=c(1,4),oob = scales::rescale_none) +
     facet_grid(~crt) +
     geom_hline(data = dat.viz %>% group_by(crt) %>% summarise(yint=mean(y)),
                aes(yintercept = yint), size=1, lty=1, color="red") +
     ggtitle(paste0("n=",n," | n_low=",n.low," | n_mod=",n.mod," | n_high=",n.high)) +
-    theme_bw() + 
+    theme_linedraw2 + 
         theme(
             title = element_text(size=5),
             axis.text.x = element_text(size=12),
@@ -1074,54 +1242,64 @@ dat.viz %>%
             axis.title.x = element_text(size=16),
             axis.title.y = element_text(size=16)
         )
-ggsave("figures/firststage_belief_byCRT.pdf", width=8, height=3.05)
-if(SHOW_PDFS) system("open figures/firststage_belief_byCRT.pdf")
+ggsave("figures/firststage_belief_byC.R..pdf", width=8, height=3.05)
+if(SHOW_PDFS) system("open figures/firststage_belief_byC.R..pdf")
 
 dat.viz <- dat %>% 
     filter(!is.na(treat), treat != "ad", treat != "control", exp_1_prompt_control==T) %>%
     # mutate(crt=cut(crt, breaks=c(-1,0,.34,.67,1.1), 
-    #                              labels=c("CRT = 0/3", "CRT = 1/3", "CRT = 2/3", "CRT = 3/3"))) %>%
+    #                              labels=c("C.R. = 0/3", "C.R. = 1/3", "C.R. = 2/3", "C.R. = 3/3"))) %>%
     mutate(crt=cut(crt, breaks=c(-1,0,.34,1.1), 
-                                 labels=c("low CRT", "moderate CRT", "high CRT"))) %>%
+                                 labels=c("Low c.r.", "Moderate c.r.", "High c.r."))) %>%
     filter(!is.na(crt), !is.nan(crt)) %>%
     group_by(treat, crt) %>%
     summarise(y=weighted.mean(believed1_true,weight,na.rm=T)) %>%
     ungroup() %>%
-    mutate(treat = as.character(treat)) %>%
-    mutate(treat = fct_relevel(as.factor(treat), "skit", after=5))
+    mutate(treat = as.character(treat))
 
 dat.viz %>%
     ggplot(aes(x=treat, y=y)) +
     geom_bar(stat="identity") +
     scale_y_continuous(labels = scales::percent_format(accuracy = 1)) + 
-    ylab("% believe clipping is real") + xlab("presentation of scandal") +
+    ylab("% somewhat/strongly confident in credibility") + xlab("Scandal clipping") +
     facet_grid(~crt) +
     geom_text(aes(label=scales::percent(round(y,2), accuracy=1), y=y+0.04)) +
     geom_hline(data = dat.viz %>% group_by(crt) %>% summarise(yint=mean(y)),
                aes(yintercept = yint), size=1, lty=1, color="red") +
     ggtitle(paste0("n=",n," | n_low=",n.low," | n_mod=",n.mod," | n_high=",n.high)) +
-    theme_bw() + 
+    theme_linedraw2 + 
         theme(
             title = element_text(size=5),
             axis.text.x = element_text(size=12),
             axis.text.y = element_text(size=12),
             strip.text = element_text(size=16),
             axis.title.x = element_text(size=16),
-            axis.title.y = element_text(size=16)
+            axis.title.y = element_text(size=8)
         )
-ggsave("figures/firststage_belief_byCRT_binary.pdf", width=8, height=3.05)
-if(SHOW_PDFS) system("open figures/firststage_belief_byCRT_binary.pdf")
+ggsave("figures/firststage_belief_byC.R._binary.pdf", width=8, height=3.05)
+if(SHOW_PDFS) system("open figures/firststage_belief_byC.R._binary.pdf")
 
 ### regression tables
 
-## @SB: no effect of CRT
-(h5m <- lm(believed_true ~ treat*crt, dat %>% filter(!is.na(treat), treat != "ad"))); summary(h5m); 
-(h5m.wt <- lm(believed_true ~ treat*crt, dat %>% filter(!is.na(treat), treat != "ad"), weights=weight)); summary(h5m.wt); 
-(h5m.hq <- lm(believed_true ~ treat*crt, dat %>% filter(!is.na(treat), treat != "ad", !lowq))); summary(h5m.hq); 
-(h5m.adj <- lm(believed_true ~ treat*crt + exp_1_prompt + meta_OS + age_65 + educ + PID + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(!is.na(treat), treat != "ad"))); summary(h5m.adj); 
-(h5m.adj.wt <- lm(believed_true ~ treat*crt + exp_1_prompt + meta_OS + age_65 + educ + PID + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(!is.na(treat), treat != "ad"), weights=weight)); summary(h5m.adj.wt); 
-(h5m.adj.hq <- lm(believed_true ~ treat*crt + exp_1_prompt + meta_OS + age_65 + educ + PID + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(!is.na(treat), treat != "ad", !lowq))); summary(h5m.adj.hq); 
-(h5m.adj.hq.wt <- lm(believed_true ~ treat*crt + exp_1_prompt + meta_OS + age_65 + educ + PID + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(!is.na(treat), treat != "ad", !lowq), weights=weight)); summary(h5m.adj.hq.wt); 
+## @SB: no effect of C.R.
+(h5m <- lm(believed_true ~ treat*crt, dat %>% filter(!is.na(treat), treat != "ad", treat !="skit"))); summary(h5m); 
+(h5m.wt <- lm(believed_true ~ treat*crt, dat %>% filter(!is.na(treat), treat != "ad", treat !="skit"), weights=weight)); summary(h5m.wt); 
+(h5m.hq <- lm(believed_true ~ treat*crt, dat %>% filter(!is.na(treat), treat != "ad", treat !="skit", !lowq))); summary(h5m.hq); 
+(h5m.adj <- lm(believed_true ~ treat*crt + exp_1_prompt + meta_OS + age_65 + educ + PID + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(!is.na(treat), treat != "ad", treat !="skit"))); summary(h5m.adj); 
+(h5m.adj.wt <- lm(believed_true ~ treat*crt + exp_1_prompt + meta_OS + age_65 + educ + PID + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(!is.na(treat), treat != "ad", treat !="skit"), weights=weight)); summary(h5m.adj.wt); 
+(h5m.adj.hq <- lm(believed_true ~ treat*crt + exp_1_prompt + meta_OS + age_65 + educ + PID + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(!is.na(treat), treat != "ad", treat !="skit", !lowq))); summary(h5m.adj.hq); 
+(h5m.adj.hq.wt <- lm(believed_true ~ treat*crt + exp_1_prompt + meta_OS + age_65 + educ + PID + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(!is.na(treat), treat != "ad", treat !="skit", !lowq), weights=weight)); summary(h5m.adj.hq.wt); 
+
+h5m.df <- bind_rows(
+    tidy(h5m),
+    tidy(h5m.wt),
+    tidy(h5m.hq),
+    tidy(h5m.adj),
+    tidy(h5m.adj.wt),
+    tidy(h5m.adj.hq),
+    tidy(h5m.adj.hq.wt)
+)
+h5m.df$p.value.adj <- (h5m.df$p.value/order(h5m.df$p.value))*nrow(h5m.df) ##BHq corrections
 
 stargazer(h5m,
           h5m.wt,
@@ -1132,17 +1310,18 @@ stargazer(h5m,
           h5m.adj.hq.wt,
           header = FALSE,
           no.space=TRUE,
+          apply.p = function(p) { h5m.df$p.value.adj[h5m.df$p.value == p][1] },
+          notes =  c("\\textit{Notes:} $^{.}$ $p \\cdot r/K < .1$ * $p \\cdot r/K < .05$ ** $p \\cdot r/K < .01$ *** $p \\cdot r/K < .001$"),
+          notes.append = FALSE,
           digits=2,
           table.layout ="=d#-t-a-s=n",
           notes.align = "l",
-          title="\\textbf{Interactive Models of Cognitive Reflection and Belief in Clipping}",
-          dep.var.labels = c("\\normalsize Extent of belief that clipping was not fake or doctored [1-5]"),
-          notes = c("\\textit{Notes}: Reference category for medium is Video."),
-          covariate.labels = c("Audio","Text","Skit",
-                               "CRT",
-                               "CRT x Audio",
-                               "CRT x Text",
-                               "CRT x Skit"),
+          title="\\textbf{Models of Cognitive Reflection and Credibility Confidence of Clipping in Incidental Exposure Experiment}",
+          dep.var.labels = c("\\normalsize Confidence that clipping was credible [1-5]"),
+          covariate.labels = c("Audio","Text",
+                               "C.R.",
+                               "C.R. x Audio",
+                               "C.R. x Text"),
           omit = c(COVARS[COVARS != "crt"], "response_wave", "exp_1_promptinfo"),
           add.lines = list(c("Weighted?", "", "\\checkmark", "", "", "\\checkmark","","\\checkmark"),
                            c("Low-Quality Dropped?","","","\\checkmark","","","\\checkmark","\\checkmark"),
@@ -1151,17 +1330,28 @@ stargazer(h5m,
           column.sep.width = "1pt",
           font.size = "footnotesize",
           style = "apsr",
-          label = "firststage_deception_byCRT",
-          out="tables/firststage_deception_byCRT.tex")
+          label = "firststage_deception_byC.R.",
+          out="tables/firststage_deception_byC.R..tex")
 
 
-(h5m.b1 <- lm(believed1_true ~ treat*crt, dat %>% filter(!is.na(treat), treat != "ad"))); summary(h5m.b1); 
-(h5m.wt.b1 <- lm(believed1_true ~ treat*crt, dat %>% filter(!is.na(treat), treat != "ad"), weights=weight)); summary(h5m.wt.b1); 
-(h5m.hq.b1 <- lm(believed1_true ~ treat*crt, dat %>% filter(!is.na(treat), treat != "ad", !lowq))); summary(h5m.hq.b1); 
-(h5m.adj.b1 <- lm(believed1_true ~ treat*crt + exp_1_prompt + meta_OS + age_65 + educ + PID + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(!is.na(treat), treat != "ad"))); summary(h5m.adj.b1); 
-(h5m.adj.wt.b1 <- lm(believed1_true ~ treat*crt + exp_1_prompt + meta_OS + age_65 + educ + PID + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(!is.na(treat), treat != "ad"), weights=weight)); summary(h5m.adj.wt.b1); 
-(h5m.adj.hq.b1 <- lm(believed1_true ~ treat*crt + exp_1_prompt + meta_OS + age_65 + educ + PID + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(!is.na(treat), treat != "ad", !lowq))); summary(h5m.adj.hq.b1); 
-(h5m.adj.hq.wt.b1 <- lm(believed1_true ~ treat*crt + exp_1_prompt + meta_OS + age_65 + educ + PID + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(!is.na(treat), treat != "ad", !lowq), weights=weight)); summary(h5m.adj.hq.wt.b1); 
+(h5m.b1 <- lm(believed1_true ~ treat*crt, dat %>% filter(!is.na(treat), treat != "ad", treat !="skit"))); summary(h5m.b1); 
+(h5m.wt.b1 <- lm(believed1_true ~ treat*crt, dat %>% filter(!is.na(treat), treat != "ad", treat !="skit"), weights=weight)); summary(h5m.wt.b1); 
+(h5m.hq.b1 <- lm(believed1_true ~ treat*crt, dat %>% filter(!is.na(treat), treat != "ad", treat !="skit", !lowq))); summary(h5m.hq.b1); 
+(h5m.adj.b1 <- lm(believed1_true ~ treat*crt + exp_1_prompt + meta_OS + age_65 + educ + PID + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(!is.na(treat), treat !="skit", treat != "ad"))); summary(h5m.adj.b1); 
+(h5m.adj.wt.b1 <- lm(believed1_true ~ treat*crt + exp_1_prompt + meta_OS + age_65 + educ + PID + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(!is.na(treat), treat !="skit", treat != "ad"), weights=weight)); summary(h5m.adj.wt.b1); 
+(h5m.adj.hq.b1 <- lm(believed1_true ~ treat*crt + exp_1_prompt + meta_OS + age_65 + educ + PID + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(!is.na(treat), treat !="skit", treat != "ad", !lowq))); summary(h5m.adj.hq.b1); 
+(h5m.adj.hq.wt.b1 <- lm(believed1_true ~ treat*crt + exp_1_prompt + meta_OS + age_65 + educ + PID + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(!is.na(treat), treat !="skit", treat != "ad", !lowq), weights=weight)); summary(h5m.adj.hq.wt.b1); 
+
+h5m.b1.df <- bind_rows(
+    tidy(h5m.b1),
+    tidy(h5m.wt.b1),
+    tidy(h5m.hq.b1),
+    tidy(h5m.adj.b1),
+    tidy(h5m.adj.wt.b1),
+    tidy(h5m.adj.hq.b1),
+    tidy(h5m.adj.hq.wt.b1)
+)
+h5m.b1.df$p.value.adj <- (h5m.b1.df$p.value/order(h5m.b1.df$p.value))*nrow(h5m.b1.df) ##BHq corrections
 
 stargazer(h5m.b1,
           h5m.wt.b1,
@@ -1172,17 +1362,18 @@ stargazer(h5m.b1,
           h5m.adj.hq.wt.b1,
           header = FALSE,
           no.space=TRUE,
+          apply.p = function(p) { h5m.b1.df$p.value.adj[h5m.b1.df$p.value == p][1] },
+          notes =  c("\\textit{Notes:} $^{.}$ $p \\cdot r/K < .1$ * $p \\cdot r/K < .05$ ** $p \\cdot r/K < .01$ *** $p \\cdot r/K < .001$"),
+          notes.append = FALSE,
           digits=2,
           table.layout ="=d#-t-a-s=n",
           notes.align = "l",
-          title="\\textbf{Interactive Models of Cognitive Reflection and Binarized Belief in Clipping}",
-          dep.var.labels = c("\\normalsize Belief that clipping was not fake or doctored [y/n]"),
-          notes = c("\\textit{Notes}: Reference category for medium is Video."),
-          covariate.labels = c("Audio","Text","Skit",
-                               "CRT",
-                               "CRT x Audio",
-                               "CRT x Text",
-                               "CRT x Skit"),
+          title="\\textbf{Models of Cognitive Reflection and Binarized Credibility Confidence of Clipping in Incidental Exposure Experiment}",
+          dep.var.labels = c("\\normalsize Somewhat/strongly confident clipping was credible"),
+          covariate.labels = c("Audio","Text",
+                               "C.R.",
+                               "C.R. x Audio",
+                               "C.R. x Text"),
           omit = c(COVARS[COVARS != "crt"], "response_wave", "exp_1_promptinfo"),
           add.lines = list(c("Weighted?", "", "\\checkmark", "", "", "\\checkmark","","\\checkmark"),
                            c("Low-Quality Dropped?","","","\\checkmark","","","\\checkmark","\\checkmark"),
@@ -1191,21 +1382,21 @@ stargazer(h5m.b1,
           column.sep.width = "1pt",
           font.size = "footnotesize",
           style = "apsr",
-          label="firststage_deception_byCRT2",
-          out="tables/firststage_deception_byCRT2.tex")
+          label="firststage_deception_byC.R.2",
+          out="tables/firststage_deception_byC.R.2.tex")
 
 #####------------------------------------------------------#
 ##### H6a: Heterogeneities in deception by partisanship ####
 #####------------------------------------------------------#
 
 n <- dat %>% 
-    filter(!is.na(treat), treat != "ad", treat != "control", exp_1_prompt_control==T, !is.na(PID), PID !="N/A", !is.na(believed_true)) %>% nrow()
+    filter(!is.na(treat), treat != "ad", treat != "control", treat != "skit", exp_1_prompt_control==T, !is.na(PID), PID !="N/A", !is.na(believed_true)) %>% nrow()
 n.dem <- dat %>% 
-    filter(!is.na(treat), treat != "ad", treat != "control", exp_1_prompt_control==T, !is.na(PID), PID =="Democrat", !is.na(believed_true)) %>% nrow()
+    filter(!is.na(treat), treat != "ad", treat != "control", treat != "skit", exp_1_prompt_control==T, !is.na(PID), PID =="Democrat", !is.na(believed_true)) %>% nrow()
 n.ind <- dat %>% 
-    filter(!is.na(treat), treat != "ad", treat != "control", exp_1_prompt_control==T, !is.na(PID), PID =="Independent", !is.na(believed_true)) %>% nrow()
+    filter(!is.na(treat), treat != "ad", treat != "control", treat != "skit", exp_1_prompt_control==T, !is.na(PID), PID =="Independent", !is.na(believed_true)) %>% nrow()
 n.rep <- dat %>% 
-    filter(!is.na(treat), treat != "ad", treat != "control", exp_1_prompt_control==T, !is.na(PID), PID =="Republican", !is.na(believed_true)) %>% nrow()
+    filter(!is.na(treat), treat != "ad", treat != "control", treat != "skit", exp_1_prompt_control==T, !is.na(PID), PID =="Republican", !is.na(believed_true)) %>% nrow()
 
 ## descriptive plots
 ### visualise just by PID
@@ -1223,10 +1414,10 @@ dat %>%
     mutate(PID = replace(PID, PID == "Republican", "Republicans")) %>%
     ggplot(aes(x=PID, y=y, ymin=ymin, ymax=ymax)) +
     geom_bar(stat="identity") +
-    ylab("level of deception") + xlab("") +
+    ylab("Credibility confidence") + xlab("") +
     geom_errorbar(position=position_dodge(.9), width=.2, size=1) +
     ggtitle(paste0("n=",n," | n_dem=",n.dem," | n_ind=",n.ind," | n_rep=",n.rep)) +
-    theme_bw() + 
+    theme_linedraw2 + 
         theme(
             title = element_text(size=5),
             axis.text.x = element_text(size=14),
@@ -1250,16 +1441,16 @@ dat %>%
     ggplot(aes(x=PID, y=y)) +
     geom_bar(stat="identity") +
     geom_text(aes(label=scales::percent(round(y,2), accuracy=1), y=y+0.02)) +
-    ylab("% believe clipping is real") + xlab("") +
+    ylab("% somewhat/strongly confident in credibility") + xlab("") +
     scale_y_continuous(labels = scales::percent_format(accuracy = 1)) + 
     ggtitle(paste0("n=",n," | n_dem=",n.dem," | n_ind=",n.ind," | n_rep=",n.rep)) +
-    theme_bw() + 
+    theme_linedraw2 + 
         theme(
             title = element_text(size=5),
             axis.text.x = element_text(size=14),
             axis.text.y = element_text(size=14),
             axis.title.x = element_text(size=18),
-            axis.title.y = element_text(size=18)
+            axis.title.y = element_text(size=11)
         )
 ggsave("figures/firststage_belief_byPID_binary.pdf", width=4.75, height=4.5)
 if(SHOW_PDFS) system("open figures/firststage_belief_byPID_binary.pdf")
@@ -1267,7 +1458,7 @@ if(SHOW_PDFS) system("open figures/firststage_belief_byPID_binary.pdf")
 ### visualise by PID and medium
 dat.viz <- dat %>% 
     filter(exp_1_prompt_control==T) %>%
-    filter(!is.na(treat), treat != "ad", treat != "control") %>%
+    filter(!is.na(treat), treat != "ad", treat != "control", treat !="skit") %>%
     group_by(PID, treat) %>%
     summarise(y=weighted.mean(believed_true,weight,na.rm=T),
               ymin=weighted.mean(believed_true,weight,na.rm=T)-1.96*weighted.sd(believed_true,weight,na.rm=T)/sqrt(n()),
@@ -1283,14 +1474,14 @@ dat.viz <- dat %>%
 dat.viz %>%
     ggplot(aes(x=treat, y=y, ymin=ymin, ymax=ymax)) +
     geom_bar(stat="identity") +
-    ylab("level of deception") + xlab("presentation of scandal") +
+    ylab("Credibility confidence") + xlab("Scandal clipping") +
     geom_errorbar(position=position_dodge(.9), width=.2, size=1) +
     scale_y_continuous(limits=c(2,4.5),oob = scales::rescale_none) +
     facet_wrap(~PID) +
     geom_hline(data = dat.viz %>% group_by(PID) %>% summarise(yint=mean(y)),
                aes(yintercept = yint), size=1, lty=1, color="red") +
     ggtitle(paste0("n=",n," | n_dem=",n.dem," | n_ind=",n.ind," | n_rep=",n.rep)) +
-    theme_bw() + 
+    theme_linedraw2 + 
         theme(
             title = element_text(size=5),
             axis.text.x = element_text(size=12),
@@ -1304,7 +1495,7 @@ if(SHOW_PDFS) system("open figures/firststage_belief_byPID2.pdf")
 
 dat.viz <- dat %>% 
     filter(exp_1_prompt_control==T) %>%
-    filter(!is.na(treat), treat != "ad", treat != "control") %>%
+    filter(!is.na(treat), treat != "ad", treat != "control", treat !="skit") %>%
     group_by(PID, treat) %>%
     summarise(y=weighted.mean(believed1_true,weight,na.rm=T)) %>%
     ungroup() %>%
@@ -1318,21 +1509,21 @@ dat.viz <- dat %>%
 dat.viz %>%
     ggplot(aes(x=treat, y=y)) +
     geom_bar(stat="identity") +
-    ylab("% believe clipping is real") + xlab("presentation of scandal") +
+    ylab("% somewhat/strongly confident in credibility") + xlab("Scandal clipping") +
     scale_y_continuous(labels = scales::percent_format(accuracy = 1)) + 
     geom_text(aes(label=scales::percent(round(y,2), accuracy=1), y=y+0.04)) +
     facet_wrap(~PID) +
     geom_hline(data = dat.viz %>% group_by(PID) %>% summarise(yint=mean(y)),
                aes(yintercept = yint), size=1, lty=1, color="red") +
     ggtitle(paste0("n=",n," | n_dem=",n.dem," | n_ind=",n.ind," | n_rep=",n.rep)) +
-    theme_bw() + 
+    theme_linedraw2 + 
         theme(
             title = element_text(size=5),
             axis.text.x = element_text(size=12),
             axis.text.y = element_text(size=12),
             strip.text = element_text(size=18),
             axis.title.x = element_text(size=16),
-            axis.title.y = element_text(size=16)
+            axis.title.y = element_text(size=11)
         )
 ggsave("figures/firststage_belief_byPID_binary2.pdf", width=8, height=3.05)
 if(SHOW_PDFS) system("open figures/firststage_belief_byPID_binary2.pdf")
@@ -1340,14 +1531,26 @@ if(SHOW_PDFS) system("open figures/firststage_belief_byPID_binary2.pdf")
 
 ### regression tables
 
-## @SB: HUGE effects of partisanship in all cases, but no heterogeneity by video type or CRT
-(h6a <- lm(believed_true ~ I(PID=="Republican")*treat*crt, dat %>% filter(treat != "ad"))); summary(h6a); 
-(h6a.wt <- lm(believed_true ~ I(PID=="Republican")*treat*crt, dat %>% filter(treat != "ad"), weights=weight)); summary(h6a.wt); 
-(h6a.hq <- lm(believed_true ~ I(PID=="Republican")*treat*crt, dat %>% filter(treat != "ad", !lowq))); summary(h6a.hq); 
-(h6a.adj <- lm(believed_true ~ I(PID=="Republican")*treat*crt + response_wave_ID + exp_1_prompt + meta_OS + age_65 + educ + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(treat != "ad"))); summary(h6a.adj); 
-(h6a.adj.wt <- lm(believed_true ~ I(PID=="Republican")*treat*crt + response_wave_ID + exp_1_prompt + meta_OS + age_65 + educ + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(treat != "ad"), weights=weight)); summary(h6a.adj.wt); 
-(h6a.adj.hq <- lm(believed_true ~ I(PID=="Republican")*treat*crt + response_wave_ID + exp_1_prompt + meta_OS + age_65 + educ + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(treat != "ad", !lowq))); summary(h6a.adj.hq); 
-(h6a.adj.hq.wt <- lm(believed_true ~ I(PID=="Republican")*treat*crt + response_wave_ID + exp_1_prompt + meta_OS + age_65 + educ + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(treat != "ad", !lowq), weights=weight)); summary(h6a.adj.hq.wt); 
+## @SB: HUGE effects of partisanship in all cases, but no heterogeneity by video type or C.R.
+(h6a <- lm(believed_true ~ I(PID=="Republican")*treat*crt, dat %>% filter(treat != "ad", treat !="skit"))); summary(h6a); 
+(h6a.wt <- lm(believed_true ~ I(PID=="Republican")*treat*crt, dat %>% filter(treat != "ad", treat !="skit"), weights=weight)); summary(h6a.wt); 
+(h6a.hq <- lm(believed_true ~ I(PID=="Republican")*treat*crt, dat %>% filter(treat != "ad", treat !="skit", !lowq))); summary(h6a.hq); 
+(h6a.adj <- lm(believed_true ~ I(PID=="Republican")*treat*crt + exp_1_prompt + meta_OS + age_65 + educ + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(treat != "ad", treat !="skit"))); summary(h6a.adj); 
+(h6a.adj.wt <- lm(believed_true ~ I(PID=="Republican")*treat*crt + exp_1_prompt + meta_OS + age_65 + educ + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(treat != "ad", treat !="skit"), weights=weight)); summary(h6a.adj.wt); 
+(h6a.adj.hq <- lm(believed_true ~ I(PID=="Republican")*treat*crt + exp_1_prompt + meta_OS + age_65 + educ + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(treat != "ad", treat !="skit", !lowq))); summary(h6a.adj.hq); 
+(h6a.adj.hq.wt <- lm(believed_true ~ I(PID=="Republican")*treat*crt + exp_1_prompt + meta_OS + age_65 + educ + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(treat != "ad", treat !="skit", !lowq), weights=weight)); summary(h6a.adj.hq.wt); 
+
+h6a.df <- bind_rows(
+    tidy(h6a),
+    tidy(h6a.wt),
+    tidy(h6a.hq),
+    tidy(h6a.adj),
+    tidy(h6a.adj.wt),
+    tidy(h6a.adj.hq),
+    tidy(h6a.adj.hq.wt)
+)
+h6a.df$p.value.adj <- (h6a.df$p.value/order(h6a.df$p.value))*nrow(h6a.df) ##BHq corrections
+
 
 stargazer(h6a,
           h6a.wt,
@@ -1356,28 +1559,31 @@ stargazer(h6a,
           h6a.adj.wt,
           h6a.adj.hq,
           h6a.adj.hq.wt,
+          apply.p = function(p) { h6a.df$p.value.adj[h6a.df$p.value == p][1] },
+          notes =  c("\\textit{Notes:} $^{.}$ $p \\cdot r/K < .1$ * $p \\cdot r/K < .05$ ** $p \\cdot r/K < .01$ *** $p \\cdot r/K < .001$",
+                     "PID is pooled to Republican/Not Republican for brevity. PID interacted with C.R. to test",
+                     "possible mechanism of motivated reasoning (pre-registered), although, as a reviewer pointed out,",
+                     "this is not a sufficient test of a motivated reasoning mechanism by itself."),
+          notes.append = FALSE,
           header = FALSE,
           no.space=TRUE,
           digits=2,
           table.layout ="=d#-t-a-s=n",
           notes.align = "l",
-          title="\\textbf{Interactive Models of Partisan Motivated Reasoning and Belief in Clipping}",
-          notes = c("\\textit{Notes}: PID is pooled to Republican/Not Republican for brevity; reference category for medium is Video."),
+          title="\\textbf{Models of Partisan Group Identity and Credibility Confidence of Clipping in Incidental Exposure Experiment}",
+          # notes = c("\\textit{Notes}: PID is pooled to Republican/Not Republican for brevity; reference category for medium is Video."),
           covariate.labels = c("Repub PID",
-                               "Audio","Text","Skit",
-                               "CRT",
+                               "Audio","Text",
+                               "C.R.",
                                "Repub x Audio",
                                "Repub x Text",
-                               "Repub x Skit",
-                               "CRT x Repub",
-                               "Audio x CRT",
-                               "Text x CRT",
-                               "Skit x CRT",
-                               "Repub x Audio x CRT",
-                               "Repub x Text x CRT",
-                               "Repub x Skit x CRT"),
+                               "C.R. x Repub",
+                               "Audio x C.R.",
+                               "Text x C.R.",
+                               "Repub x Audio x C.R.",
+                               "Repub x Text x C.R."),
           omit = c("response_wave", COVARS[!(COVARS %in% c("PID","crt"))], "exp_1"),
-          dep.var.labels = c("\\normalsize Extent of belief that clipping was not fake or doctored [1-5]"),
+          dep.var.labels = c("\\normalsize Confidence that clipping was credible [1-5]"),
           add.lines = list(c("Weighted?", "", "\\checkmark", "", "", "\\checkmark","","\\checkmark"),
                            c("Low-Quality Dropped?","","","\\checkmark","","","\\checkmark","\\checkmark"),
                            c("Controls?","","","","\\checkmark","\\checkmark","\\checkmark","\\checkmark")),
@@ -1388,13 +1594,25 @@ stargazer(h6a,
           label="firststage_deception_byPID",
           out="tables/firststage_deception_byPID.tex")
 
-(h6a.b1 <- lm(believed1_true ~ I(PID=="Republican")*treat*crt, dat %>% filter(treat != "ad"))); summary(h6a.b1); 
-(h6a.wt.b1 <- lm(believed1_true ~ I(PID=="Republican")*treat*crt, dat %>% filter(treat != "ad"), weights=weight)); summary(h6a.wt.b1); 
-(h6a.hq.b1 <- lm(believed1_true ~ I(PID=="Republican")*treat*crt, dat %>% filter(treat != "ad", !lowq))); summary(h6a.hq.b1); 
-(h6a.adj.b1 <- lm(believed1_true ~ I(PID=="Republican")*treat*crt + response_wave_ID + exp_1_prompt + meta_OS + age_65 + educ + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(treat != "ad"))); summary(h6a.adj.b1); 
-(h6a.adj.wt.b1 <- lm(believed1_true ~ I(PID=="Republican")*treat*crt + response_wave_ID + exp_1_prompt + meta_OS + age_65 + educ + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(treat != "ad"), weights=weight)); summary(h6a.adj.wt.b1); 
-(h6a.adj.hq.b1 <- lm(believed1_true ~ I(PID=="Republican")*treat*crt + response_wave_ID + exp_1_prompt + meta_OS + age_65 + educ + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(treat != "ad", !lowq))); summary(h6a.adj.hq.b1); 
-(h6a.adj.hq.wt.b1 <- lm(believed1_true ~ I(PID=="Republican")*treat*crt + response_wave_ID + exp_1_prompt + meta_OS + age_65 + educ + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(treat != "ad", !lowq), weights=weight)); summary(h6a.adj.hq.wt.b1); 
+(h6a.b1 <- lm(believed1_true ~ I(PID=="Republican")*treat*crt, dat %>% filter(treat != "ad", treat != "skit"))); summary(h6a.b1); 
+(h6a.wt.b1 <- lm(believed1_true ~ I(PID=="Republican")*treat*crt, dat %>% filter(treat != "ad", treat != "skit"), weights=weight)); summary(h6a.wt.b1); 
+(h6a.hq.b1 <- lm(believed1_true ~ I(PID=="Republican")*treat*crt, dat %>% filter(treat != "ad", treat != "skit", !lowq))); summary(h6a.hq.b1); 
+(h6a.adj.b1 <- lm(believed1_true ~ I(PID=="Republican")*treat*crt + response_wave_ID + exp_1_prompt + meta_OS + age_65 + educ + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(treat != "ad", treat != "skit"))); summary(h6a.adj.b1); 
+(h6a.adj.wt.b1 <- lm(believed1_true ~ I(PID=="Republican")*treat*crt + response_wave_ID + exp_1_prompt + meta_OS + age_65 + educ + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(treat != "ad", treat != "skit"), weights=weight)); summary(h6a.adj.wt.b1); 
+(h6a.adj.hq.b1 <- lm(believed1_true ~ I(PID=="Republican")*treat*crt + response_wave_ID + exp_1_prompt + meta_OS + age_65 + educ + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(treat != "ad", treat != "skit", !lowq))); summary(h6a.adj.hq.b1); 
+(h6a.adj.hq.wt.b1 <- lm(believed1_true ~ I(PID=="Republican")*treat*crt + response_wave_ID + exp_1_prompt + meta_OS + age_65 + educ + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(treat != "ad", treat != "skit", !lowq), weights=weight)); summary(h6a.adj.hq.wt.b1); 
+
+h6a.b1.df <- bind_rows(
+    tidy(h6a.b1),
+    tidy(h6a.wt.b1),
+    tidy(h6a.hq.b1),
+    tidy(h6a.adj.b1),
+    tidy(h6a.adj.wt.b1),
+    tidy(h6a.adj.hq.b1),
+    tidy(h6a.adj.hq.wt.b1)
+)
+h6a.b1.df$p.value.adj <- (h6a.b1.df$p.value/order(h6a.b1.df$p.value))*nrow(h6a.b1.df) ##BHq corrections
+
 
 stargazer(h6a.b1,
           h6a.wt.b1,
@@ -1403,28 +1621,28 @@ stargazer(h6a.b1,
           h6a.adj.wt.b1,
           h6a.adj.hq.b1,
           h6a.adj.hq.wt.b1,
+          apply.p = function(p) { h6a.b1.df$p.value.adj[h6a.b1.df$p.value == p][1] },
+          notes =  c("\\textit{Notes:} $^{.}$ $p \\cdot r/K < .1$ * $p \\cdot r/K < .05$ ** $p \\cdot r/K < .01$ *** $p \\cdot r/K < .001$"),
+          notes.append = FALSE,
           header = FALSE,
           no.space=TRUE,
           digits=2,
           table.layout ="=d#-t-a-s=n",
           notes.align = "l",
-          title="\\textbf{Interactive Models of Partisan Motivated Reasoning and Binarized Belief in Clipping}",
-          notes = c("\\textit{Notes}: PID is pooled to Republican/Not Republican for brevity; reference category for medium is Video."),
+          title="\\textbf{Models of Partisan Group Identity and Binarized Credibility Confidence of Clipping in Incidental Exposure Experiment}",
+          # notes = c("\\textit{Notes}: PID is pooled to Republican/Not Republican for brevity; reference category for medium is Video."),
           covariate.labels = c("Repub PID",
-                               "Audio","Text","Skit",
-                               "CRT",
+                               "Audio","Text",
+                               "C.R.",
                                "Repub x Audio",
                                "Repub x Text",
-                               "Repub x Skit",
-                               "CRT x Repub",
-                               "Audio x CRT",
-                               "Text x CRT",
-                               "Skit x CRT",
-                               "Repub x Audio x CRT",
-                               "Repub x Text x CRT",
-                               "Repub x Skit x CRT"),
+                               "C.R. x Repub",
+                               "Audio x C.R.",
+                               "Text x C.R.",
+                               "Repub x Audio x C.R.",
+                               "Repub x Text x C.R."),
           omit = c("response_wave", COVARS[!(COVARS %in% c("PID","crt"))], "exp_1"),
-          dep.var.labels = c("\\normalsize Belief that clipping was not fake or doctored [y/n]"),
+          dep.var.labels = c("\\normalsize Somewhat/strongly confident clipping was credible"),
           add.lines = list(c("Weighted?", "", "\\checkmark", "", "", "\\checkmark","","\\checkmark"),
                            c("Low-Quality Dropped?","","","\\checkmark","","","\\checkmark","\\checkmark"),
                            c("Controls?","","","","\\checkmark","\\checkmark","\\checkmark","\\checkmark")),
@@ -1478,7 +1696,7 @@ dat.viz %>%
     geom_vline(xintercept=2.5, size=0.5, lty=2) +
     facet_wrap(~PID) + 
     ggtitle(paste0("n=",n," | n_dem=",n.dem," | n_ind=",n.ind," | n_rep=",n.rep)) +
-    theme_bw() + 
+    theme_linedraw2 + 
         theme(
             title = element_text(size=5),
             axis.text.x = element_text(size=11),
@@ -1493,16 +1711,28 @@ if(SHOW_PDFS) system("open figures/firststage_feelings_byPID.pdf")
 
 ## regression tables
 
-## @SB: HUGE effects of partisanship, some effects that CRT x Republican partisanship is 
+## @SB: HUGE effects of partisanship, some effects that C.R. x Republican partisanship is 
 ##      driving down favorability (actual "motivated" reasoning)
 
 (h6b.b1 <- lm(post_favor_Warren ~ I(PID=="Republican")*treat*crt, dat %>% filter(!is.na(treat)))); summary(h6b.b1); 
 (h6b.wt.b1 <- lm(post_favor_Warren ~ I(PID=="Republican")*treat*crt, dat %>% filter(!is.na(treat)), weights=weight)); summary(h6b.wt.b1); 
 (h6b.hq.b1 <- lm(post_favor_Warren ~ I(PID=="Republican")*treat*crt, dat %>% filter(!is.na(treat), !lowq))); summary(h6b.hq.b1); 
-(h6b.adj.b1 <- lm(post_favor_Warren ~ I(PID=="Republican")*treat*crt + response_wave_ID + exp_1_prompt + meta_OS + age_65 + educ + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(!is.na(treat)))); summary(h6b.adj.b1); 
-(h6b.adj.wt.b1 <- lm(post_favor_Warren ~ I(PID=="Republican")*treat*crt + response_wave_ID + exp_1_prompt + meta_OS + age_65 + educ + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(!is.na(treat)), weights=weight)); summary(h6b.adj.wt.b1); 
-(h6b.adj.hq.b1 <- lm(post_favor_Warren ~ I(PID=="Republican")*treat*crt + response_wave_ID + exp_1_prompt + meta_OS + age_65 + educ + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(!is.na(treat), !lowq))); summary(h6b.adj.hq.b1); 
-(h6b.adj.hq.wt.b1 <- lm(post_favor_Warren ~ I(PID=="Republican")*treat*crt + response_wave_ID + exp_1_prompt + meta_OS + age_65 + educ + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(!is.na(treat), !lowq), weights=weight)); summary(h6b.adj.hq.wt.b1); 
+(h6b.adj.b1 <- lm(post_favor_Warren ~ I(PID=="Republican")*treat*crt + exp_1_prompt + meta_OS + age_65 + educ + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(!is.na(treat)))); summary(h6b.adj.b1); 
+(h6b.adj.wt.b1 <- lm(post_favor_Warren ~ I(PID=="Republican")*treat*crt + exp_1_prompt + meta_OS + age_65 + educ + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(!is.na(treat)), weights=weight)); summary(h6b.adj.wt.b1); 
+(h6b.adj.hq.b1 <- lm(post_favor_Warren ~ I(PID=="Republican")*treat*crt + exp_1_prompt + meta_OS + age_65 + educ + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(!is.na(treat), !lowq))); summary(h6b.adj.hq.b1); 
+(h6b.adj.hq.wt.b1 <- lm(post_favor_Warren ~ I(PID=="Republican")*treat*crt + exp_1_prompt + meta_OS + age_65 + educ + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(!is.na(treat), !lowq), weights=weight)); summary(h6b.adj.hq.wt.b1); 
+
+h6b.b1.df <- bind_rows(
+    tidy(h6b.b1),
+    tidy(h6b.wt.b1),
+    tidy(h6b.hq.b1),
+    tidy(h6b.adj.b1),
+    tidy(h6b.adj.wt.b1),
+    tidy(h6b.adj.hq.b1),
+    tidy(h6b.adj.hq.wt.b1)
+)
+h6b.b1.df$p.value.adj <- (h6b.b1.df$p.value/order(h6b.b1.df$p.value))*nrow(h6b.b1.df) ##BHq corrections
+
 
 stargazer(h6b.b1,
           h6b.wt.b1,
@@ -1512,31 +1742,33 @@ stargazer(h6b.b1,
           h6b.adj.hq.b1,
           h6b.adj.hq.wt.b1,
           header = FALSE,
+          apply.p = function(p) { h6b.b1.df$p.value.adj[h6b.b1.df$p.value == p][1] },
+          notes =  c("\\textit{Notes:} $^{.}$ $p \\cdot r/K < .1$ * $p \\cdot r/K < .05$ ** $p \\cdot r/K < .01$ *** $p \\cdot r/K < .001$"),
+          notes.append = FALSE,
           no.space=TRUE,
           digits=2,
           table.layout ="=d#-t-a-s=n",
           notes.align = "l",
-          title="\\textbf{Interactive Models of Partisan Motivated Reasoning and Target Affect}",
-          notes = c("\\textit{Notes}: PID is pooled to Republican/Not Republican for brevity; reference category for medium is Video."),
+          title="\\textbf{Models of Partisan Group Identity and Scandal Target Affect in Incidental Exposure Experiment}",
           covariate.labels = c("Repub PID",
                                "Video", "Audio","Text","Skit", "Attack Ad",
-                               "CRT",
+                               "C.R.",
                                "Repub x Video",
                                "Repub x Audio",
                                "Repub x Text",
                                "Repub x Skit",
                                "Repub x Ad",
-                               "CRT x Repub",
-                               "Video x CRT",
-                               "Audio x CRT",
-                               "Text x CRT",
-                               "Skit x CRT",
-                               "Ad x CRT",
-                               "Repub x Video x CRT",
-                               "Repub x Audio x CRT",
-                               "Repub x Text x CRT",
-                               "Repub x Skit x CRT",
-                               "Repub x Ad x CRT"),
+                               "C.R. x Repub",
+                               "Video x C.R.",
+                               "Audio x C.R.",
+                               "Text x C.R.",
+                               "Skit x C.R.",
+                               "Ad x C.R.",
+                               "Repub x Video x C.R.",
+                               "Repub x Audio x C.R.",
+                               "Repub x Text x C.R.",
+                               "Repub x Skit x C.R.",
+                               "Repub x Ad x C.R."),
           add.lines = list(c("Weighted?", "", "\\checkmark", "", "", "\\checkmark","","\\checkmark"),
                            c("Low-Quality Dropped?","","","\\checkmark","","","\\checkmark","\\checkmark"),
                            c("Controls?","","","","\\checkmark","\\checkmark","\\checkmark","\\checkmark")),
@@ -1554,27 +1786,27 @@ stargazer(h6b.b1,
 #####------------------------------------------------------#
 
 n <- dat %>% 
-    filter(!is.na(treat), treat != "ad", treat != "control", exp_1_prompt_control==T, !is.na(believed_true)) %>%
+    filter(!is.na(treat), treat != "ad", treat != "control", treat != "skit", exp_1_prompt_control==T, !is.na(believed_true)) %>%
     mutate(ambivalent_sexism=cut(ambivalent_sexism, breaks=c(1,2.33,3.66,5), 
                                  labels=c("low", "moderate", "high"))) %>%
     filter(!is.na(ambivalent_sexism), !is.nan(ambivalent_sexism)) %>%
     nrow()
 n.low <- dat %>%
-    filter(!is.na(treat), treat != "ad", treat != "control", exp_1_prompt_control==T, !is.na(believed_true)) %>%
+    filter(!is.na(treat), treat != "ad", treat != "control", treat != "skit", exp_1_prompt_control==T, !is.na(believed_true)) %>%
     mutate(ambivalent_sexism=cut(ambivalent_sexism, breaks=c(1,2.33,3.66,5), 
                                  labels=c("low", "moderate", "high"))) %>%
     filter(!is.na(ambivalent_sexism), !is.nan(ambivalent_sexism)) %>%
     filter(ambivalent_sexism == "low") %>%
     nrow()
 n.mod <- dat %>%
-    filter(!is.na(treat), treat != "ad", treat != "control", exp_1_prompt_control==T, !is.na(believed_true)) %>%
+    filter(!is.na(treat), treat != "ad", treat != "control", treat != "skit", exp_1_prompt_control==T, !is.na(believed_true)) %>%
     mutate(ambivalent_sexism=cut(ambivalent_sexism, breaks=c(1,2.33,3.66,5), 
                                  labels=c("low", "moderate", "high"))) %>%
     filter(!is.na(ambivalent_sexism), !is.nan(ambivalent_sexism)) %>%
     filter(ambivalent_sexism == "moderate") %>%
     nrow()
 n.high <- dat %>%
-    filter(!is.na(treat), treat != "ad", treat != "control", exp_1_prompt_control==T, !is.na(believed_true)) %>%
+    filter(!is.na(treat), treat != "ad", treat != "control", treat != "skit", exp_1_prompt_control==T, !is.na(believed_true)) %>%
     mutate(ambivalent_sexism=cut(ambivalent_sexism, breaks=c(1,2.33,3.66,5), 
                                  labels=c("low", "moderate", "high"))) %>%
     filter(!is.na(ambivalent_sexism), !is.nan(ambivalent_sexism)) %>%
@@ -1596,10 +1828,10 @@ dat %>%
     ungroup() %>%
     ggplot(aes(x=ambivalent_sexism, y=y, ymin=ymin, ymax=ymax)) +
     geom_bar(stat="identity") +
-    ylab("level of deception") + xlab("level of ambivalent sexism") +
+    ylab("Credibility confidence") + xlab("level of ambivalent sexism") +
     geom_errorbar(position=position_dodge(.9), width=.2, size=1) +
     ggtitle(paste0("n=",n," | n_low=",n.low," | n_mod=",n.mod," | n_high=",n.high)) +
-    theme_bw() + 
+    theme_linedraw2 + 
         theme(
             title = element_text(size=5),
             axis.text.x = element_text(size=14),
@@ -1620,11 +1852,11 @@ dat %>%
     ungroup() %>%
     ggplot(aes(x=ambivalent_sexism, y=y)) +
     geom_bar(stat="identity") +
-    ylab("% believe clipping is real") + 
+    ylab("% somewhat/strongly confident in credibility") + 
     scale_y_continuous(labels = scales::percent_format(accuracy = 1)) + 
     xlab("level of ambivalent sexism") +
     ggtitle(paste0("n=",n," | n_low=",n.low," | n_mod=",n.mod," | n_high=",n.high)) +
-    theme_bw() + 
+    theme_linedraw2 + 
         theme(
             title = element_text(size=5),
             axis.text.x = element_text(size=14),
@@ -1638,7 +1870,7 @@ if(SHOW_PDFS) system("open figures/firststage_belief_bysexism_binary.pdf")
 ### visualise by sexism and medium
 dat.viz <- dat %>% 
     filter(exp_1_prompt_control==T) %>%
-    filter(!is.na(treat), treat != "ad", treat != "control") %>%
+    filter(!is.na(treat), treat != "ad", treat != "control", treat != "skit") %>%
     mutate(ambivalent_sexism=cut(ambivalent_sexism, breaks=c(1,2.33,3.66,5), 
                                  labels=c("low\nsexism", "moderate\nsexism", "high\nsexism"))) %>%
     filter(!is.na(ambivalent_sexism), !is.nan(ambivalent_sexism)) %>%
@@ -1653,7 +1885,7 @@ dat.viz <- dat %>%
 dat.viz %>%
     ggplot(aes(x=treat, y=y, ymin=ymin, ymax=ymax)) +
     geom_bar(stat="identity") +
-    ylab("level of deception") + 
+    ylab("Credibility confidence") + 
     xlab("") +
     geom_errorbar(position=position_dodge(.9), width=.2, size=1) +
     scale_y_continuous(limits=c(1,4),oob = scales::rescale_none) +
@@ -1661,7 +1893,7 @@ dat.viz %>%
     geom_hline(data = dat.viz %>% group_by(ambivalent_sexism) %>% summarise(yint=mean(y)),
                aes(yintercept = yint), size=1, lty=1, color="red") +
     ggtitle(paste0("n=",n," | n_low=",n.low," | n_mod=",n.mod," | n_high=",n.high)) +
-    theme_bw() + 
+    theme_linedraw2 + 
         theme(
             title = element_text(size=5),
             axis.text.x = element_text(size=12),
@@ -1676,7 +1908,7 @@ if(SHOW_PDFS) system("open figures/firststage_belief_bysexism2.pdf")
 
 dat.viz <- dat %>% 
     filter(exp_1_prompt_control==T) %>%
-    filter(!is.na(treat), treat != "ad", treat != "control") %>%
+    filter(!is.na(treat), treat != "ad", treat != "control", treat != "skit") %>%
     mutate(ambivalent_sexism=cut(ambivalent_sexism, breaks=c(1,2.33,3.66,5), 
                                  labels=c("low sexism", "moderate sexism", "high sexism"))) %>%
     filter(!is.na(ambivalent_sexism), !is.nan(ambivalent_sexism)) %>%
@@ -1689,7 +1921,7 @@ dat.viz <- dat %>%
 dat.viz %>%
     ggplot(aes(x=treat, y=y)) +
     geom_bar(stat="identity") +
-    ylab("% believe clipping is real") + 
+    ylab("% somewhat/strongly confident in credibility") + 
     xlab("") +
     scale_y_continuous(labels = scales::percent_format(accuracy = 1)) + 
     facet_wrap(~ambivalent_sexism) +
@@ -1697,7 +1929,7 @@ dat.viz %>%
     geom_hline(data = dat.viz %>% group_by(ambivalent_sexism) %>% summarise(yint=mean(y)),
                aes(yintercept = yint), size=1, lty=1, color="red") +
     ggtitle(paste0("n=",n," | n_low=",n.low," | n_mod=",n.mod," | n_high=",n.high)) +
-    theme_bw() + 
+    theme_linedraw2 + 
         theme(
             title = element_text(size=5),
             axis.text.x = element_text(size=12),
@@ -1713,13 +1945,25 @@ if(SHOW_PDFS) system("open figures/firststage_belief_bysexism_binary2.pdf")
 
 ## regression tables
 ## @SB: no evidence of interaction effects
-(h7a <- lm(believed_true ~ ambivalent_sexism*treat, dat %>% filter(treat != "ad"))); summary(h7a); 
-(h7a.wt <- lm(believed_true ~ ambivalent_sexism*treat, dat %>% filter(treat != "ad"), weights=weight)); summary(h7a.wt); 
-(h7a.hq <- lm(believed_true ~ ambivalent_sexism*treat, dat %>% filter(treat != "ad", !lowq))); summary(h7a.hq); 
-(h7a.adj <- lm(believed_true ~ ambivalent_sexism*treat + PID + crt + response_wave_ID + exp_1_prompt + meta_OS + age_65 + educ + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(treat != "ad"))); summary(h7a.adj); 
-(h7a.adj.wt <- lm(believed_true ~ ambivalent_sexism*treat + PID + crt + response_wave_ID + exp_1_prompt + meta_OS + age_65 + educ + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(treat != "ad"), weights=weight)); summary(h7a.adj.wt); 
-(h7a.adj.hq <- lm(believed_true ~ ambivalent_sexism*treat + PID + crt + response_wave_ID + exp_1_prompt + meta_OS + age_65 + educ + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(treat != "ad", !lowq))); summary(h7a.adj.hq); 
-(h7a.adj.hq.wt <- lm(believed_true ~ ambivalent_sexism*treat + PID + crt + response_wave_ID + exp_1_prompt + meta_OS + age_65 + educ + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(treat != "ad", !lowq), weights=weight)); summary(h7a.adj.hq.wt); 
+(h7a <- lm(believed_true ~ ambivalent_sexism*treat, dat %>% filter(treat != "ad", treat != "skit"))); summary(h7a); 
+(h7a.wt <- lm(believed_true ~ ambivalent_sexism*treat, dat %>% filter(treat != "ad", treat != "skit"), weights=weight)); summary(h7a.wt); 
+(h7a.hq <- lm(believed_true ~ ambivalent_sexism*treat, dat %>% filter(treat != "ad", treat != "skit", !lowq))); summary(h7a.hq); 
+(h7a.adj <- lm(believed_true ~ ambivalent_sexism*treat + PID + crt + exp_1_prompt + meta_OS + age_65 + educ + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(treat != "ad", treat != "skit"))); summary(h7a.adj); 
+(h7a.adj.wt <- lm(believed_true ~ ambivalent_sexism*treat + PID + crt + exp_1_prompt + meta_OS + age_65 + educ + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(treat != "ad", treat != "skit"), weights=weight)); summary(h7a.adj.wt); 
+(h7a.adj.hq <- lm(believed_true ~ ambivalent_sexism*treat + PID + crt + exp_1_prompt + meta_OS + age_65 + educ + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(treat != "ad", treat != "skit", !lowq))); summary(h7a.adj.hq); 
+(h7a.adj.hq.wt <- lm(believed_true ~ ambivalent_sexism*treat + PID + crt + exp_1_prompt + meta_OS + age_65 + educ + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(treat != "ad", treat != "skit", !lowq), weights=weight)); summary(h7a.adj.hq.wt); 
+
+h7a.df <- bind_rows(
+    tidy(h7a),
+    tidy(h7a.wt),
+    tidy(h7a.hq),
+    tidy(h7a.adj),
+    tidy(h7a.adj.wt),
+    tidy(h7a.adj.hq),
+    tidy(h7a.adj.hq.wt)
+)
+h7a.df$p.value.adj <- (h7a.df$p.value/order(h7a.df$p.value))*nrow(h7a.df) ##BHq corrections
+
 
 stargazer(h7a,
           h7a.wt,
@@ -1729,19 +1973,20 @@ stargazer(h7a,
           h7a.adj.hq,
           h7a.adj.hq.wt,
           header = FALSE,
+          apply.p = function(p) { h7a.df$p.value.adj[h7a.df$p.value == p][1] },
+          notes =  c("\\textit{Notes:} $^{.}$ $p \\cdot r/K < .1$ * $p \\cdot r/K < .05$ ** $p \\cdot r/K < .01$ *** $p \\cdot r/K < .001$"),
+          notes.append = FALSE,
           no.space=TRUE,
           digits=2,
           table.layout ="=d#-t-a-s=n",
           notes.align = "l",
-          title="\\textbf{Interactive Models of Ambivalent Sexism and Belief in Clipping}",
-          notes = c("\\textit{Notes}: Reference category for medium is Video."),
+          title="\\textbf{Models of Ambivalent Sexism and Credibility Confidence in Scandal Clipping in Incidental Exposure Experiment}",
           covariate.labels = c("Ambivalent Sexism",
-                               "Audio","Text","Skit",
+                               "Audio","Text",
                                "A.S. x Audio",
-                               "A.S. x Text",
-                               "A.S. x Skit"),
+                               "A.S. x Text"),
           omit = c("response_wave", COVARS[!(COVARS %in% c("ambivalent_sexism"))], "exp_1"),
-          dep.var.labels = c("\\normalsize Extent of belief that clipping was not fake or doctored [1-5]"),
+          dep.var.labels = c("\\normalsize Confidence that clipping was credible [1-5]"),
           add.lines = list(c("Weighted?", "", "\\checkmark", "", "", "\\checkmark","","\\checkmark"),
                            c("Low-Quality Dropped?","","","\\checkmark","","","\\checkmark","\\checkmark"),
                            c("Controls?","","","","\\checkmark","\\checkmark","\\checkmark","\\checkmark")),
@@ -1752,13 +1997,25 @@ stargazer(h7a,
           label="firststage_deception_bysexism",
           out="tables/firststage_deception_bysexism.tex")
 
-(h7a.b1 <- lm(believed1_true ~ ambivalent_sexism*treat, dat %>% filter(treat != "ad"))); summary(h7a.b1); 
-(h7a.wt.b1 <- lm(believed1_true ~ ambivalent_sexism*treat, dat %>% filter(treat != "ad"), weights=weight)); summary(h7a.wt.b1); 
-(h7a.hq.b1 <- lm(believed1_true ~ ambivalent_sexism*treat, dat %>% filter(treat != "ad", !lowq))); summary(h7a.hq.b1); 
-(h7a.adj.b1 <- lm(believed1_true ~ ambivalent_sexism*treat + PID + crt + response_wave_ID + exp_1_prompt + meta_OS + age_65 + educ + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(treat != "ad"))); summary(h7a.adj.b1); 
-(h7a.adj.wt.b1 <- lm(believed1_true ~ ambivalent_sexism*treat + PID + crt + response_wave_ID + exp_1_prompt + meta_OS + age_65 + educ + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(treat != "ad"), weights=weight)); summary(h7a.adj.wt.b1); 
-(h7a.adj.hq.b1 <- lm(believed1_true ~ ambivalent_sexism*treat + PID + crt + response_wave_ID + exp_1_prompt + meta_OS + age_65 + educ + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(treat != "ad", !lowq))); summary(h7a.adj.hq.b1); 
-(h7a.adj.hq.wt.b1 <- lm(believed1_true ~ ambivalent_sexism*treat + PID + crt + response_wave_ID + exp_1_prompt + meta_OS + age_65 + educ + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(treat != "ad", !lowq), weights=weight)); summary(h7a.adj.hq.wt.b1); 
+(h7a.b1 <- lm(believed1_true ~ ambivalent_sexism*treat, dat %>% filter(treat != "ad", treat != "skit"))); summary(h7a.b1); 
+(h7a.wt.b1 <- lm(believed1_true ~ ambivalent_sexism*treat, dat %>% filter(treat != "ad", treat != "skit"), weights=weight)); summary(h7a.wt.b1); 
+(h7a.hq.b1 <- lm(believed1_true ~ ambivalent_sexism*treat, dat %>% filter(treat != "ad", treat != "skit", !lowq))); summary(h7a.hq.b1); 
+(h7a.adj.b1 <- lm(believed1_true ~ ambivalent_sexism*treat + PID + crt + exp_1_prompt + meta_OS + age_65 + educ + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(treat != "ad", treat != "skit"))); summary(h7a.adj.b1); 
+(h7a.adj.wt.b1 <- lm(believed1_true ~ ambivalent_sexism*treat + PID + crt + exp_1_prompt + meta_OS + age_65 + educ + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(treat != "ad", treat != "skit"), weights=weight)); summary(h7a.adj.wt.b1); 
+(h7a.adj.hq.b1 <- lm(believed1_true ~ ambivalent_sexism*treat + PID + crt + exp_1_prompt + meta_OS + age_65 + educ + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(treat != "ad", treat != "skit", !lowq))); summary(h7a.adj.hq.b1); 
+(h7a.adj.hq.wt.b1 <- lm(believed1_true ~ ambivalent_sexism*treat + PID + crt + exp_1_prompt + meta_OS + age_65 + educ + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(treat != "ad", treat != "skit", !lowq), weights=weight)); summary(h7a.adj.hq.wt.b1); 
+
+h7a.b1.df <- bind_rows(
+    tidy(h7a.b1),
+    tidy(h7a.wt.b1),
+    tidy(h7a.hq.b1),
+    tidy(h7a.adj.b1),
+    tidy(h7a.adj.wt.b1),
+    tidy(h7a.adj.hq.b1),
+    tidy(h7a.adj.hq.wt.b1)
+)
+h7a.b1.df$p.value.adj <- (h7a.b1.df$p.value/order(h7a.b1.df$p.value))*nrow(h7a.b1.df) ##BHq corrections
+
 
 stargazer(h7a.b1,
           h7a.wt.b1,
@@ -1768,19 +2025,20 @@ stargazer(h7a.b1,
           h7a.adj.hq.b1,
           h7a.adj.hq.wt.b1,
           header = FALSE,
+          apply.p = function(p) { h7a.b1.df$p.value.adj[h7a.b1.df$p.value == p][1] },
+          notes =  c("\\textit{Notes:} $^{.}$ $p \\cdot r/K < .1$ * $p \\cdot r/K < .05$ ** $p \\cdot r/K < .01$ *** $p \\cdot r/K < .001$"),
+          notes.append = FALSE,
           no.space=TRUE,
           digits=2,
           table.layout ="=d#-t-a-s=n",
           notes.align = "l",
-          title="\\textbf{Interactive Models of Ambivalent Sexism and Binarized Belief in Clipping}",
-          notes = c("\\textit{Notes}: Reference category for medium is Video."),
+          title="\\textbf{Models of Ambivalent Sexism and Binarized Credibility Confidence in Scandal Clipping in Incidental Exposure Experiment}",
           covariate.labels = c("Ambivalent Sexism",
-                               "Audio","Text","Skit",
+                               "Audio","Text",
                                "A.S. x Audio",
-                               "A.S. x Text",
-                               "A.S. x Skit"),
+                               "A.S. x Text"),
           omit = c("response_wave", COVARS[!(COVARS %in% c("ambivalent_sexism"))], "exp_1"),
-          dep.var.labels = c("\\normalsize Belief that clipping was not fake or doctored [y/n]"),
+          dep.var.labels = c("\\normalsize Somewhat/strongly confident clipping was credible"),
           add.lines = list(c("Weighted?", "", "\\checkmark", "", "", "\\checkmark","","\\checkmark"),
                            c("Low-Quality Dropped?","","","\\checkmark","","","\\checkmark","\\checkmark"),
                            c("Controls?","","","","\\checkmark","\\checkmark","\\checkmark","\\checkmark")),
@@ -1803,20 +2061,28 @@ h7_plcbs_df <- data.frame()
 for (favor in c("post_favor_Warren","post_favor_Biden","post_favor_Klobuchar","post_favor_Sanders","post_favor_Bloomberg")) {
     dat$post_favor_ <- dat[[favor]]
     
-    (h7.plcb.m <- lm(post_favor_ ~ treat + ambivalent_sexism, dat, weights=weight)); summary(h7.plcb.m);
+    (h7.plcb.m <- lm(post_favor_ ~ treat + ambivalent_sexism + PID, dat, weights=weight)); summary(h7.plcb.m);
     (h7.plcb.m.adj.part.D <- lm(post_favor_ ~ treat + response_wave_ID + crt + ambivalent_sexism, dat %>% filter(PID=="Democrat"), weights=weight)); summary(h7.plcb.m.adj.part.D);
     (h7.plcb.m.adj.part.R <- lm(post_favor_ ~ treat + response_wave_ID + crt + ambivalent_sexism, dat %>% filter(PID=="Republican"), weights=weight)); summary(h7.plcb.m.adj.part.R);
 
+    (h7.plcb.m.adj <- lm(post_favor_ ~ treat + response_wave_ID + exp_1_prompt + meta_OS + age_65 + educ + crt + ambivalent_sexism + I(gender=="Male") + polknow + internet_usage + PID, dat, weights=weight)); summary(h7.plcb.m.adj);
     (h7.plcb.m.adj.D <- lm(post_favor_ ~ treat + response_wave_ID + exp_1_prompt + meta_OS + age_65 + educ + crt + ambivalent_sexism + I(gender=="Male") + polknow + internet_usage, dat %>% filter(PID=="Democrat"), weights=weight)); summary(h7.plcb.m.adj.D);
     (h7.plcb.m.adj.R <- lm(post_favor_ ~ treat + response_wave_ID + exp_1_prompt + meta_OS + age_65 + educ + crt + ambivalent_sexism + I(gender=="Male") + polknow + internet_usage, dat %>% filter(PID=="Republican"), weights=weight)); summary(h7.plcb.m.adj.R);
     
-    plcb_df <- tidy(h7.plcb.m) %>% mutate(model="without controls") %>%
-        bind_rows(tidy(h7.plcb.m.adj.part.D) %>% mutate(model="PID controls") %>% mutate(term=paste0(term,"D"))) %>%
-        bind_rows(tidy(h7.plcb.m.adj.part.R) %>% mutate(model="PID controls") %>% mutate(term=paste0(term,"R"))) %>%
-        bind_rows(tidy(h7.plcb.m.adj.D) %>% mutate(model="full controls") %>% mutate(term=paste0(term,"D"))) %>%
-        bind_rows(tidy(h7.plcb.m.adj.R) %>% mutate(model="full controls") %>% mutate(term=paste0(term,"R"))) %>%
+    plcb_df <- tidy(h7.plcb.m) %>% mutate(model="Without controls") %>%
+        bind_rows(tidy(h7.plcb.m.adj) %>% mutate(model="Full controls")) %>%
         filter(grepl("ambivalent_sexism", term)) %>%
-        mutate(term = fct_relevel(term, "audio", after=1))
+        mutate(term = fct_relevel(term, "audio", after=1))    
+    
+    ## doing for each PID separately is misleading -- strong floor fx for Repub
+    # plcb_df <- tidy(h7.plcb.m) %>% mutate(model="Without controls") %>%
+    #     bind_rows(tidy(h7.plcb.m.adj.part.D) %>% mutate(model="PID controls") %>% mutate(term=paste0(term,"D"))) %>%
+    #     bind_rows(tidy(h7.plcb.m.adj.part.R) %>% mutate(model="PID controls") %>% mutate(term=paste0(term,"R"))) %>%
+    #     bind_rows(tidy(h7.plcb.m.adj.D) %>% mutate(model="Full controls") %>% mutate(term=paste0(term,"D"))) %>%
+    #     bind_rows(tidy(h7.plcb.m.adj.R) %>% mutate(model="Full controls") %>% mutate(term=paste0(term,"R"))) %>%
+    #     filter(grepl("ambivalent_sexism", term)) %>%
+    #     mutate(term = fct_relevel(term, "audio", after=1))
+    
     plcb_df$target <- favor
     h7_plcbs_df <- bind_rows(h7_plcbs_df, plcb_df)
 }
@@ -1827,7 +2093,8 @@ h7_plcbs_df %>%
     mutate(target = replace(target, target == "post_favor_Bloomberg", "Michael Bloomberg")) %>% 
     mutate(target = replace(target, target == "post_favor_Biden", "Joe Biden")) %>% 
     mutate(target = fct_relevel(target, "Joe Biden", "Michael Bloomberg", "Bernie Sanders", "Amy Klobuchar", "Elizabeth Warren")) %>%
-    mutate(model = fct_relevel(model, "without controls", "PID controls", "full controls")) %>%
+    # mutate(model = fct_relevel(model, "Without controls", "PID controls", "Full controls")) %>%
+    mutate(model = fct_relevel(model, "Without controls", "Full controls")) %>%
     mutate(term = as.character(term)) %>%
     mutate(term = replace(term, term == "ambivalent_sexism", "all")) %>%
     mutate(term = replace(term, term == "ambivalent_sexismD", "dem.")) %>%
@@ -1836,14 +2103,14 @@ h7_plcbs_df %>%
                                   1, 0.8))) %>%
     ggplot(aes(x=target, y=estimate, ymin=estimate-1.96*std.error, ymax=estimate+1.96*std.error, group=term, alpha=sig, color=term)) +
     geom_pointrange(position = position_dodge(width=0.7), size=1) +
-    geom_text(aes(label = term, y = estimate+1.96*std.error+2.5), position = position_dodge(width=0.7), color="black", size=6) +
+    # geom_text(aes(label = term, y = estimate+1.96*std.error+2.5), position = position_dodge(width=0.7), color="black", size=6) +
     coord_flip() +
     geom_hline(yintercept=0, lty=2, alpha=0.5) + 
     geom_vline(xintercept=4.5, lty=1, alpha=0.5) +
-    ylab("effect of ambivalent sexism on feeling thermometer") + xlab("feeling thermometer target") +
+    ylab("Effect of ambivalent sexism on affect thermometer") + xlab("Affect thermometer target") +
     facet_wrap(. ~ model) + 
     scale_color_manual(values=c("black","blue","red")) +
-    theme_bw() + 
+    theme_linedraw2 + 
         theme(
             title = element_text(size=5),
             legend.position = "none",
@@ -1856,7 +2123,6 @@ h7_plcbs_df %>%
         )
 ggsave("figures/firststage_sexism_placebo.pdf", width=15.5, height=6)
 if(SHOW_PDFS) system("open figures/firststage_sexism_placebo.pdf")
-
 
 #####------------------------------------------------------#
 ##### H7b: Heterogeneities in favorability by ambivalent sexism ####
@@ -1916,7 +2182,7 @@ dat.viz %>%
                aes(yintercept = yint), size=1, lty=1, color="red") +
     geom_vline(xintercept=2.5, size=0.5, lty=2) +
     facet_wrap(~ambivalent_sexism) + 
-    theme_bw() + 
+    theme_linedraw2 + 
         theme(
             title = element_text(size=5),
             axis.text.x = element_text(size=11),
@@ -1937,6 +2203,17 @@ if(SHOW_PDFS) system("open figures/firststage_feelings_bysexism.pdf")
 (h7b.adj.hq.b1 <- lm(post_favor_Warren ~ ambivalent_sexism*treat + PID + crt + response_wave_ID + exp_1_prompt + meta_OS + age_65 + educ + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(treat != "ad", !lowq))); summary(h7b.adj.hq.b1); 
 (h7b.adj.hq.wt.b1 <- lm(post_favor_Warren ~ ambivalent_sexism*treat + PID + crt + response_wave_ID + exp_1_prompt + meta_OS + age_65 + educ + I(gender=="Male") + polknow + internet_usage + ambivalent_sexism, dat %>% filter(treat != "ad", !lowq), weights=weight)); summary(h7b.adj.hq.wt.b1); 
 
+h7b.b1.df <- bind_rows(
+    tidy(h7b.b1),
+    tidy(h7b.wt.b1),
+    tidy(h7b.hq.b1),
+    tidy(h7b.adj.b1),
+    tidy(h7b.adj.wt.b1),
+    tidy(h7b.adj.hq.b1),
+    tidy(h7b.adj.hq.wt.b1)
+)
+h7b.b1.df$p.value.adj <- (h7b.b1.df$p.value/order(h7b.b1.df$p.value))*nrow(h7b.b1.df) ##BHq corrections
+
 stargazer(h7b.b1,
           h7b.wt.b1,
           h7b.hq.b1,
@@ -1946,11 +2223,13 @@ stargazer(h7b.b1,
           h7b.adj.hq.wt.b1,
           header = FALSE,
           no.space=TRUE,
+          apply.p = function(p) { h7b.b1.df$p.value.adj[h7b.b1.df$p.value == p][1] },
+          notes =  c("\\textit{Notes:} $^{.}$ $p \\cdot r/K < .1$ * $p \\cdot r/K < .05$ ** $p \\cdot r/K < .01$ *** $p \\cdot r/K < .001$"),
+          notes.append = FALSE,
           digits=2,
           table.layout ="=d#-t-a-s=n",
           notes.align = "l",
-          title="\\textbf{Interactive Models of Ambivalent Sexism and Target Affect}",
-          notes = c("\\textit{Notes}: Reference category for medium is Video."),
+          title="\\textbf{Models of Ambivalent Sexism and Scandal Target Affect in Incidental Exposure Experiment}",
           covariate.labels = c("Ambivalent Sexism",
                                "Video","Audio","Text","Skit",
                                "A.S. x Video",
@@ -1982,14 +2261,22 @@ stargazer(h7b.b1,
 ##      on performance
 (h9.m <- lm(exp_2_pct_correct ~ post_dig_lit, dat)); summary(h9.m); 
 (h89.corr.adj <- lm(exp_2_pct_correct ~ post_dig_lit + exp_2_prompt_accuracy + exp_2_before_debrief + exp_1_prompt_info + polknow + internet_usage +
-                              exp_2 + response_wave_ID + age_65 + educ + I(PID=="Republican")*crt + ambivalent_sexism, dat%>%mutate(exp_2_before_debrief=!exp_2_after_debrief))); summary(h89.corr.adj);
+                              exp_2 + age_65 + educ + I(PID=="Republican")*crt + ambivalent_sexism, dat%>%mutate(exp_2_before_debrief=!exp_2_after_debrief))); summary(h89.corr.adj);
 (h89.corr.adj.wt <- lm(exp_2_pct_correct ~ post_dig_lit + exp_2_prompt_accuracy + exp_2_before_debrief + exp_1_prompt_info + polknow + internet_usage +
-                              exp_2 + response_wave_ID + age_65 + educ + I(PID=="Republican")*crt + ambivalent_sexism, dat%>%mutate(exp_2_before_debrief=!exp_2_after_debrief), weights=weight)); summary(h89.corr.adj);
+                              exp_2 + age_65 + educ + I(PID=="Republican")*crt + ambivalent_sexism, dat%>%mutate(exp_2_before_debrief=!exp_2_after_debrief), weights=weight)); summary(h89.corr.adj);
 (h89.corr.adj.hq <- lm(exp_2_pct_correct ~ post_dig_lit + exp_2_prompt_accuracy + exp_2_before_debrief + exp_1_prompt_info + polknow + internet_usage +
-                              exp_2 + response_wave_ID + age_65 + educ + I(PID=="Republican")*crt + ambivalent_sexism, dat%>%mutate(exp_2_before_debrief=!exp_2_after_debrief)%>%filter(!lowq))); summary(h89.corr.adj);
+                              exp_2 + age_65 + educ + I(PID=="Republican")*crt + ambivalent_sexism, dat%>%mutate(exp_2_before_debrief=!exp_2_after_debrief)%>%filter(!lowq))); summary(h89.corr.adj);
 (h89.corr.adj.hq.wt <- lm(exp_2_pct_correct ~ post_dig_lit + exp_2_prompt_accuracy + exp_2_before_debrief + exp_1_prompt_info + polknow + internet_usage +
-                              exp_2 + response_wave_ID + age_65 + educ + I(PID=="Republican")*crt + ambivalent_sexism, dat%>%mutate(exp_2_before_debrief=!exp_2_after_debrief)%>%filter(!lowq), weights=weight)); summary(h89.corr.adj);
+                              exp_2 + age_65 + educ + I(PID=="Republican")*crt + ambivalent_sexism, dat%>%mutate(exp_2_before_debrief=!exp_2_after_debrief)%>%filter(!lowq), weights=weight)); summary(h89.corr.adj);
 
+h89.corr.df <- bind_rows(
+    tidy(h9.m),
+    tidy(h89.corr.adj),
+    tidy(h89.corr.adj.wt),
+    tidy(h89.corr.adj.hq),
+    tidy(h89.corr.adj.hq.wt)
+)
+h89.corr.df$p.value.adj <- (h89.corr.df$p.value/order(h89.corr.df$p.value))*nrow(h89.corr.df) ##BHq corrections
 
 var_order <- names(coefficients(h89.corr.adj))[2:16]
 stargazer(h8.m,
@@ -2000,20 +2287,22 @@ stargazer(h8.m,
           h89.corr.adj.hq.wt,
           header = FALSE,
           no.space=TRUE,
+          apply.p = function(p) { h89.corr.df$p.value.adj[h89.corr.df$p.value == p][1] },
+          notes =  c("\\textit{Notes:} $^{.}$ $p \\cdot r/K < .1$ * $p \\cdot r/K < .05$ ** $p \\cdot r/K < .01$ *** $p \\cdot r/K < .001$"),
+          notes.append = FALSE,
           digits=2,
           table.layout ="=d#-t-a-s=n",
           notes.align = "l",
-          title="\\textbf{Predictors of Second-Stage Detection Accuracy}",
-          notes = c("\\textit{Notes}: Reference category for environment is High-fake. PID pooled for brevity."),
+          title="\\textbf{Predictors of Detection Task Accuracy}",
           omit = c("response_wave_ID"), 
-          dep.var.labels = c("\\normalsize Detection Accuracy (\\% Correctly Classified)"),
+          dep.var.labels = c("\\normalsize Deepfake Detection Accuracy (\\% Correctly Classified)"),
           omit.stat=c("f", "ser"),
           order = var_order,
           covariate.labels = c(
             "Digital Literacy",
-            "Accuracy Prompt",
-            "Stage 1 Debrief",
-            "Stage 1 Info Provided",
+            "Accuracy Prime",
+            "Exp 1 Debrief",
+            "Exp 1 Information",
             "Political Knowledge",
             "Internet Usage",
             "Low-fake Env.",
@@ -2022,10 +2311,10 @@ stargazer(h8.m,
             "High School",
             "College",
             "Postgrad",
-            "Republican",
-            "CRT",
-            "Republican x CRT",
-            "Ambivalent Sexism"
+            "C.R.",
+            "C.R. x Republican",
+            "Ambivalent Sexism",
+            "Republican"
           ),
           add.lines = list(c("Weighted?", "", "", "", "\\checkmark", "","\\checkmark"),
                            c("Low-Quality Dropped?", "", "", "", "","\\checkmark","\\checkmark")),
@@ -2039,13 +2328,23 @@ stargazer(h8.m,
 (h8.m.fpr <- lm(exp_2_pct_false_fake ~ exp_2_prompt_accuracy, dat, weights=weight)); summary(h8.m.fpr); 
 (h9.m.fpr <- lm(exp_2_pct_false_fake ~ post_dig_lit, dat)); summary(h9.m.fpr); 
 (h89.corr.adj.fpr <- lm(exp_2_pct_false_fake ~ post_dig_lit + exp_2_prompt_accuracy + exp_2_before_debrief + exp_1_prompt_info + polknow + internet_usage +
-                              exp_2 + response_wave_ID + age_65 + educ + I(PID=="Republican")*crt + ambivalent_sexism, dat%>%mutate(exp_2_before_debrief=!exp_2_after_debrief))); summary(h89.corr.adj.fpr);
+                              exp_2 + age_65 + educ + I(PID=="Republican")*crt + ambivalent_sexism, dat%>%mutate(exp_2_before_debrief=!exp_2_after_debrief))); summary(h89.corr.adj.fpr);
 (h89.corr.adj.wt.fpr <- lm(exp_2_pct_false_fake ~ post_dig_lit + exp_2_prompt_accuracy + exp_2_before_debrief + exp_1_prompt_info + polknow + internet_usage +
-                              exp_2 + response_wave_ID + age_65 + educ + I(PID=="Republican")*crt + ambivalent_sexism, dat%>%mutate(exp_2_before_debrief=!exp_2_after_debrief), weights=weight)); summary(h89.corr.adj.fpr);
+                              exp_2 + age_65 + educ + I(PID=="Republican")*crt + ambivalent_sexism, dat%>%mutate(exp_2_before_debrief=!exp_2_after_debrief), weights=weight)); summary(h89.corr.adj.fpr);
 (h89.corr.adj.hq.fpr <- lm(exp_2_pct_false_fake ~ post_dig_lit + exp_2_prompt_accuracy + exp_2_before_debrief + exp_1_prompt_info + polknow + internet_usage +
-                              exp_2 + response_wave_ID + age_65 + educ + I(PID=="Republican")*crt + ambivalent_sexism, dat%>%mutate(exp_2_before_debrief=!exp_2_after_debrief)%>%filter(!lowq))); summary(h89.corr.adj.fpr);
+                              exp_2 + age_65 + educ + I(PID=="Republican")*crt + ambivalent_sexism, dat%>%mutate(exp_2_before_debrief=!exp_2_after_debrief)%>%filter(!lowq))); summary(h89.corr.adj.fpr);
 (h89.corr.adj.hq.wt.fpr <- lm(exp_2_pct_false_fake ~ post_dig_lit + exp_2_prompt_accuracy + exp_2_before_debrief + exp_1_prompt_info + polknow + internet_usage +
-                              exp_2 + response_wave_ID + age_65 + educ + I(PID=="Republican")*crt + ambivalent_sexism, dat%>%mutate(exp_2_before_debrief=!exp_2_after_debrief)%>%filter(!lowq), weights=weight)); summary(h89.corr.adj.fpr);
+                              exp_2 + age_65 + educ + I(PID=="Republican")*crt + ambivalent_sexism, dat%>%mutate(exp_2_before_debrief=!exp_2_after_debrief)%>%filter(!lowq), weights=weight)); summary(h89.corr.adj.fpr);
+
+h89.fpr.df <- bind_rows(
+    tidy(h8.m.fpr),
+    tidy(h9.m.fpr),
+    tidy(h89.corr.adj.fpr),
+    tidy(h89.corr.adj.wt.fpr),
+    tidy(h89.corr.adj.hq.fpr),
+    tidy(h89.corr.adj.hq.wt.fpr)
+)
+h89.fpr.df$p.value.adj <- (h89.fpr.df$p.value/order(h89.fpr.df$p.value))*nrow(h89.fpr.df) ##BHq corrections
 
 var_order <- names(coefficients(h89.corr.adj.fpr))[2:16]
 stargazer(h8.m.fpr,
@@ -2056,20 +2355,22 @@ stargazer(h8.m.fpr,
           h89.corr.adj.hq.wt.fpr,
           header = FALSE,
           no.space=TRUE,
+          apply.p = function(p) { h89.fpr.df$p.value.adj[h89.fpr.df$p.value == p][1] },
+          notes =  c("\\textit{Notes:} $^{.}$ $p \\cdot r/K < .1$ * $p \\cdot r/K < .05$ ** $p \\cdot r/K < .01$ *** $p \\cdot r/K < .001$"),
+          notes.append = FALSE,
           digits=2,
           table.layout ="=d#-t-a-s=n",
           notes.align = "l",
-          title="\\textbf{Predictors of Second-Stage False Positive Rate (FPR)}",
-          notes = c("\\textit{Notes}: Reference category for environment is High-fake. PID pooled for brevity."),
+          title="\\textbf{Predictors of Detection Task False Positive Rate (FPR)}",
           omit = c("response_wave_ID"), 
           dep.var.labels = c("\\normalsize Detection FPR (\\% Real Videos Classified as Deepfakes)"),
           omit.stat=c("f", "ser"),
           order = var_order,
           covariate.labels = c(
             "Digital Literacy",
-            "Accuracy Prompt",
-            "Stage 1 Debrief",
-            "Stage 1 Info Provided",
+            "Accuracy Prime",
+            "Exp 1 Debrief",
+            "Exp 1 Information",
             "Political Knowledge",
             "Internet Usage",
             "Low-fake Env.",
@@ -2078,10 +2379,10 @@ stargazer(h8.m.fpr,
             "High School",
             "College",
             "Postgrad",
-            "Republican",
-            "CRT",
-            "Republican x CRT",
-            "Ambivalent Sexism"
+            "C.R.",
+            "C.R. x Republican",
+            "Ambivalent Sexism",
+            "Republican"
           ),
           add.lines = list(c("Weighted?", "", "", "", "\\checkmark", "","\\checkmark"),
                            c("Low-Quality Dropped?", "", "", "", "","\\checkmark","\\checkmark")),
@@ -2095,13 +2396,23 @@ stargazer(h8.m.fpr,
 (h8.m.fnr <- lm(exp_2_pct_false_real ~ exp_2_prompt_accuracy, dat, weights=weight)); summary(h8.m.fnr); 
 (h9.m.fnr <- lm(exp_2_pct_false_real ~ post_dig_lit, dat)); summary(h9.m.fnr); 
 (h89.corr.adj.fnr <- lm(exp_2_pct_false_real ~ post_dig_lit + exp_2_prompt_accuracy + exp_2_before_debrief + exp_1_prompt_info + polknow + internet_usage +
-                              exp_2 + response_wave_ID + age_65 + educ + I(PID=="Republican")*crt + ambivalent_sexism, dat%>%mutate(exp_2_before_debrief=!exp_2_after_debrief))); summary(h89.corr.adj.fnr);
+                              exp_2 + age_65 + educ + I(PID=="Republican")*crt + ambivalent_sexism, dat%>%mutate(exp_2_before_debrief=!exp_2_after_debrief))); summary(h89.corr.adj.fnr);
 (h89.corr.adj.wt.fnr <- lm(exp_2_pct_false_real ~ post_dig_lit + exp_2_prompt_accuracy + exp_2_before_debrief + exp_1_prompt_info + polknow + internet_usage +
-                              exp_2 + response_wave_ID + age_65 + educ + I(PID=="Republican")*crt + ambivalent_sexism, dat%>%mutate(exp_2_before_debrief=!exp_2_after_debrief), weights=weight)); summary(h89.corr.adj.fnr);
+                              exp_2 + age_65 + educ + I(PID=="Republican")*crt + ambivalent_sexism, dat%>%mutate(exp_2_before_debrief=!exp_2_after_debrief), weights=weight)); summary(h89.corr.adj.fnr);
 (h89.corr.adj.hq.fnr <- lm(exp_2_pct_false_real ~ post_dig_lit + exp_2_prompt_accuracy + exp_2_before_debrief + exp_1_prompt_info + polknow + internet_usage +
-                              exp_2 + response_wave_ID + age_65 + educ + I(PID=="Republican")*crt + ambivalent_sexism, dat%>%mutate(exp_2_before_debrief=!exp_2_after_debrief)%>%filter(!lowq))); summary(h89.corr.adj.fnr);
+                              exp_2 + age_65 + educ + I(PID=="Republican")*crt + ambivalent_sexism, dat%>%mutate(exp_2_before_debrief=!exp_2_after_debrief)%>%filter(!lowq))); summary(h89.corr.adj.fnr);
 (h89.corr.adj.hq.wt.fnr <- lm(exp_2_pct_false_real ~ post_dig_lit + exp_2_prompt_accuracy + exp_2_before_debrief + exp_1_prompt_info + polknow + internet_usage +
-                              exp_2 + response_wave_ID + age_65 + educ + I(PID=="Republican")*crt + ambivalent_sexism, dat%>%mutate(exp_2_before_debrief=!exp_2_after_debrief)%>%filter(!lowq), weights=weight)); summary(h89.corr.adj.fnr);
+                              exp_2 + age_65 + educ + I(PID=="Republican")*crt + ambivalent_sexism, dat%>%mutate(exp_2_before_debrief=!exp_2_after_debrief)%>%filter(!lowq), weights=weight)); summary(h89.corr.adj.fnr);
+
+h89.fnr.df <- bind_rows(
+    tidy(h8.m.fnr),
+    tidy(h9.m.fnr),
+    tidy(h89.corr.adj.fnr),
+    tidy(h89.corr.adj.wt.fnr),
+    tidy(h89.corr.adj.hq.fnr),
+    tidy(h89.corr.adj.hq.wt.fnr)
+)
+h89.fnr.df$p.value.adj <- (h89.fnr.df$p.value/order(h89.fnr.df$p.value))*nrow(h89.fnr.df) ##BHq corrections
 
 var_order <- names(coefficients(h89.corr.adj.fnr))[2:16]
 stargazer(h8.m.fnr,
@@ -2112,20 +2423,22 @@ stargazer(h8.m.fnr,
           h89.corr.adj.hq.wt.fnr,
           header = FALSE,
           no.space=TRUE,
+          apply.p = function(p) { h89.fnr.df$p.value.adj[h89.fnr.df$p.value == p][1] },
+          notes =  c("\\textit{Notes:} $^{.}$ $p \\cdot r/K < .1$ * $p \\cdot r/K < .05$ ** $p \\cdot r/K < .01$ *** $p \\cdot r/K < .001$"),
+          notes.append = FALSE,
           digits=2,
           table.layout ="=d#-t-a-s=n",
           notes.align = "l",
-          title="\\textbf{Predictors of Second-Stage False Negative Rate (FNR)}",
-          notes = c("\\textit{Notes}: Reference category for environment is High-fake. PID pooled for brevity."),
+          title="\\textbf{Predictors of Detection Task False Negative Rate (FNR)}",
           omit = c("response_wave_ID"), 
           dep.var.labels = c("\\normalsize Detection FNR (\\% Deepfakes Classified as Real Videos)"),
           omit.stat=c("f", "ser"),
           order = var_order,
           covariate.labels = c(
             "Digital Literacy",
-            "Accuracy Prompt",
-            "Stage 1 Debrief",
-            "Stage 1 Info Provided",
+            "Accuracy Prime",
+            "Exp 1 Debrief",
+            "Exp 1 Information",
             "Political Knowledge",
             "Internet Usage",
             "Low-fake Env.",
@@ -2135,9 +2448,9 @@ stargazer(h8.m.fnr,
             "College",
             "Postgrad",
             "Republican",
-            "CRT",
-            "Republican x CRT",
-            "Ambivalent Sexism"
+            "C.R.",
+            "Ambivalent Sexism",
+            "C.R. x Republican"
           ),
           add.lines = list(c("Weighted?", "", "", "", "\\checkmark", "","\\checkmark"),
                            c("Low-Quality Dropped?", "", "", "", "","\\checkmark","\\checkmark")),
@@ -2162,7 +2475,7 @@ n.hi <- dat %>% filter(!is.na(exp_2), !is.na(exp_2_pct_correct), exp_2=="hifake"
 
 
 dat %>%
-    select(exp_2, exp_2_pct_correct, exp_2_pct_false_fake, exp_2_pct_false_real) %>%
+    dplyr::select(exp_2, exp_2_pct_correct, exp_2_pct_false_fake, exp_2_pct_false_real) %>%
     tidyr::gather(key="metric",value="val", exp_2_pct_correct, exp_2_pct_false_fake, exp_2_pct_false_real) %>%
     filter(!is.na(exp_2)) %>%
     group_by(exp_2, metric) %>%
@@ -2189,7 +2502,7 @@ dat %>%
     geom_errorbar(position=position_dodge(.9), width=.2, size=1) + 
     ylab("rate") + xlab("detection environment") +
     ggtitle(paste0("n=",n," | n_no=",n.no," | n_lo=",n.lo," | no_hi=",n.hi)) +
-    theme_bw() + 
+    theme_linedraw2 + 
         theme(
             title = element_text(size=5),
             axis.text.x = element_text(size=12),
@@ -2202,7 +2515,7 @@ ggsave("figures/secondstage_detectionbyenv.pdf", width=8, height=3.05)
 if(SHOW_PDFS) system("open figures/secondstage_detectionbyenv.pdf")
 
 dat %>%
-    select(exp_2, exp_2_pct_correct, exp_2_pct_false_fake, exp_2_pct_false_real) %>%
+    dplyr::select(exp_2, exp_2_pct_correct, exp_2_pct_false_fake, exp_2_pct_false_real) %>%
     tidyr::gather(key="metric",value="val", exp_2_pct_correct, exp_2_pct_false_fake, exp_2_pct_false_real) %>%
     filter(!is.na(exp_2)) %>%
     group_by(exp_2, metric) %>%
@@ -2229,7 +2542,7 @@ dat %>%
     geom_errorbar(position=position_dodge(.9), width=.2, size=1) + 
     ggtitle(paste0("n=",n," | n_no=",n.no," | n_lo=",n.lo," | no_hi=",n.hi)) +
     ylab("rate") + xlab("detection metrics") +
-    theme_bw() + 
+    theme_linedraw2 + 
         theme(
             title = element_text(size=5),
             axis.text.x = element_text(size=12),
@@ -2250,12 +2563,12 @@ if(SHOW_PDFS) system("open figures/secondstage_detectionbyenv2.pdf")
 (m3 <- lm(exp_2_pct_false_real ~ post_dig_lit + exp_2_prompt_accuracy + exp_1_prompt_info + exp_2_after_debrief + polknow + crt +
                                  exp_2 + response_wave_ID + age_65 + educ + PID + internet_usage + ambivalent_sexism, dat, weights=weight)); summary(m3);
 
-dat.viz <- bind_rows(tidy(m1) %>% mutate(metric="accuracy"), 
-                     tidy(m2) %>% mutate(metric="false positive rate"),
-                     tidy(m3) %>% mutate(metric="false negative rate"))
+dat.viz1 <- bind_rows(tidy(m1) %>% mutate(metric="Accuracy"), 
+                      tidy(m2) %>% mutate(metric="False Positive Rate"),
+                      tidy(m3) %>% mutate(metric="False Negative Rate"))
 
 terms2viz <- c("post_dig_lit", "exp_2_prompt_accuracyTRUE", "exp_1_prompt_infoTRUE", "exp_2_after_debrief", "polknow", "crt", "PIDRepublican")
-dat.viz %>% 
+dat.viz1 %>% 
     filter(term %in% terms2viz) %>%
     mutate(term = replace(term, term == "post_dig_lit", "Digital literacy")) %>%
     mutate(term = replace(term, term == "exp_2_after_debrief", "Debriefed before task")) %>%
@@ -2274,7 +2587,7 @@ dat.viz %>%
     scale_color_identity() +
     scale_y_continuous(labels = scales::percent_format(accuracy = 1)) + 
     coord_flip() +
-    theme_bw() +
+    theme_linedraw2 +
         theme(
             legend.position = "none",
             axis.text.x = element_text(size=11),
@@ -2289,8 +2602,7 @@ if(SHOW_PDFS) system("open figures/secondstage_treatfx.pdf")
 
 
 ## === Linear models interacted with environment ===
-## (promoted to a top-line main text figure)
-dat.viz <- data.frame()
+dat.viz2 <- data.frame()
 for (e in levels(dat$exp_2)) {
     (m1 <- lm(exp_2_pct_correct ~ post_dig_lit + exp_2_prompt_accuracy + exp_1_prompt_info + exp_2_after_debrief + polknow + crt +
                                  response_wave_ID + age_65 + educ + PID + internet_usage + ambivalent_sexism, dat %>% filter(exp_2 %in% e), weights=weight)); summary(m1);
@@ -2300,15 +2612,15 @@ for (e in levels(dat$exp_2)) {
         (m3 <- lm(exp_2_pct_false_real ~ post_dig_lit + exp_2_prompt_accuracy + exp_1_prompt_info + exp_2_after_debrief + polknow + crt +
                                          response_wave_ID + age_65 + educ + PID + internet_usage + ambivalent_sexism, dat %>% filter(exp_2 %in% e))); summary(m3);
     }
-    dat.viz <- bind_rows(dat.viz, tidy(m1) %>% mutate(metric="Accuracy", exp_2=e)) 
-    dat.viz <- bind_rows(dat.viz, tidy(m2) %>% mutate(metric="False Positive Rate", exp_2=e))
+    dat.viz2 <- bind_rows(dat.viz2, tidy(m1) %>% mutate(metric="Accuracy", exp_2=e)) 
+    dat.viz2 <- bind_rows(dat.viz2, tidy(m2) %>% mutate(metric="False Positive Rate", exp_2=e))
     if (e != "nofake") {
-        dat.viz <- bind_rows(dat.viz, tidy(m3) %>% mutate(metric="False Negative Rate", exp_2=e)) 
+        dat.viz2 <- bind_rows(dat.viz2, tidy(m3) %>% mutate(metric="False Negative Rate", exp_2=e)) 
     }
 }
 
 terms2viz <- c("post_dig_lit", "exp_2_prompt_accuracyTRUE", "exp_1_prompt_infoTRUE", "exp_2_after_debrief", "polknow", "crt", "PIDRepublican")
-dat.viz %>% 
+dat.viz2 %>% 
     filter(term %in% terms2viz) %>%
     mutate(term = replace(term, term == "post_dig_lit", "Digital literacy")) %>%
     mutate(term = replace(term, term == "exp_2_after_debrief", "Debriefed before task")) %>%
@@ -2334,7 +2646,7 @@ dat.viz %>%
     scale_alpha_discrete(guide=FALSE) + 
     scale_color_manual(values=c("black", "blue", "red"), name="Environment:") +
     coord_flip() +
-    theme_linedraw() +
+    theme_linedraw2 +
         theme(
             axis.text.x = element_text(size=11),
             axis.text.y = element_text(size=14),
@@ -2348,7 +2660,6 @@ dat.viz %>%
         )
 ggsave("figures/secondstage_treatfx_byenv.pdf", width=11, height=4)
 if(SHOW_PDFS) system("open figures/secondstage_treatfx_byenv.pdf")
-
 
 #####------------------------------------------------------#
 ##### Cleanup ####
