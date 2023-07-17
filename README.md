@@ -10,7 +10,7 @@ Before replicating the analyses, make sure to create a folder `/figures` and `/t
 
 - `cps2018_crosstabs*`: cross-tabs of demographic categories from the U.S. Census's 2018 Current Population Survey used for weighting.
 
-- `01-weight_data.R`: appends post-stratification weights to `dat` object in `deepfake.RData` using a simple raking model from 2018 CPS data.
+- `01-weight_data.R`: creates population weights for observations in `dat` object in `deepfake.RData` via a simple raking algorithm on 2018 CPS data.
 
 - `02-prereg_analyses.R`: replicates analyses specified in pre-analysis plan; generates outputs in `/table` and `/figure` found in Appendix of article.
 
