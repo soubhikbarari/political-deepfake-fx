@@ -9,7 +9,7 @@
 # Runtime: <1 min
 # 
 # Input:
-# - code/deepfake.Rdata:
+# - deepfake.Rdata:
 #       `dat` object made from `deepfake_make_data`       
 #
 # Output:
@@ -28,7 +28,7 @@ theme_linedraw2 <- theme_linedraw() +
           panel.grid.minor = element_blank(),
           panel.spacing = unit(2, "lines"))
 
-# system("mv code/deepfake.RData code/deepfake.bak.RData")
+# system("mv deepfake.RData deepfake.bak.RData")
 
 #####------------------------------------------------------#
 ##### Different thresholds for stage-2 missing responses ####
@@ -38,9 +38,9 @@ dat.viz <- data.frame()
 
 for (i in 1:8) {
     cat(i)
-    system("rm code/deepfake.RData")
-    system(sprintf("Rscript code/00-deepfake_make_data.R --idtask_NA_threshold %d", i))
-    load("code/deepfake.RData")
+    system("rm deepfake.RData")
+    system(sprintf("Rscript 00-deepfake_make_data.R --idtask_NA_threshold %d", i))
+    load("deepfake.RData")
     
     dat <- dat[as.numeric(dat$quality) == 2,] 
     
