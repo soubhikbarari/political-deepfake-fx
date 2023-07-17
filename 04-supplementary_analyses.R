@@ -1,5 +1,6 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-# Run through exploratory analyses on deepfake studies.
+# Replicate supplementary analyses on deepfake studies (i.e. exploratory non-registered
+# analyses, reviewer-requested robustness checks).
 # 
 # Author: Soubhik Barari
 # 
