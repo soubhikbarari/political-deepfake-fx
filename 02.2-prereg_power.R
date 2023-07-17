@@ -1,6 +1,6 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # Determine whether our observed sample is actually powered to detect
-# the equivalence bounds specified in the power.
+# the equivalence bounds specified in the paper.
 #
 # Note: using only a subset of pre-registered specifications
 #       and treatment contrasts (mostly video vs. text) but results
