@@ -2,7 +2,7 @@
 ## Replication Code
 ### Authors: Soubhik Barari, Christopher Lucas, and Kevin Munger
 
-This is the replication code repository for the entitled research article, which can be found [here](https://osf.io/cdfh3/).
+This is the replication code repository for the entitled research article (conditionally accepted at *The Journal of Politics*) which can be found [here](https://osf.io/cdfh3/).
 
 Before replicating the analyses, make sure to create a folder `/figures` and `/tables` in the root directory of the repository.
 
