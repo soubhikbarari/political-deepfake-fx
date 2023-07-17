@@ -12,7 +12,7 @@ Before replicating the analyses, make sure to create a folder `/figures` and `/t
 
 - `01-weight_data.R`: creates population weights for observations in `dat` object in `deepfake.RData` via a simple raking algorithm on 2018 CPS data.
 
-- `02-prereg_analyses.R`: replicates analyses specified in pre-analysis plan; generates outputs in `/table` and `/figure` found in Appendix of article.
+- `02-prereg_analyses.R`: replicates analyses specified in pre-analysis plan; generates outputs in `/tables` and `/figures` found in Appendix of article.
 
 - `02.1-prereg_sensitivity.R`: as requested by a reviewer, conduct sensitivity tests for some pre-registered analyses as a robustness check.
 
