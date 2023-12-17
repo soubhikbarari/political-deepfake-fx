@@ -293,7 +293,7 @@ if(SHOW_PDFS) system("open figures_exploratory/firststage_belief_byscript_binary
 # scores_na <- dfsurvdat[,c(nofake_vids, lowfake_vids, hifake_vids)] %>%
 #     gather(key="video", value="response") %>%
 #     mutate(is_real=grepl("real", video)) %>%
-#     mutate(video=gsub("_\\d$", "", video)) %>%
+#     mutate(video=gsub("(_|\\.)\\d$", "", video)) %>%
 #     mutate(correct=ifelse(is_real==TRUE & response=="This video is not fake or doctored", 1, 
 #                           ifelse(is_real==FALSE & response=="This video is fake or doctored", 1, 0))) %>%
 #     mutate(correct=replace_na(correct, 0)) %>%
@@ -305,7 +305,7 @@ scores <- dfsurvdat[,c(nofake_vids, lowfake_vids, hifake_vids)] %>%
     gather(key="video", value="response") %>%
     filter(!is.na(as.character(response))) %>%
     mutate(is_real=grepl("real", video)) %>%
-    mutate(video=gsub("_\\d$", "", video)) %>%
+    mutate(video=gsub("(_|\\.)\\d$", "", video)) %>%
     mutate(video=ifelse(video=="real_bidenfight", "real_biden_fight", video)) %>%
     mutate(correct=ifelse(is_real==TRUE & response=="This video is not fake or doctored", 1, 
                           ifelse(is_real==FALSE & response=="This video is fake or doctored", 1, 0))) %>%
@@ -652,7 +652,7 @@ scores_byknow <- dfsurvdat[,c("polknow",nofake_vids, lowfake_vids, hifake_vids)]
     gather(key="video", value="response", -polknow) %>%
     filter(!is.na(as.character(response))) %>%
     mutate(is_real=grepl("real", video)) %>%
-    mutate(video=gsub("_\\d$", "", video)) %>%
+    mutate(video=gsub("(_|\\.)\\d$", "", video)) %>%
     mutate(video=ifelse(video=="real_bidenfight", "real_biden_fight", video)) %>%
     mutate(correct=ifelse(is_real==TRUE & response=="This video is not fake or doctored", 1, 
                           ifelse(is_real==FALSE & response=="This video is fake or doctored", 1, 0))) %>%
@@ -682,7 +682,7 @@ diffs_bypolknow <- dfsurvdat[,c("polknow", nofake_vids, lowfake_vids, hifake_vid
     gather(key="video", value="response", -polknow) %>%
     filter(!is.na(as.character(response))) %>%
     mutate(is_real=grepl("real", video)) %>%
-    mutate(video=gsub("_\\d$", "", video)) %>%
+    mutate(video=gsub("(_|\\.)\\d$", "", video)) %>%
     mutate(video=ifelse(video=="real_bidenfight", "real_biden_fight", video)) %>%
     mutate(correct=ifelse(is_real==TRUE & response=="This video is not fake or doctored", 1, 
                           ifelse(is_real==FALSE & response=="This video is fake or doctored", 1, 0))) %>%
@@ -795,7 +795,7 @@ scores_bydiglit <- dfsurvdat[,c("post_dig_lit",nofake_vids, lowfake_vids, hifake
     gather(key="video", value="response", -post_dig_lit) %>%
     filter(!is.na(as.character(response))) %>%
     mutate(is_real=grepl("real", video)) %>%
-    mutate(video=gsub("_\\d$", "", video)) %>%
+    mutate(video=gsub("(_|\\.)\\d$", "", video)) %>%
     mutate(video=ifelse(video=="real_bidenfight", "real_biden_fight", video)) %>%
     mutate(correct=ifelse(is_real==TRUE & response=="This video is not fake or doctored", 1, 
                           ifelse(is_real==FALSE & response=="This video is fake or doctored", 1, 0))) %>%
@@ -825,7 +825,7 @@ diffs_bydiglit <- dfsurvdat[,c("post_dig_lit", nofake_vids, lowfake_vids, hifake
     gather(key="video", value="response", -post_dig_lit) %>%
     filter(!is.na(as.character(response))) %>%
     mutate(is_real=grepl("real", video)) %>%
-    mutate(video=gsub("_\\d$", "", video)) %>%
+    mutate(video=gsub("(_|\\.)\\d$", "", video)) %>%
     mutate(video=ifelse(video=="real_bidenfight", "real_biden_fight", video)) %>%
     mutate(correct=ifelse(is_real==TRUE & response=="This video is not fake or doctored", 1, 
                           ifelse(is_real==FALSE & response=="This video is fake or doctored", 1, 0))) %>%
@@ -950,7 +950,7 @@ scores_byCR <- dfsurvdat[,c("crt",nofake_vids, lowfake_vids, hifake_vids)] %>%
     gather(key="video", value="response", -crt) %>%
     filter(!is.na(as.character(response))) %>%
     mutate(is_real=grepl("real", video)) %>%
-    mutate(video=gsub("_\\d$", "", video)) %>%
+    mutate(video=gsub("(_|\\.)\\d$", "", video)) %>%
     mutate(video=ifelse(video=="real_bidenfight", "real_biden_fight", video)) %>%
     mutate(correct=ifelse(is_real==TRUE & response=="This video is not fake or doctored", 1, 
                           ifelse(is_real==FALSE & response=="This video is fake or doctored", 1, 0))) %>%
@@ -980,7 +980,7 @@ diffs_byCRT <- dfsurvdat[,c("crt", nofake_vids, lowfake_vids, hifake_vids)] %>%
     gather(key="video", value="response", -crt) %>%
     filter(!is.na(as.character(response))) %>%
     mutate(is_real=grepl("real", video)) %>%
-    mutate(video=gsub("_\\d$", "", video)) %>%
+    mutate(video=gsub("(_|\\.)\\d$", "", video)) %>%
     mutate(video=ifelse(video=="real_bidenfight", "real_biden_fight", video)) %>%
     mutate(correct=ifelse(is_real==TRUE & response=="This video is not fake or doctored", 1, 
                           ifelse(is_real==FALSE & response=="This video is fake or doctored", 1, 0))) %>%
@@ -1106,7 +1106,7 @@ dfsurvdat$weight <- ifelse(dfsurvdat$weight < 1/1000, 1/1000, dfsurvdat$weight)
 responses <- dfsurvdat[,c(vars, "weight", nofake_vids, lowfake_vids, hifake_vids)] %>%
     gather(key="video", value="response", -weight, -PID, -meta_OS, -age_65, -educ, -crt, -post_dig_lit, -gender, -polknow, -internet_usage, -ambivalent_sexism) %>%
     filter(!is.na(as.character(response))) %>%
-    mutate(video=gsub("_\\d$", "", video)) %>%
+    mutate(video=gsub("(_|\\.)\\d$", "", video)) %>%
     mutate(is_real=grepl("real", video)) %>%
     mutate(video=ifelse(video=="real_bidenfight", "real_biden_fight", video)) %>%
     mutate(correct=ifelse(is_real==TRUE & response=="This video is not fake or doctored", 1, 
