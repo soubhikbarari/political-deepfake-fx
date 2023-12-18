@@ -970,7 +970,7 @@ panel1.b.fx.bygroups <- dat.b.bygroups %>%
     geom_hline(yintercept=e.epsilon.l, lty=1, color="green", size=1, alpha=0.5) + 
     geom_linerange(aes(ymin=tost.lo, ymax=tost.hi), color="red", alpha=0.5, 
                    size=13, position=position_dodge(width=0.85)) + 
-    geom_linerange(aes(ymin=estimate-1.96*std.error, ymax=estimate+1.96*std.error, color=color), 
+    geom_linerange(aes(ymin=estimate-z_crit_adj*std.error, ymax=estimate+z_crit_adj*std.error, color=color), 
                    size=1, position=position_dodge(width=0.85)) +
     geom_linerange(aes(ymin=estimate-1.65*std.error, ymax=estimate+1.65*std.error, color=color), 
                    size=2, position=position_dodge(width=0.85)) +
